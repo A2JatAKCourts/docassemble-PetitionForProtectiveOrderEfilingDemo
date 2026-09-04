@@ -1,0 +1,673 @@
+comment: |
+  2026-09-04
+  This is a simple version of the protective order efiling demo.
+  Building the gathering portion for adults, and children.
+  Testing PDFs, DV-100, DV-100m, and CIV-750 for sexual assault, CIV-752 for stalking.
+---
+include:
+  - docassemble.AssemblyLine:assembly_line.yml
+  - docassemble.ALAnyState:any_state.yml
+  - docassemble.AKA2JBranding:custom_organization.yml
+  - protective_order_interview_order.yml
+---
+id: alweaver assemblyline settings
+initial: True
+code: |
+  # These exact-name variables drive the reusable next-steps DOCX shell and
+  # are editable in Weaver's AssemblyLine settings panel.
+  user_role = "plaintiff"
+  user_ask_role = "plaintiff"
+  al_next_steps_enabled = False
+  al_next_steps_intro_prompt = 'File your Protective Order petition today'
+  al_next_steps_title = 'Protective Order petition'
+  al_next_steps_document_title = 'petition'
+  al_next_steps_document_purpose = 'application'
+  al_next_steps_help_organization = 'Alaska Legal Services Corporation'
+  al_next_steps_help_url = 'https://www.alsc-law.org'
+  al_next_steps_generate_qr_code = False
+  al_next_steps_what_happens_next = 'After you submit your petition, the court will review your request. If granted, the protective order will help keep you and your children safe from the respondent. You may need to attend a hearing for long-term orders.'
+  al_next_steps_what_can_decision_maker_do = 'The judge can issue temporary protective orders or schedule a hearing for long-term orders. They can also deny the request if there is insufficient evidence.'
+  al_next_steps_what_happens_if_i_win = 'If you win the protective order, you will receive legal protection against the respondent for the duration specified. This may include restrictions on contact and requirements for the respondent to stay away from you and your children.'
+---
+objects:
+  - users: ALPeopleList.using(ask_number=True)
+  - advocate: ALIndividual
+  - children: ALPeopleList.using(there_are_any=True, complete_attribute='complete')
+  - other_parties: ALIndividual
+  - adult_for_respondent: ALIndividual
+---
+mandatory: True
+code: |
+  who_needs_the_order
+
+
+
+
+  interview_order_finished
+  protective_order_petition_download
+---  
+
+---
+id: who needs a protective order
+question: |
+  Who needs protection?
+fields:
+  - Who is the order for?: who_needs_the_order
+    datatype: radio
+    choices:
+    - "me. I need a protective order for myself": myself
+    - "My child": child
+    - "Myself and my minor child": self and child
+    - "More than one of my minor children": children
+    - "Myself and more than one of my minor children": self and children
+under: |
+  #### <i class="fa-regular fa-lightbulb"></i> Learn more####
+  If I get a protective order, does it include my child?
+
+  Your child can be included in your protective order or have their own protective order depending on what you ask for.
+
+  Ask for yourself: If you have children with the person you are asking for the protective order against, you can ask the judge to:
+
+    *	make some temporary orders about where the child will live;
+    *	order child support; and
+    *	order the other person to stay away from specific locations, including your child's school.
+
+  You can ask for these things even if the other person did not commit domestic violence against your child.
+
+  Ask for yourself and your child: You can ask for a protective order for yourself and your child, if your child meets all of the protective order requirements. For example, the other person must have committed domestic violence against your child. You can also ask the judge to:
+
+    *	make some temporary orders about where the child will live;
+    *	order child support; and
+    *	order the other person to stay away from specific locations, including your child's school.
+
+  You must decide before you fill out the court forms so you know which form to use. The court has 2 different forms to ask for a protective order. The forms are called a petition. One petition asks for a protective order for 1 person. The other petition asks for a protective order for more than 1 person.
+---
+code: |
+  if who_needs_the_order in ('child', 'children'):
+    al_person_answering = 'advocate'
+  else:
+    al_person_answering = 'user'
+---
+question: |
+  How many people, ${ "including yourself," if who_needs_the_order == 'self and children' else "all together,"} need this order?
+fields:
+  - Number of people: users.target_number
+    datatype: integer
+    min: 2
+    max: 11
+---
+id: protected person name
+sets:
+  - users[i].name.first
+  - users[i].name.middle
+  - users[i].name.last
+  - users[i].name.suffix
+question: |
+  % if i == 0 and who_needs_the_order in ('self', 'self and child', 'self and children'):
+  What is your name and birthdate?
+  % elif (i == 0 and who_needs_the_order == 'child') or (i == 0 and who_needs_the_order == 'self and child'):
+  What is your child's name and birthdate?
+  % elif who_needs_the_order == 'children':
+  What is the name and birthdate of the ${ ordinal(i) } child who needs the protective order?
+  % elif who_needs_the_order == 'self and children':
+  What is the name  and birthdate of the ${ ordinal(i - 1) } child who needs the protective order?
+  % endif
+fields:
+  - code: |
+      users[i].name_fields()
+  - birthdate: users[i].birthdate
+    datatype: date
+---
+id: Advocate info
+sets:
+  - advocate.name.first
+  - advocate.name.middle
+  - advocate.name.last
+  - advocate.name.suffix
+question: |
+  If you are asking the court for a protective order for someone else
+subquestion: |
+  To file a petition for a Protective Order for someonw else, you need to be:
+  
+    * 18, 
+    * a domestic violence advocate, or
+    * a lawyer.
+fields:
+  - code: |
+        advocate.name_fields()
+  - Are you a domestic violence advocate?: advocate.is_dv_advocate
+    datatype: yesno
+  - Are you an attorney?: advocate.is_attorney
+    datatype: yesno
+    show if: advocate.is_dv_advocate    
+  - Attorney bar number: advocate.bar_number
+    show if:
+      variable: advocate.is_attorney
+      is: True
+  - Advocate birthdate: advocate.birthdate
+    datatype: date
+    show if: 
+      variable: advocate.is_dv_advocate
+      is: False
+---
+id: relationship to advocate
+sets:
+  - users[i].relationship_to_advocate
+question: |
+  How do you know ${ users[i] }?
+fields:
+  - I am ${ users[i].name.familiar() }'s: users[i].relationship_to_advocate
+---
+id: Respondent's name and birthdate
+sets:
+  - other_parties.name.first
+  - other_parties.name.middle
+  - other_parties.name.last
+  - other_parties.name.suffix
+  - other_parties.birthdate
+question: |
+  What is the name and birthdate of the person ${ users } need protection from?
+fields:
+  - code: |
+      other_parties.name_fields()
+  - birthdate: other_parties.birthdate
+    datatype: date
+---
+id: adult for under-age respondent
+sets:
+  - adult_for_respondent.name.first
+  - adult_for_respondent.name.middle
+  - adult_for_respondent.name.last
+  - adult_for_respondent.name.suffix
+  - adult_for_respondent.birthdate
+question: |
+  What is the name and birthdate of the person signing for the respondent?
+fields:
+  - code: |
+      adult_for_respondent.name_fields()
+  - birthdate: adult_for_respondent.birthdate
+    datatype: date
+  - How do they know ${ other_parties.name.familiar() }?: other_parties.relationship_to_person_signing_for_them
+---
+id: Respondent's contact info
+sets:
+  - other_parties.address.address
+  - other_parties.address.city
+  - other_parties.address.zip
+  - other_parties.address.unit
+  - other_parties.address.state
+  - other_parties.phone_number
+question: |
+  How can the court get in touch with ${ other_parties.name.familiar()} ?
+fields: 
+  - code: |
+      other_parties.address_fields()
+  - Phone: other_parties.phone_number
+---
+id: Respdondent's adult contact info
+sets:
+  - adult_for_respondent.address.address
+  - adult_for_respondent.address.city
+  - adult_for_respondent.address.zip
+  - adult_for_respondent.address.unit
+  - adult_for_respondent.address.state
+  - adult_for_respondent.mobile_number
+  - adult_for_respondent.home_number
+  - adult_for_respondent.work_number
+  - adult_for_respondent.phone_number
+  - adult_for_respondent.other_number
+question: |
+  How can the court get in touch with ${ adult_for_respondent }?
+fields: 
+  - code: |
+      adult_for_respondent.address_fields()
+  - cell phone: adult_for_respondent.mobile_number
+  - home phone: adult_for_respondent.home_number
+  - work phone: adult_for_respondent.work_number
+  - other phone: adult_for_respondent.other_number
+---
+id: Keeping filer's address confidential
+question: |
+  Do you need the court to keep your contact information confidential?
+subquestion: |
+  The court needs your mailing address so they can send court papers and notices about your hearing dates to you. If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties.name.familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties.name.familiar() }.
+fields:
+  - "Do you need to use DV-128?": petitioners_using_dv128
+    datatype: yesnoradio
+---
+id: "Petitioner's contact info"
+question: How can the court get in touch with you?
+fields:
+  - code: |
+      users[0].address_fields()
+  - label: Cell phone
+    field: "users[0].mobile_number"
+    required: False
+  - label: Other phone
+    field: "users[0].other_number"
+    required: False
+  - label: Email
+    field: "users[0].email"
+    required: False
+sets:
+  - "users[0].phone_number"
+  - "users[0].address.address"
+  - "users[0].address.city"
+  - "users[0].address.zip"
+  - "users[0].address.unit"
+  - "users[0].address.state"
+  - "users[0].address.country"
+help: |
+  You _must_ provide contact information so the court can reach you.
+  
+  You will have a chance to tell the court that you need to keep your address, phone,
+  and email confidential, so that only court staff can see this information.
+validation code: |
+  if (not showifdef('users[0].mobile_number') and \
+      (not showifdef('users[0].other_number')) and \
+      (not showifdef('users[0].email'))):
+    validation_error(word("You need to give at least one contact method."), field="users[0].other_contact_method")
+---
+id: Advocate's contact info
+sets:
+  - advocate.address.address
+  - advocate.address.city
+  - advocate.address.zip
+  - advocate.address.unit
+  - advocate.address.state
+  - advocate.mobile_number
+  - advocate.other_number
+question: |
+  How can the court get in touch with you?
+fields: 
+  - code: |
+      advocate.address_fields()
+  - cell phone: advocate.mobile_number
+  - other phone: advocate.other_number
+
+---
+id: For demo - which form do you want to complete?
+question: |
+  Which petition do you want to complete?
+fields:
+  - Petition: protective_order_petition_type
+    datatype: radio
+    choices: 
+      - Petition for Domestic Violence Protective Order: DV-100
+      - Petition for Sexual Assault Protective Order: CIV-750
+      - Petition for Stalking Protective Order: CIV-752
+---
+id: court location
+question: |
+  What court do you want to file in?
+field: court_location
+dropdown:
+  - Anchorage
+  - Angoon
+  - Aniak
+  - Bethel
+  - Cordova
+  - Delta Junction
+  - Dillingham
+  - Emmonak
+  - Fairbanks
+  - Fort Yukon
+  - Galena
+  - Glennallen
+  - Haines
+  - Homer
+  - Hoonah
+  - Hooper Bay
+  - Juneau
+  - Kake
+  - Kenai
+  - Ketchikan
+  - Kodiak
+  - Kotzebue
+  - Naknek
+  - Nenana
+  - Nome
+  - Palmer
+  - Petersburg
+  - Prince of Wales
+  - Sand Point
+  - Seward
+  - Sitka
+  - Skagway
+  - St. Paul Island
+  - Tok
+  - Unalakleet
+  - Unalaska
+  - Utqiagvik
+  - Valdez
+  - Wrangell
+  - Yakutat
+---
+event: penultimate_screen
+question: |
+  Final screen
+subquestion: |
+  Stick in a final screen just so we don't get the error message
+
+  Also reckoning variables along the way:
+
+  * who_needs_the_order: ${ who_needs_the_order }
+  * users: ${ users }
+  * al_person_answering: ${ al_person_answering }
+  * users.target_number: ${ users.target_number }
+  
+  * al_person_answering: ${ al_person_answering }
+  % if who_needs_the_order in ('child', 'children'):
+  % if advocate.is_dv_advocate:
+  * Advocate name: ${ advocate.name.full() }
+  % if advocate.is_attorney:
+  * advocate.bar_number:  ${ advocate.bar_number }
+  % endif
+  % endif
+  * I am
+  % for i in range(users.number()):
+  ${users[i].name.familiar()}'s ${ users[i].relationship_to_advocate }
+  % endfor
+  % endif
+
+
+  ## Respondent
+  * Respondent name: ${ other_parties.name }
+  * Respondent's birthdate:  ${ other_parties.birthdate }
+  * Is ${ other_parties.name.familiar() } a child? ${ "Yes" if other_parties.age_in_years() < 18 else "No" }
+  % if other_parties.age_in_years() < 18:
+  * adult_for_respondent: ${ adult_for_respondent }
+    * their birthdate: ${ adult_for_respondent.birthdate }
+    * their relationship to respondent: ${ other_parties.relationship_to_person_signing_for_them }
+  % endif
+
+  ## Type of Protective Order petition
+  
+  The ${"petitioner" if who_needs_the_order in ('myself', 'child') else "petitioners"} should get a **${ protective_order_petition_type }** petition. 
+
+  They are filing in ${ court_location } 
+
+continue button field: penultimate_screen
+---
+comment: |
+  Delete until we have review screens set up:
+    ${ action_button_html(url_action('review_protective_order_petition'), label=word('Edit answers'), color='info') }
+id: download protective_order_petition
+event: protective_order_petition_download
+question: |
+  All done
+subquestion: |
+  Thank you ${users}. Your form is ready to download and deliver.
+
+  Use the options on this page to view, download and send your form. Use the
+  "Edit answers" button to fix any mistakes.
+
+
+
+  ${ al_user_bundle.download_list_html() }
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+
+progress: 100
+---
+---
+# ALDocument objects specify the metadata for each template
+objects:
+  - protective_order_petition_post_interview_instructions: ALDocument.using(filename="protective_order_petition_next_steps.docx", enabled=al_next_steps_enabled, has_addendum=False)
+  - protective_order_petition_attachment: ALDocument.using(filename="protective_order_petition", enabled=True, has_addendum=True)
+  - dv_127_confidential_law_enforcement_information_sheet: ALDocument.using(filename="DV-127-Confidential-Law-Enforcement-Information-Sheet", enabled=True, has_addendum=True)
+  - dv_128_confidential_contact_information_sheet: ALDocument.using(filename="DV-128-Confidential-Contact-Information-Sheet", enabled=True, has_addendum=False)
+    
+---
+# Bundles group the ALDocuments into separate downloads, such as for court and for the user
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[protective_order_petition_post_interview_instructions, protective_order_petition_attachment,dv_127_confidential_law_enforcement_information_sheet,dv_128_confidential_contact_information_sheet], filename="protective_order_petition", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[protective_order_petition_attachment,dv_127_confidential_law_enforcement_information_sheet,dv_128_confidential_contact_information_sheet], filename="protective_order_petition", enabled=True)
+---
+template: protective_order_petition_post_interview_instructions.title
+content: |
+  Instructions
+---
+template: protective_order_petition_attachment.title
+content: |
+  Protective Order petition
+---
+template: al_user_bundle.title
+content: |
+  All forms to download for your records
+---
+template: al_court_bundle.title
+content: |
+  All forms to deliver to court
+---
+# Each attachment defines a key in an ALDocument. We use `i` as the placeholder here so the
+# same template is used for "preview" and "final" keys, and logic in the template checks
+# the value of `i` to show or hide the user's signature
+attachment:
+  name: Post-interview-Instructions
+  filename: protective_order_petition_next_steps
+  docx template file: protective_order_petition_next_steps.docx
+  variable name: protective_order_petition_post_interview_instructions[i]
+  skip undefined: True
+  tagged pdf: True
+---
+attachment:
+  name: DV-127 Confidential Law Enforcement Information Sheet
+  filename: DV-127-Confidential-Law-Enforcement-Information-Sheet
+  pdf template file: dv-127_downloaded_autodetected-saved_to-suffolk-default-playground.pdf
+  variable name: dv_127_confidential_law_enforcement_information_sheet[i]
+  skip undefined: True
+  tagged pdf: True
+---
+attachment:
+  name: DV-128 Confidential Contact Information Sheet
+  filename: DV-128-Confidential-Contact-Information-Sheet
+  pdf template file: dv_127_confidential_law_enforcement_information_sheet.pdf
+  variable name: dv-128_confidential_contact_information_sheet[i]
+  skip undefined: True
+  tagged pdf: True
+---
+attachment:
+  name: protective order petition
+  filename: protective_order_petition
+  variable name: protective_order_petition_attachment[i]
+  skip undefined: True
+  pdf template file: dv_100m_petition_for_domestic_violence_protective_order.pdf
+  fields:
+      - "trial_court_county": ${ court_location }
+      - "petitioners_name": ${ users[0] }
+      - "docket_number__1": ""
+      - "petitioners_birthdate": ${ users[0].birthdate }
+      - "petitioners_is_child_yes": ${ users[0].age_in_years() < 18 }
+      - "advocate_name__1": ${ advocate.name }
+      - "advocate_birthdate__1":  ${ advocate.birthdate }
+      - "petitioners1_advocate_relationship": ${ users[0].relationship_to_advocate }
+      - "petitioners2_name": ${ users[1] }
+      - "docket_number__2": ""
+      - "petitioners2_birthdate": ${ users[1].birthdate }
+      - "petitioners2_is_child_yes": ${ users[0].age_in_years() < 18 }
+      - "advocate_name__2": ${ advocate.name }
+      - "advocate_birthdate__2": ${ advocate.birthdate }
+      - "petitioners2_advocate_relationship": ${ users[1].relationship_to_advocate }
+      - "petitioners3_name": ${ users[2] }
+      - "docket_number__3": ""
+      - "petitioners3_birthdate": ${ users[2].birthdate }
+      - "petitioners3_is_child_yes": ${ users[0].age_in_years() < 18 }
+      - "advocate_name__3": ${ advocate.name }
+      - "advocate_birthdate__3": ${ advocate.birthdate }
+      - "petitioners3_advocate_relationship": ${ users[2].relationship_to_advocate }
+      - "petitioners4_name": ${ users[3] }
+      - "docket_number__4": ""
+      - "petitioners4_birthdate": ${ users[3].birthdate }
+      - "petitioners4_is_child_yes": ${ users[3].age_in_years() < 18 }
+      - "advocate_name__4": ${ advocate.name }
+      - "advocate_birthdate__4": ${ advocate.birthdate }
+      - "petitioners4_advocate_relationship": ${ users[3].relationship_to_advocate }
+      - "petitioners5_name": ${ users[4] }
+      - "docket_number__5": ""
+      - "petitioners5_birthdate": ${ users[4].birthdate }
+      - "petitioners5_is_child_yes": ${ users[4].age_in_years() < 18 }
+      - "advocate_name__5": ${ advocate.name }
+      - "advocate_birthdate__5": ${ advocate.birthdate }
+      - "petitioners5_advocate_relationship": ${ users[4].relationship_to_advocate }
+      - "order_no_abuse_yes": Yes
+      - "respondents_name": ${ other_parties }
+      - "respondents_birthdate": ${ other_parties.birthdate }
+      - "respondents_is_child_yes": ${ other_parties.age_in_years() < 18 }
+      - "respondents_parent_or_guardian_name__1": ""
+      - "respondents_parent_or_guardian_name__2": ${ adult_for_respondent }
+      - "respondents_name_and_aliases": ${""}
+      - "respondents_address_block": |
+          % if other_parties.age_in_years < 18:
+          ${ adult_for_respondent.address.on_one_line() }
+          % else:
+          ${ other_parties.address.on_one_line() }
+          % endif
+      - "respondents_phone_number": |
+          % if other_parties.age_in_years < 18:
+          phone_number_formatted(adult_for_respondent.phone_number)
+          % else:
+          phone_number_formatted(other_parties.phone_number)
+          % endif
+      - "respondents_email": |
+          % if other_parties.age_in_years < 18:
+          adult_for_respondent.email
+          % else:
+          other_parties.email
+          % endif
+      - "respondents_employer": |
+          % if other_parties.age_in_years < 18:
+          adult_for_respondent.employer
+          % else:
+          other_parties.employer
+          % endif
+      - "petitioners_using_dv128": ${ petitioners_using_dv128 }
+      - "petitioners_safe_mailing_address_block": |
+          % if petitioners_using_dv128:
+          ${""}
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          advocate.address.on_one_line()
+          % else:
+          users[0].address.on_one_line() 
+          % endif
+          % endif
+      - "petitioners_cell_phone_number": |
+          % if petitioners_using_dv128:
+          ${""}
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          phone_number_formatted(advocate.mobile_number)
+          % else:
+          phone_number_formatted(users[0].mobile_number) 
+          % endif
+          % endif
+      - "petitioners_other_phone": |
+          % if petitioners_using_dv128:
+          ${""}
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          phone_number_formatted(advocate.other_number)
+          % else:
+          phone_number_formatted(users[0].other_number)
+          % endif
+          % endif
+      - "petitioners_email": |
+          % if petitioners_using_dv128:
+          ${""}
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          advocate.email 
+          % else:
+          users[0].email 
+          % endif
+          % endif
+---
+attachment:
+  name: protective order petition
+  filename: protective_order_petition
+  variable name: protective_order_petition_attachment[i]
+  skip undefined: True
+  pdf template file: dv_100_petition_for_domestic_violence_protective_order.pdf
+  fields:
+      - "trial_court_county": ${ court_location }
+      - "petitioners_name": ${ users[0] }
+      - "docket_number__1": ""
+      - "petitioners_birthdate": ${ users[0].birthdate }
+      - "petitioners_is_child_yes": ${ users[0].age_in_years() < 18 }
+      - "advocate_name__1": ${ advocate.name }
+      - "advocate_birthdate__1":  ${ advocate.birthdate }
+      - "petitioners1_advocate_relationship": ${ users[0].relationship_to_advocate }
+      - "order_no_abuse_yes": Yes
+      - "respondents_name": ${ other_parties }
+      - "respondents_birthdate": ${ other_parties.birthdate }
+      - "respondents_is_child_yes": ${ other_parties.age_in_years() < 18 }
+      - "respondents_parent_or_guardian_name__1": ""
+      - "respondents_parent_or_guardian_name__2": ${ adult_for_respondent }
+      - "respondents_name_and_aliases": ${""}
+      - "respondents_address_block": |
+          % if other_parties.age_in_years < 18:
+          ${ adult_for_respondent.address.on_one_line() }
+          % else:
+          ${ other_parties.address.on_one_line() }
+          % endif
+      - "respondents_phone_number": |
+          % if other_parties.age_in_years < 18:
+          phone_number_formatted(adult_for_respondent.phone_number)
+          % else:
+          phone_number_formatted(other_parties.phone_number)
+          % endif
+      - "respondents_email": |
+          % if other_parties.age_in_years < 18:
+          adult_for_respondent.email
+          % else:
+          other_parties.email
+          % endif
+      - "respondents_employer": |
+          % if other_parties.age_in_years < 18:
+          adult_for_respondent.employer
+          % else:
+          other_parties.employer
+          % endif
+      - "petitioners_using_dv128": ${ petitioners_using_dv128 }
+      - "petitioners_safe_mailing_address_block": |
+          % if petitioners_using_dv128:
+          ${""}
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          advocate.address.on_one_line()
+          % else:
+          users[0].address.on_one_line() 
+          % endif
+          % endif
+      - "petitioners_cell_phone_number": |
+          % if petitioners_using_dv128:
+          ${""}
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          phone_number_formatted(advocate.mobile_number)
+          % else:
+          phone_number_formatted(users[0].mobile_number) 
+          % endif
+          % endif
+      - "petitioners_other_phone": |
+          % if petitioners_using_dv128:
+          ${""}
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          phone_number_formatted(advocate.other_number)
+          % else:
+          phone_number_formatted(users[0].other_number)
+          % endif
+          % endif
+      - "petitioners_email": |
+          % if petitioners_using_dv128:
+          ${""}
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          advocate.email 
+          % else:
+          users[0].email 
+          % endif
+          % endif  
+---

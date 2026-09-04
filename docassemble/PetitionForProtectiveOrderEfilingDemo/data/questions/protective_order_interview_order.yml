@@ -1,0 +1,52 @@
+comment: |
+  2026-09-04
+code: |
+  if who_needs_the_order == 'myself':
+    users.target_number = 1
+  elif who_needs_the_order == 'child':
+    users.target_number = 1
+  elif who_needs_the_order == 'self and child':
+    users.target_number = 2
+  elif who_needs_the_order in ('children', 'self and children'):
+    users.target_number
+  for i in range(users.number()):
+    users[i].name.first
+  if who_needs_the_order in ('child', 'children'):
+    advocate.name.first
+    if advocate.is_dv_advocate:
+      for i in range(users.number()):
+        users[i].relationship_to_advocate = 'Petitioners advocate'
+    else:
+      for i in range(users.number()):
+        users[i].relationship_to_advocate
+  
+  other_parties.name.first
+  if other_parties.age_in_years() < 18:
+    adult_for_respondent.name.first
+
+  if other_parties.age_in_years() < 18:
+     adult_for_respondent.address.address
+  else:
+     other_parties.address.address
+  
+  if who_needs_the_order in ('myself', 'child'):
+    protective_order_petition_type
+  else:
+    protective_order_petition_type = 'dv-100m'
+
+  court_location
+  petitioners_using_dv128
+  
+  if who_needs_the_order in ('child', 'children'):
+    advocate.address.address
+  else:
+    users[0].address.address
+
+  if other_parties.age_in_years() < 18:
+     adult_for_respondent.address.address
+  else:
+     other_parties.address.address
+        
+  penultimate_screen
+  interview_order_finished = True
+---
