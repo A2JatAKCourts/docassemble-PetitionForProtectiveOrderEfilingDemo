@@ -21,13 +21,9 @@ code: |
         users[i].relationship_to_advocate
   
   other_parties.name.first
+  knows_respondents_birthdate
   if other_parties.age_in_years() < 18:
-    adult_for_respondent.name.first
-
-  if other_parties.age_in_years() < 18:
-     adult_for_respondent.address.address
-  else:
-     other_parties.address.address
+    knows_adult_for_respondent
   
   if who_needs_the_order in ('myself', 'child'):
     protective_order_petition_type
@@ -43,9 +39,12 @@ code: |
     users[0].address.address
 
   if other_parties.age_in_years() < 18:
-     adult_for_respondent.address.address
+    if knows_adult_for_respondent:
+      adult_for_respondent.address.address
+    else:
+      other_parties.address.address
   else:
-     other_parties.address.address
+    other_parties.address.address
         
   penultimate_screen
   interview_order_finished = True

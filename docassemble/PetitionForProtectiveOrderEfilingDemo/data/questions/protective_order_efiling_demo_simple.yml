@@ -1,5 +1,5 @@
 comment: |
-  2026-09-04
+  2026-09-08
   This is a simple version of the protective order efiling demo.
   Building the gathering portion for adults, and children.
   Testing PDFs, DV-100, DV-100m, and CIV-750 for sexual assault, CIV-752 for stalking.
@@ -105,12 +105,16 @@ sets:
 question: |
   % if i == 0 and who_needs_the_order in ('self', 'self and child', 'self and children'):
   What is your name and birthdate?
-  % elif (i == 0 and who_needs_the_order == 'child') or (i == 0 and who_needs_the_order == 'self and child'):
+  % elif (i == 0 and who_needs_the_order == 'child') or (i == 1 and who_needs_the_order == 'self and child'):
   What is your child's name and birthdate?
-  % elif who_needs_the_order == 'children':
-  What is the name and birthdate of the ${ ordinal(i) } child who needs the protective order?
+  % elif who_needs_the_order in ('self and children','children'):
+  What is the name and birthdate of the 
+  % if who_needs_the_order == 'children':
+  ${ ordinal(i) } 
   % elif who_needs_the_order == 'self and children':
-  What is the name  and birthdate of the ${ ordinal(i - 1) } child who needs the protective order?
+  ${ ordinal(i - 1) }
+  % endif
+  child who needs the protective order?
   % endif
 fields:
   - code: |
@@ -164,14 +168,41 @@ sets:
   - other_parties.name.middle
   - other_parties.name.last
   - other_parties.name.suffix
-  - other_parties.birthdate
 question: |
-  What is the name and birthdate of the person ${ users } need protection from?
+  What is the name of the person 
+  % if who_needs_the_order == 'myself':
+  you
+  % elif who_needs_the_order == 'child':
+  ${ users[1].name.familiar() } needs
+  % elif who_needs_the_order == 'children':
+  ${ comma_and_list([u.name.familiar() for u in users]) } need
+  % elif who_needs_the_order in ('self and child', 'self and children'):
+  you and ${ comma_and_list([u.name.familiar() for u in users[1:]]) } need
+  % endif
+  protection from?
 fields:
   - code: |
       other_parties.name_fields()
-  - birthdate: other_parties.birthdate
-    datatype: date
+---
+id: respondent birthdate
+question: |
+  How old is ${ other_parties.name.familiar() }?  
+fields:
+  - Do you know ${ other_parties.name.familiar() }'s birthdate?: knows_respondents_birthdate
+    datatype: yesnoradio
+    label above field: True
+  - What is ${ other_parties.name.familiar() }'s birthdate?: other_parties.birthdate
+    datatype: BirthDate
+    show if:
+      variable: knows_respondents_birthdate
+      is: True
+    label above field: True
+  - How old do you think ${ other_parties.name.familiar() } is, in years?: other_parties.age
+    datatype: integer
+    show if:
+      variable: knows_respondents_birthdate
+      is: False
+    label above field: True
 ---
 id: adult for under-age respondent
 sets:
@@ -179,15 +210,20 @@ sets:
   - adult_for_respondent.name.middle
   - adult_for_respondent.name.last
   - adult_for_respondent.name.suffix
-  - adult_for_respondent.birthdate
 question: |
-  What is the name and birthdate of the person signing for the respondent?
+  Who is responsible for ${ other_parties.name.familiar() }?
 fields:
+  - Do you know ${ other_parties.name.familiar() }'s parent's or guardian's name?: knows_adult_for_respondent
+    datatype: yesnoradio
+    label above field: True
   - code: |
-      adult_for_respondent.name_fields()
-  - birthdate: adult_for_respondent.birthdate
-    datatype: date
-  - How do they know ${ other_parties.name.familiar() }?: other_parties.relationship_to_person_signing_for_them
+      adult_for_respondent.name_fields(
+        show_if={
+          "variable": "knows_adult_for_respondent",
+          "is": True,
+        }
+      )
+  
 ---
 id: Respondent's contact info
 sets:
@@ -414,9 +450,9 @@ progress: 100
 # ALDocument objects specify the metadata for each template
 objects:
   - protective_order_petition_post_interview_instructions: ALDocument.using(filename="protective_order_petition_next_steps.docx", enabled=al_next_steps_enabled, has_addendum=False)
-  - protective_order_petition_attachment: ALDocument.using(filename="protective_order_petition", enabled=True, has_addendum=True)
+  - protective_order_petition_attachment: ALDocument.using(filename="protective_order_petition", has_addendum=True)
   - dv_127_confidential_law_enforcement_information_sheet: ALDocument.using(filename="DV-127-Confidential-Law-Enforcement-Information-Sheet", enabled=True, has_addendum=True)
-  - dv_128_confidential_contact_information_sheet: ALDocument.using(filename="DV-128-Confidential-Contact-Information-Sheet", enabled=True, has_addendum=False)
+  - dv_128_confidential_contact_information_sheet: ALDocument.using(filename="DV-128-Confidential-Contact-Information-Sheet", has_addendum=False)
     
 ---
 # Bundles group the ALDocuments into separate downloads, such as for court and for the user
@@ -458,6 +494,155 @@ attachment:
   variable name: dv_127_confidential_law_enforcement_information_sheet[i]
   skip undefined: True
   tagged pdf: True
+  fields:
+      - "petitioners_name": ${ users[0] }
+      - "petitioners_birthdate": ${ users[0].birthdate }
+      - "petitioners_is_child": ${ users[0].age_in_years() < 18 }
+      - "petitioners_address": |
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.address.on_one_line() }
+          % else:
+          ${ users[0].address.on_one_line() }
+          % endif
+      - "petitioners_stay_away_address_yes": ${ users[0].stay_away_from_address }
+      - "petitioners1_stay_away_address_no": ${ not users[0].stay_away_from_address }
+      - "notify_petitioner_when_defendant_is_served_yes": ${ users[0].notify_when_served }
+      - "notify_petitioner_when_defendant_is_served_no": ${ not users[0].notify_when_served }
+      - "petitioners_mobile_number": |
+          % if who_needs_the_order in ('child', 'children'):
+          ${ phone_number_formatted(advocate.mobile_number) }
+          % else:
+          ${ phone_number_formatted(users[0].mobile_number) }
+          % endif
+      - "petitioners_other_number": |
+          % if who_needs_the_order in ('child', 'children'):
+          ${ phone_number_formatted(advocate.other_number) }
+          % else:
+          ${ phone_number_formatted(users[0].other_number) }
+          % endif
+      - "petitioners_email": |
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.email }
+          % else:
+          ${ users[0].email }
+          % endif
+      - "petitioners_cell_messages_safe_yes": ${ users[0].cell_messages_safe }
+      - "petitioners_cell_messages_safe_no": ${ not users[0].cell_messages_safe }
+      - "petitioners_other_phone_messages_safe_yes": ${ users[0].other_phone_messages_safe }
+      - "petitioners_other_phone_messages_safe_no": ${ not users[0].other_phone_messages_safe }
+      - "petitioners_email_safe_yes": ${ users[0].email_safe }
+      - "petitioners_email_safe_no": ${ not users[0].email_safe }
+      - "petitioners_unavailable_times": ${ users[0].unavailable_times }
+      - "respondents_name": ${ other_parties }
+      - "respondents_aliases": ${ other_parties.aliases }
+      - "respondents_is_child": ${ other_parties.age_in_years() < 18 }
+      - "respondents_address": |
+          % if other_parties.age_in_years() < 18:
+          ${ adult_for_respondent.address.on_one_line() }
+          % else:
+          ${ other_parties.address.on_one_line() }
+          % endif
+      - "respondents_ssn_last_four": ${ other_parties.ssn_last_four }
+      - "stay_away_from_respondents_residence_yes": ${ other_parties.stay_away_from_residence }
+      - "stay_away_from_respondents_residence_no": ${ not other_parties.stay_away_from_residence }
+      - "respondents_other_addresses": ${ other_parties.other_addresses }
+      - "respondents_mobile_number": |
+          % if other_parties.age_in_years() < 18:
+          ${ phone_number_formatted(adult_for_respondent.mobile_number) }
+          % else:
+          ${ phone_number_formatted(other_parties.phone_number) }
+          % endif
+      - "respondents_other_number": |
+          % if other_parties.age_in_years() < 18:
+          ${ phone_number_formatted(adult_for_respondent.other_number) }
+          % else:
+          ${ phone_number_formatted(other_parties.other_number) }
+          % endif
+      - "respondents_email": |
+          % if other_parties.age_in_years() < 18:
+          ${ adult_for_respondent.email }
+          % else:
+          ${ other_parties.email }
+          % endif
+      - "respondents_current_location_address": ${ other_parties.current_location_address }
+      - "respondents_sex": ${ other_parties.gender }
+      - "respondents_race": ${ other_parties.race }
+      - "respondents_birthdate": ${ other_parties.birthdate }
+      - "respondents_height": ${ other_parties.height }
+      - "respondents_weight": ${ other_parties.weight }
+      - "respondents_hair_color": ${ other_parties.hair_color }
+      - "respondents_eye_color": ${ other_parties.eye_color }
+      - "respondents_state_id_drivers_license": ${ other_parties.drivers_license }
+      - "respondents_id_state": ${ other_parties.drivers_license_state }
+      - "respondents_friends_contacts": ${ other_parties.friends_contacts }
+      - "respondents_home_hazards": ${ other_parties.home_hazards }
+      - "respondents_other_physical_identifiers": ${ other_parties.other_physical_identifiers }
+      - "respondents_house_log": ${ other_parties.house_type == 'log' }
+      - "respondents_house_frame": ${ other_parties.house_type == 'frame' }
+      - "respondents_house_apartment": ${ other_parties.house_type == 'apartment' }
+      - "respondents_house_single_family": ${ other_parties.house_type == 'single_family' }
+      - "respondents_house_duplex": ${ other_parties.house_type == 'duplex' }
+      - "respondents_house_main_color": ${ other_parties.house_main_color }
+      - "respondents_house_trim_color": ${ other_parties.house_trim_color }
+      - "respondents_house_1_story": ${ other_parties.house_stories == '1' }
+      - "respondents_house_2_story": ${ other_parties.house_stories == '2' }
+      - "respondents_house_3_plus_story": ${ other_parties.house_stories == '3_plus' }
+      - "respondents_house_main_color_checked": ${ other_parties.house_main_color }
+      - "respondents_house_trim_color_checked": ${ other_parties.house_trim_color }
+      - "respondents_garage_separate": ${ other_parties.garage_type == 'separate' }
+      - "respondents_garage_attached": ${ other_parties.garage_type == 'attached' }
+      - "respondents_garage_none": ${ other_parties.garage_type == 'none' }
+      - "respondents_access_need_4x4_yes": ${ other_parties.access_need_4x4 }
+      - "respondents_access_need_4x4_no": ${ not other_parties.access_need_4x4 }
+      - "respondents_employer_name": |
+          % if other_parties.age_in_years() < 18:
+          ${ adult_for_respondent.employer }
+          % else:
+          ${ other_parties.employer }
+          % endif
+      - "respondents_vehicle_make": ${ other_parties.vehicle_make }
+      - "respondents_vehicle_model": ${ other_parties.vehicle_model }
+      - "respondents_vehicle_plate_state": ${ other_parties.vehicle_plate_state }
+      - "respondents_vehicle_plate": ${ other_parties.vehicle_plate }
+      - "respondents_vehicle_year": ${ other_parties.vehicle_year }
+      - "respondents_employer_address": |
+          % if other_parties.age_in_years() < 18:
+          ${ adult_for_respondent.employer_address }
+          % else:
+          ${ other_parties.employer_address }
+          % endif
+      - "respondents_vehicle_va": ${ 'van' in other_parties.vehicle_types }
+      - "respondents_vehicle_pickup": ${ 'pickup' in other_parties.vehicle_types }
+      - "respondents_vehicle_canopy": ${ 'canopy' in other_parties.vehicle_types }
+      - "respondents_vehicle_camper": ${ 'camper' in other_parties.vehicle_types }
+      - "respondents_work_number": |
+          % if other_parties.age_in_years() < 18:
+          ${ phone_number_formatted(adult_for_respondent.work_number) }
+          % else:
+          ${ phone_number_formatted(other_parties.work_number) }
+          % endif
+      - "respondents_vehicle_toolbox": ${ 'toolbox' in other_parties.vehicle_types }
+      - "respondents_vehicle_car": ${ 'car' in other_parties.vehicle_types }
+      - "respondents_vehicle_2_door": ${ '2_door' in other_parties.vehicle_types }
+      - "respondents_vehicle_4_door": ${ '4_door' in other_parties.vehicle_types }
+      - "respondents_work_hours": ${ other_parties.work_hours }
+      - "respondents_vehicle_other": ${ other_parties.vehicle_other }
+      - "respondents_vehicle_suv": ${ 'suv' in other_parties.vehicle_types }
+      - "respondents_vehicle_other_checked": ${ other_parties.vehicle_other }
+      - "respondents_work": ${ other_parties.occupation }
+      - "respondents_work_supervisor": ${ other_parties.work_supervisor }
+      - "respondents_other_vehicles": ${ other_parties.other_vehicles }
+      - "respondents_previous_police_contact_explanation1": ${ other_parties.previous_police_contact_explanation }
+      - "respondents_previous_police_contact_no": ${ not other_parties.previous_police_contact }
+      - "respondents_previous_police_contact_yes": ${ other_parties.previous_police_contact }
+      - "respondents_previous_police_contact_explanation2": ${""}
+      - "respondents_threats_description1": ${ other_parties.threats_description }
+      - "respondents_threats_description2": ${""}
+      - "respondents_weapons_accessible1": ${ other_parties.weapons_accessible }
+      - "respondents_weapons_accessible2": ${""}
+      - "respondents_mental_health_substance_history1": ${ other_parties.mental_health_substance_history }
+      - "respondents_mental_health_substance_history2": ${""}
+      - "respondents_legal_action_pending_description": ${ other_parties.legal_action_pending_description }
 ---
 attachment:
   name: DV-128 Confidential Contact Information Sheet
