@@ -40,9 +40,6 @@ mandatory: True
 code: |
   who_needs_the_order
 
-
-
-
   interview_order_finished
   protective_order_petition_download
 ---  
@@ -262,6 +259,23 @@ fields:
   - work phone: adult_for_respondent.work_number
   - other phone: adult_for_respondent.other_number
 ---
+question: |
+  Does ${ other_parties } go by any other names?
+fields:
+  - Do they have any nicknames or aliases?: other_parties_aliases
+    datatype: yesnoradio
+  - What other names do people know them as?: other_parties.alias_text_list
+    datatype: area
+    show if: other_parties_aliases
+    
+---
+code: |
+  # Check if the text field has content and isn't just spaces
+  if defined('other_parties.alias_text_list') and other_parties.alias_text_list.strip():
+    users_with_aliases = f"{users[0]} (AKA: {users[0].alias_text_list.strip()})"
+  else:
+    users_with_aliases = str(users[0])
+---
 id: Keeping filer's address confidential
 question: |
   Do you need the court to keep your contact information confidential?
@@ -270,6 +284,33 @@ subquestion: |
 fields:
   - "Do you need to use DV-128?": petitioners_using_dv128
     datatype: yesnoradio
+---
+code: |
+  dv_128_confidential_contact_information_sheet.enabled = petitioners_using_dv128
+---
+id: Petitioner's aliases
+question: |
+  % if who_needs_the_order in ('myself', 'self and child', 'self and children'):
+  Do you
+  % elif who_needs_the_order == "child":
+  Does ${ users[0].familiar() }
+  % else:
+  Do ${ users[0].familiar() }
+  % endif
+  go by any *other* names?
+fields:
+  - "Do ${ 'you' if who_needs_the_order in ('myself', 'self and child', 'self and children') else 'they' } have any nicknames or aliases?": users_aliases
+    datatype: yesnoradio
+  - "What other names do people know ${ 'you' if who_needs_the_order in ('myself', 'self and child', 'self and children') else 'them' } as?": users[0].alias_text_list
+    datatype: area
+    show if: users_aliases
+---
+code: |
+  # Check if the text field has content and isn't just spaces
+  if defined('users[0].alias_text_list') and users[0].alias_text_list.strip():
+    users_with_aliases = f"{users[0]} (AKA: {users[0].alias_text_list.strip()})"
+  else:
+    users_with_aliases = str(users[0])
 ---
 id: "Petitioner's contact info"
 question: How can the court get in touch with you?
@@ -332,6 +373,19 @@ fields:
       - Petition for Domestic Violence Protective Order: DV-100
       - Petition for Sexual Assault Protective Order: CIV-750
       - Petition for Stalking Protective Order: CIV-752
+---
+code: |
+  if who_needs_the_order in ('myself', 'child'):
+    domestic_violence_protective_order_petition.enabled = protective_order_petition_type == 'DV-100'
+    # sexual_assault_protective_order_petition.enabled = protective_order_petition_type == 'CIV-750'
+    # stalking_protective_order_petition.enabled = protective_order_petition_type == 'CIV-752'
+    domestic_violence_protective_order_petition_multi.enabled = False
+  else:
+    domestic_violence_protective_order_petition_multi.enabled = True
+    domestic_violence_protective_order_petition.enabled = False
+    # sexual_assault_protective_order_petition.enabled = False
+    # stalking_protective_order_petition.enabled = False
+
 ---
 id: court location
 question: |
@@ -409,7 +463,7 @@ subquestion: |
 
   ## Respondent
   * Respondent name: ${ other_parties.name }
-  * Respondent's birthdate:  ${ other_parties.birthdate }
+  * Respondent's birthdate:  ${ showifdef("other_parties.birthdate") }
   * Is ${ other_parties.name.familiar() } a child? ${ "Yes" if other_parties.age_in_years() < 18 else "No" }
   % if other_parties.age_in_years() < 18:
   * adult_for_respondent: ${ adult_for_respondent }
@@ -449,16 +503,33 @@ progress: 100
 ---
 # ALDocument objects specify the metadata for each template
 objects:
-  - protective_order_petition_post_interview_instructions: ALDocument.using(filename="protective_order_petition_next_steps.docx", enabled=al_next_steps_enabled, has_addendum=False)
-  - protective_order_petition_attachment: ALDocument.using(filename="protective_order_petition", has_addendum=True)
-  - dv_127_confidential_law_enforcement_information_sheet: ALDocument.using(filename="DV-127-Confidential-Law-Enforcement-Information-Sheet", enabled=True, has_addendum=True)
-  - dv_128_confidential_contact_information_sheet: ALDocument.using(filename="DV-128-Confidential-Contact-Information-Sheet", has_addendum=False)
-    
+  - protective_order_petition_post_interview_instructions: ALDocument.using(title="Instructions Next Steps - Do not file", filename="protective_order_petition_next_steps", enabled=True)
+  
+  
+  - domestic_violence_protective_order_petition: ALDocument.using(title="Domestic Violence Protective Order Petition", filename="domestic_violence_protective_order_petition", has_addendum=False)
+  - sexual_assault_petition: ALDocument.using(title="Sexual Assault Protective Order Petition", filename="sexual_assault_protective_order_petition", has_addendum=True)
+  - stalking_petition: ALDocument.using(title="Stalking Protective Order Petition", filename="stalking_protective_order_petition", has_addendum=True)
+  - domestic_violence_protective_order_petition_multi: ALDocument.using(title="Domestic Violence Protective Order Petition for Multiple Petitioners", filename="domestic_violence_protective_order_petition_multi", has_addendum=True)
+  
+  
+  - dv_127_confidential_law_enforcement_information_sheet: ALDocument.using(title="DV-127 Confidential Law Enforcement Information Sheet", filename="dv_127_confidential_law_enforcement_information_sheet", enabled=True, has_addendum=False)
+  
+
+  - dv_128_confidential_contact_information_sheet: ALDocument.using(title="DV-128-Confidential-Contact-Information-Sheet", filename="dv_128_confidential_contact_information_sheet", has_addendum=False)
+  
+
+  - tf_835_self_certification_no_notary_available: ALDocument.using(title="TF 835 Self Certification No Notary Available", filename="tf_835_self_certification_no_notary_available", enabled=True, has_addendum=False)
 ---
 # Bundles group the ALDocuments into separate downloads, such as for court and for the user
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[protective_order_petition_post_interview_instructions, protective_order_petition_attachment,dv_127_confidential_law_enforcement_information_sheet,dv_128_confidential_contact_information_sheet], filename="protective_order_petition", enabled=True)
-  - al_court_bundle: ALDocumentBundle.using(elements=[protective_order_petition_attachment,dv_127_confidential_law_enforcement_information_sheet,dv_128_confidential_contact_information_sheet], filename="protective_order_petition", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[protective_order_petition_post_interview_instructions, domestic_violence_protective_order_petition, domestic_violence_protective_order_petition_multi, dv_127_confidential_law_enforcement_information_sheet,dv_128_confidential_contact_information_sheet, tf_835_self_certification_no_notary_available], title="Your Petition for a Protective Order", filename="protective_order_petition_bundle", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[domestic_violence_protective_order_petition, domestic_violence_protective_order_petition_multi,dv_127_confidential_law_enforcement_information_sheet,dv_128_confidential_contact_information_sheet, tf_835_self_certification_no_notary_available], title="Petition for a Protective Order", filename="protective_order_petition_bundle", enabled=True)
+---
+code: |
+
+
+  dv_127_confidential_law_enforcement_information_sheet.enabled = True
+  protective_order_petition_post_interview_instructions.enabled = True
 ---
 template: protective_order_petition_post_interview_instructions.title
 content: |
@@ -482,15 +553,15 @@ content: |
 attachment:
   name: Post-interview-Instructions
   filename: protective_order_petition_next_steps
-  docx template file: protective_order_petition_next_steps.docx
   variable name: protective_order_petition_post_interview_instructions[i]
+  docx template file: protective_order_petition_next_steps.docx
   skip undefined: True
   tagged pdf: True
 ---
 attachment:
   name: DV-127 Confidential Law Enforcement Information Sheet
   filename: DV-127-Confidential-Law-Enforcement-Information-Sheet
-  pdf template file: dv-127_downloaded_autodetected-saved_to-suffolk-default-playground.pdf
+  pdf template file: dv_127_confidential_law_enforcement_information_sheet.pdf
   variable name: dv_127_confidential_law_enforcement_information_sheet[i]
   skip undefined: True
   tagged pdf: True
@@ -534,7 +605,7 @@ attachment:
       - "petitioners_email_safe_no": ${ not users[0].email_safe }
       - "petitioners_unavailable_times": ${ users[0].unavailable_times }
       - "respondents_name": ${ other_parties }
-      - "respondents_aliases": ${ other_parties.aliases }
+      - "respondents_aliases": ${ other_parties.alias_text_list }
       - "respondents_is_child": ${ other_parties.age_in_years() < 18 }
       - "respondents_address": |
           % if other_parties.age_in_years() < 18:
@@ -645,17 +716,72 @@ attachment:
       - "respondents_legal_action_pending_description": ${ other_parties.legal_action_pending_description }
 ---
 attachment:
-  name: DV-128 Confidential Contact Information Sheet
-  filename: DV-128-Confidential-Contact-Information-Sheet
-  pdf template file: dv_127_confidential_law_enforcement_information_sheet.pdf
-  variable name: dv-128_confidential_contact_information_sheet[i]
+  name: TF 835 Self Certification No Notary Available
+  filename: tf_835_self_certification_no_notary_available
+  variable name: tf_835_self_certification_no_notary_available[i]
+  pdf template file: tf_835_self_certification_no_notary_available.pdf
   skip undefined: True
   tagged pdf: True
+  fields: 
+      - "trial_court_county": court_location
+      - "cina_case": No
+      - "in_the_matter_of": No
+      - "family_protective_orders_guardianship_case": Yes
+      - "plaintiffs_petitioners": ${ petitioners.comma_and_list() }
+      - "defendant_respondents": ${other_parties}
+      - "other_named_case": No
+      - "other_case": No
+      - "docket_number": ${docket_number}
+      - "users": ${users[0]}
+      - "documents_filed": ${documents_filed}
+      - "no_available_notary": No
+      - "illness_disability_transportation_hours_expense": No
+      - "truefiling": Yes
+      - "other_no_notary_reason_checked": No
+      - "other_no_notary_reason": something
+      - "signature_date": ${ signature_date }
+      - "Signature_0": |
+          ${ users[0].signature }
+      - "signature_location": users[0].address.mental_health_substance_history
+      - "users_safe_mailing_address": |
+          ${ users[0].address.on_one_line() }
+      - "users_safe_email": ${ users[0].email }
+      - "users_safe_phone": ${ users[0].phone_number }
 ---
 attachment:
-  name: protective order petition
-  filename: protective_order_petition
-  variable name: protective_order_petition_attachment[i]
+  name: DV-128 Confidential Contact Information Sheet
+  filename: DV-128-Confidential-Contact-Information-Sheet
+  variable name: dv_128_confidential_contact_information_sheet[i]
+  pdf template file: dv_128_confidential_contact_information_sheet.pdf
+  skip undefined: True
+  tagged pdf: True
+  fields: 
+      - "docket_number": ${ docket_number }
+      - "petitioners_name": ${ users[0] }
+      - "respondents_name": ${ other_parties }
+      - "users_is_petitioner": Yes
+      - "users_is_respondent": No
+      - "users_is_other": No
+      - "users_other_role": ${ "" }
+      - "users_name_and_aliases": ${users_with_aliases }
+      - "users_phone_numbers": ${ users[0].phone_numbers }
+      - "users_email": ${ users[0].email }
+      - "users_address_block": |
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.address.on_one_line() }
+          % else:
+          ${ users[0].address.on_one_line() }
+          % endif
+      - "users_signature_date": some date
+      - "users_name": ${ users[0] }
+      - "users_signature": |
+          ${ user.signature }
+---
+---
+attachment:
+  name: Domestic Violence Protective Order Petition for Multiple Petitioners 
+  filename: protective_order_petition_multi
+  variable name: domestic_violence_protective_order_petition_multi[i]
   skip undefined: True
   pdf template file: dv_100m_petition_for_domestic_violence_protective_order.pdf
   fields:
@@ -770,8 +896,8 @@ attachment:
 ---
 attachment:
   name: protective order petition
-  filename: protective_order_petition
-  variable name: protective_order_petition_attachment[i]
+  filename: domestic_violence_protective_order_petition
+  variable name: domestic_violence_protective_order_petition[i]
   skip undefined: True
   pdf template file: dv_100_petition_for_domestic_violence_protective_order.pdf
   fields:
