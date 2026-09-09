@@ -475,6 +475,89 @@ dropdown:
   - Wrangell
   - Yakutat
 ---
+code: |
+  if court_location == 'Angoon':
+    court_code = '1AG'
+  elif court_location == 'Haines':
+      court_code = '1HA'
+  elif court_location == 'Hoonah':
+      court_code = '1HN'
+  elif court_location == 'Juneau':
+      court_code = '1JU'
+  elif court_location == 'Ketchikan':
+      court_code = '1KE'
+  elif court_location == 'Petersburg':
+      court_code = '1PE'
+  elif court_location == 'Prince of Wales':
+      court_code = '1PW'
+  elif court_location == 'Sitka':
+      court_code = '1SI'
+  elif court_location == 'Skagway':
+      court_code = '1SK'
+  elif court_location == 'Wrangell':
+      court_code = '1WR'
+  elif court_location == 'Yakutat':
+      court_code = '1YA'
+  elif court_location == 'Utqiagvik':
+      court_code = '2BA'
+  elif court_location == 'Kotzebue':
+      court_code = '2KB'
+  elif court_location == 'Nome':
+      court_code = '2NO'
+  elif court_location == 'Unalakleet':
+      court_code = '2UT'
+  elif court_location == 'Anchorage':
+      court_code = '3AN'
+  elif court_location == 'Cordova':
+      court_code = '3CO'
+  elif court_location == 'Dillingham':
+      court_code = '3DI'
+  elif court_location == 'Glennallen':
+      court_code = '3GL'
+  elif court_location == 'Homer':
+      court_code = '3HO'
+  elif court_location == 'Kenai':
+      court_code = '3KN'
+  elif court_location == 'Kodiak':
+      court_code = '3KO'
+  elif court_location == 'Naknek':
+      court_code = '3NA'
+  elif court_location == 'Palmer':
+      court_code = '3PA'
+  elif court_location == 'Sand Point':
+      court_code = '3SP'
+  elif court_location == 'Saint Paul Island':
+      court_code = '3ST'
+  elif court_location == 'Seward':
+      court_code = '3SW'
+  elif court_location == 'Unalaska':
+      court_code = '3UN'
+  elif court_location == 'Valdez':
+      court_code = '3VA'
+  elif court_location == 'Aniak':
+      court_code = '4AK'
+  elif court_location == 'Bethel':
+      court_code = '4BE'
+  elif court_location == 'Delta Junction':
+      court_code = '4DJ'
+  elif court_location == 'Emmonak':
+      court_code = '4EM'
+  elif court_location == 'Fairbanks':
+      court_code = '4FA'
+  elif court_location == 'Fort Yukon':
+      court_code = '4FY'
+  elif court_location == 'Galena':
+      court_code = '4GA'
+  elif court_location == 'Hooper Bay':
+      court_code = '4HB'
+  elif court_location == 'Nenana':
+      court_code = '4NE'
+  elif court_location == 'Saint Marys':
+      court_code = '4SM'
+  elif court_location == 'Tok':
+      court_code = '4TO'
+
+---
 event: penultimate_screen
 question: |
   Final screen
