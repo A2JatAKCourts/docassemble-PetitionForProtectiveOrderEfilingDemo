@@ -602,7 +602,7 @@ subquestion: |
 
   The Cause of Action Code for this petition is: ${ cause_of_action_code }
 
-  The ${"petitioner is" if who_needs_the_order in ('myself', 'child') else "petitioners are"} plan to file in ${ court_location }. 
+  The ${"petitioner is" if who_needs_the_order in ('myself', 'child') else "petitioners are"} plan to file in ${ court_location } whose court code is ${ court_code }. 
 
 continue button field: penultimate_screen
 ---
