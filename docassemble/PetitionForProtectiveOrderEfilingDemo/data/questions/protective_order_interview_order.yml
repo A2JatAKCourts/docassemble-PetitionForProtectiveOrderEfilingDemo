@@ -29,6 +29,7 @@ code: |
     protective_order_petition_type
   else:
     protective_order_petition_type = 'dv-100m'
+  term
 
   court_location
   petitioners_using_dv128

@@ -385,7 +385,49 @@ code: |
     domestic_violence_protective_order_petition.enabled = False
     # sexual_assault_protective_order_petition.enabled = False
     # stalking_protective_order_petition.enabled = False
-
+---
+id: short or long term
+question: |
+  How long do you need the order to last?
+subquestion: |
+  You can ask the court for an order that lasts 20 days, an order that lasts up to a year, or both.
+fields:
+  - I need the order to last: term
+    input type: radio
+    choices:
+      - "20 days": 20 days
+        help: |
+          A **Short-Term Protective Order** (also called an “ex parte” order) gives you immediate protection.  It lasts for 20 days unless the judge extends it. The judge is able to grant or deny the petition based only on what you write in the petition and what you testify about at the hearing, if there is a hearing. The judge can grant this protective order without telling ${ other_parties.familiar() } that you filed a petition, and without hearing from ${ other_parties.familiar() }. You do not have to tell the ${ other_parties.familiar() } that you are asking for a protective order, but if you did, tell the judge how you tried to tell ${ other_parties.familiar() } you were asking for the protective order.
+      - "up to one year": 1 year
+        help: |
+          A **Long-Term Order** can last up to one year. A judge can only grant a long-term order after a hearing. ${ other_parties.familiar() } must get at least 10 days’ notice of the court hearing and have a chance to speak at the hearing. If ${ other_parties.familiar() } had notice, but chose not to come to the hearing, the judge can still grant the order. Police officers or troopers are responsible for notifying ${ other_parties.familiar() } about the hearing.
+      - "I need **both** a 20 day order and an order that lasts up to a year": both
+        help: |
+           Both a Short-Term and a Long-Term Order. If you request both orders, and your short-term order is granted, the court will schedule a hearing when the judge will decide on the long-term protective order. ${ other_parties.familiar() } has an opportunity to attend the hearing and contest the order. If the short-term order is not granted, the court may or may not schedule a long-term hearing.
+---
+code: |
+  if protective_order_petition_type in ('dv-100', 'dv-100m'):
+    if term == '20 days':
+      cause_of_action_code = 'DV100ST'
+    elif term == '1 year':
+      cause_of_action_code = 'DV100LT'
+    elif term == 'both':
+      cause_of_action_code = 'DV100LT'
+  elif protective_order_petition_type == 'CIV-750':
+    if term == '20 days':
+      cause_of_action_code = 'CIV750ST'
+    elif term == '1 year':
+      cause_of_action_code = 'CIV750LT'
+    elif term == 'both':
+      cause_of_action_code = 'CIV750T'
+  elif protective_order_petition_type == 'CIV-752':
+    if term == '20 days':
+      cause_of_action_code = 'CIV750ST'
+    elif term == '1 year':
+      cause_of_action_code = 'CIV750LT'
+    elif term == 'both':
+      cause_of_action_code = 'CIV750LT'
+---
 ---
 id: court location
 question: |
@@ -475,7 +517,9 @@ subquestion: |
   
   The ${"petitioner" if who_needs_the_order in ('myself', 'child') else "petitioners"} should get a **${ protective_order_petition_type }** petition. 
 
-  They are filing in ${ court_location } 
+  The Cause of Action Code for this petition is: ${ cause_of_action_code }
+
+  The ${"petitioner is" if who_needs_the_order in ('myself', 'child') else "petitioners are"} plan to file in ${ court_location }. 
 
 continue button field: penultimate_screen
 ---
@@ -727,7 +771,7 @@ attachment:
       - "cina_case": No
       - "in_the_matter_of": No
       - "family_protective_orders_guardianship_case": Yes
-      - "plaintiffs_petitioners": ${ petitioners.comma_and_list() }
+      - "plaintiffs_petitioners": ${ users.comma_and_list() }
       - "defendant_respondents": ${other_parties}
       - "other_named_case": No
       - "other_case": No
@@ -742,7 +786,7 @@ attachment:
       - "signature_date": ${ signature_date }
       - "Signature_0": |
           ${ users[0].signature }
-      - "signature_location": users[0].address.mental_health_substance_history
+      - "signature_location": ${ users[0].address.city }
       - "users_safe_mailing_address": |
           ${ users[0].address.on_one_line() }
       - "users_safe_email": ${ users[0].email }
