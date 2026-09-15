@@ -1,5 +1,6 @@
 comment: |
-  2026-09-08
+  2026-09-14
+  Working on conditions for stay away home address and putting on confidential sheets at the same time.
   This is a simple version of the protective order efiling demo.
   Building the gathering portion for adults, and children.
   Testing PDFs, DV-100, DV-100m, and CIV-750 for sexual assault, CIV-752 for stalking.
@@ -43,7 +44,13 @@ code: |
   interview_order_finished
   protective_order_petition_download
 ---  
+features:
+  css: |
+    .alert, .alert p {
+      font-size: 1rem !important;
+    }
 
+---    
 ---
 id: who needs a protective order
 question: |
@@ -128,28 +135,43 @@ sets:
 question: |
   If you are asking the court for a protective order for someone else
 subquestion: |
-  To file a petition for a Protective Order for someonw else, you need to be:
-  
-    * 18, 
-    * a domestic violence advocate, or
-    * a lawyer.
+  To file a petition for a Protective Order for someone else, you need to be:
+
+  * 18, 
+  * a domestic violence advocate, or
+  * a lawyer.
 fields:
+  - note: What is your name?
   - code: |
-        advocate.name_fields()
-  - Are you a domestic violence advocate?: advocate.is_dv_advocate
-    datatype: yesno
-  - Are you an attorney?: advocate.is_attorney
-    datatype: yesno
-    show if: advocate.is_dv_advocate    
+      advocate.name_fields()
+  - 'Are you a domestic violence advocate?': advocate.is_dv_advocate
+    datatype: yesnoradio
+  - 'Are you an attorney?': advocate.is_attorney
+    datatype: yesnoradio
+    show if: advocate.is_dv_advocate
   - Attorney bar number: advocate.bar_number
     show if:
       variable: advocate.is_attorney
-      is: True
-  - Advocate birthdate: advocate.birthdate
+      is: true
+  - Your birthdate: advocate.birthdate
     datatype: date
-    show if: 
+    max: ${ today() }
+    show if:
       variable: advocate.is_dv_advocate
-      is: False
+      is: false
+---
+id: kickout when advocate is too young to file
+event: kickout_advocate_is_too_young
+question: |
+  You have to be 18 to file a petition for a Protective Order for someone else
+subquestion: |
+  If you made a mistake, go back and change your birthdate. 
+  
+  The **Exit** button, takes you to the court's Domestic Violence, Sexual Assault and Stalking Protective Orders web page.
+buttons:
+  - Exit and delete my answers: exit
+    url: https://ak-courts.info/dv
+  - Start over: restart
 ---
 id: relationship to advocate
 sets:
@@ -170,7 +192,7 @@ question: |
   % if who_needs_the_order == 'myself':
   you
   % elif who_needs_the_order == 'child':
-  ${ users[1].name.familiar() } needs
+  ${ users[0].name.familiar() } needs
   % elif who_needs_the_order == 'children':
   ${ comma_and_list([u.name.familiar() for u in users]) } need
   % elif who_needs_the_order in ('self and child', 'self and children'):
@@ -221,6 +243,66 @@ fields:
         }
       )
   
+---
+id: Stay away from petitioner's home
+question: |
+  Do you want the judge to order ${ other_parties.name.familiar() } to stay away from the place you live?
+subquestion: |
+     If the judge orders ${ other_parties.familiar() } to stay away from your place, the address for that place goes into the order.
+     
+     If ${ other_parties.name.familiar() } does not already know it, they will learn the address of a place because the address will be in the order.
+fields:
+  - Does ${ other_parties.name.familiar() } live with you?: respondent_live_with_petitioners
+    datatype: yesnoradio
+  - Does ${ other_parties.name.familiar() } know where you live?: respondent_knows_where_petitioners_live
+    datatype: yesnomaybe
+    show if: 
+      variable: respondent_live_with_petitioners
+      is: False
+  - "Do you need the judge to order ${other_parties.name.familiar()} to stay away from your place? **or** Do you need to keep your address confidential so it does **not** go onto the order where ${ other_parties.name.familiar() } can see it?": stay_away_home_address_or_keep_confidential
+    datatype: radio
+    choices:
+      - "I want the judge to order ${ other_parties.name.familiar() } to stay away from the place I live": stay away
+      - "It is more important to me that ${ other_parties.name.familiar() } does not see the address of the place I live on the order.": keep confidential
+    js show if: |
+      val("respondent_live_with_petitioners") === false &&
+      val("respondent_knows_where_petitioners_live") !== null &&
+      val("respondent_knows_where_petitioners_live") !== true
+    label above field: True
+      
+  - "Do you need the judge to order ${other_parties.name.familiar()} to stay away from your place?": respondent_stay_away_from_petitioners_home
+    datatype: yesno
+    js show if: |
+      val("respondent_live_with_petitioners") === true ||
+      (
+        val("respondent_live_with_petitioners") === false &&
+        val("respondent_knows_where_petitioners_live") === true
+      )
+---
+id: petitioners stay away from home address
+question: |
+  What is the address you need the judge to order ${ other_parties.name.familiar() } to stay away from?
+subquestion: |
+  <div class="alert alert-warning" role="alert">
+   from outline: You said you wanted your physical address to be confidential.  If you want the judge to order [RFN] to stay away from it, you have to give the address so [RFN] knows where to say away and law enforcement can . . . ]  What is safer – keeping your physical address safer or listing it so you can call law enforcement if [RFN] comes to your residence. 
+  So what do you want to do?
+  nlocude [addrerss] as a place to stay away on the order
+  Keep [address] confidential even though the court can’t order [RFN] to stay away. 
+  </div>
+
+
+  
+fields:
+  - Street address: users[0].address.address
+  - Apartment: users[0].address.unit
+    required: False
+  - City: users[0].address.city
+  - State: users[0].address.state
+  - ZIP code: users[0].address.zip
+    required: False
+  - note: How far away in feet or miles do you need the judge to order ${ other_parties.name.familiar() } to stay away?
+  - Distance: stay_away_home_distance
+continue button field: get_users_stay_away_home_address
 ---
 id: Respondent's contact info
 sets:
@@ -377,8 +459,8 @@ fields:
 code: |
   if who_needs_the_order in ('myself', 'child'):
     domestic_violence_protective_order_petition.enabled = protective_order_petition_type == 'DV-100'
-    # sexual_assault_protective_order_petition.enabled = protective_order_petition_type == 'CIV-750'
-    # stalking_protective_order_petition.enabled = protective_order_petition_type == 'CIV-752'
+    sexual_assault_protective_order_petition.enabled = protective_order_petition_type == 'CIV-750'
+    stalking_protective_order_petition.enabled = protective_order_petition_type == 'CIV-752'
     domestic_violence_protective_order_petition_multi.enabled = False
   else:
     domestic_violence_protective_order_petition_multi.enabled = True
@@ -406,7 +488,7 @@ fields:
            Both a Short-Term and a Long-Term Order. If you request both orders, and your short-term order is granted, the court will schedule a hearing when the judge will decide on the long-term protective order. ${ other_parties.familiar() } has an opportunity to attend the hearing and contest the order. If the short-term order is not granted, the court may or may not schedule a long-term hearing.
 ---
 code: |
-  if protective_order_petition_type in ('dv-100', 'dv-100m'):
+  if protective_order_petition_type in ('DV-100', 'DV-100m'):
     if term == '20 days':
       cause_of_action_code = 'DV100ST'
     elif term == '1 year':
@@ -632,11 +714,11 @@ progress: 100
 objects:
   - protective_order_petition_post_interview_instructions: ALDocument.using(title="Instructions Next Steps - Do not file", filename="protective_order_petition_next_steps", enabled=True)
   
-  
+ ###### add addenda to these petitions then change has_addendum=False to True 
   - domestic_violence_protective_order_petition: ALDocument.using(title="Domestic Violence Protective Order Petition", filename="domestic_violence_protective_order_petition", has_addendum=False)
-  - sexual_assault_petition: ALDocument.using(title="Sexual Assault Protective Order Petition", filename="sexual_assault_protective_order_petition", has_addendum=True)
-  - stalking_petition: ALDocument.using(title="Stalking Protective Order Petition", filename="stalking_protective_order_petition", has_addendum=True)
-  - domestic_violence_protective_order_petition_multi: ALDocument.using(title="Domestic Violence Protective Order Petition for Multiple Petitioners", filename="domestic_violence_protective_order_petition_multi", has_addendum=True)
+  - sexual_assault_protective_order_petition: ALDocument.using(title="Sexual Assault Protective Order Petition", filename="sexual_assault_protective_order_petition", has_addendum=False)
+  - stalking_protective_order_petition: ALDocument.using(title="Stalking Protective Order Petition", filename="stalking_protective_order_petition", has_addendum=False)
+  - domestic_violence_protective_order_petition_multi: ALDocument.using(title="Domestic Violence Protective Order Petition for Multiple Petitioners", filename="domestic_violence_protective_order_petition_multi", has_addendum=False)
   
   
   - dv_127_confidential_law_enforcement_information_sheet: ALDocument.using(title="DV-127 Confidential Law Enforcement Information Sheet", filename="dv_127_confidential_law_enforcement_information_sheet", enabled=True, has_addendum=False)
@@ -649,8 +731,8 @@ objects:
 ---
 # Bundles group the ALDocuments into separate downloads, such as for court and for the user
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[protective_order_petition_post_interview_instructions, domestic_violence_protective_order_petition, domestic_violence_protective_order_petition_multi, dv_127_confidential_law_enforcement_information_sheet,dv_128_confidential_contact_information_sheet, tf_835_self_certification_no_notary_available], title="Your Petition for a Protective Order", filename="protective_order_petition_bundle", enabled=True)
-  - al_court_bundle: ALDocumentBundle.using(elements=[domestic_violence_protective_order_petition, domestic_violence_protective_order_petition_multi,dv_127_confidential_law_enforcement_information_sheet,dv_128_confidential_contact_information_sheet, tf_835_self_certification_no_notary_available], title="Petition for a Protective Order", filename="protective_order_petition_bundle", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[protective_order_petition_post_interview_instructions, domestic_violence_protective_order_petition, domestic_violence_protective_order_petition_multi, sexual_assault_protective_order_petition, stalking_protective_order_petition, dv_127_confidential_law_enforcement_information_sheet,dv_128_confidential_contact_information_sheet, tf_835_self_certification_no_notary_available], title="Your Petition for a Protective Order", filename="protective_order_petition_bundle", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[domestic_violence_protective_order_petition, domestic_violence_protective_order_petition_multi, sexual_assault_protective_order_petition, stalking_protective_order_petition, dv_127_confidential_law_enforcement_information_sheet,dv_128_confidential_contact_information_sheet, tf_835_self_certification_no_notary_available], title="Petition for a Protective Order", filename="protective_order_petition_bundle", enabled=True)
 ---
 code: |
 
@@ -696,12 +778,7 @@ attachment:
       - "petitioners_name": ${ users[0] }
       - "petitioners_birthdate": ${ users[0].birthdate }
       - "petitioners_is_child": ${ users[0].age_in_years() < 18 }
-      - "petitioners_address": |
-          % if who_needs_the_order in ('child', 'children'):
-          ${ advocate.address.on_one_line() }
-          % else:
-          ${ users[0].address.on_one_line() }
-          % endif
+      - "petitioners_address": ${ users[0].address.on_one_line() }         
       - "petitioners_stay_away_address_yes": ${ users[0].stay_away_from_address }
       - "petitioners1_stay_away_address_no": ${ not users[0].stay_away_from_address }
       - "notify_petitioner_when_defendant_is_served_yes": ${ users[0].notify_when_served }
@@ -867,9 +944,8 @@ attachment:
       - "other_no_notary_reason_checked": No
       - "other_no_notary_reason": something
       - "signature_date": ${ signature_date }
-      - "Signature_0": |
-          ${ users[0].signature }
-      - "signature_location": ${ users[0].address.city }
+      - "Signature_0": /s/ ${ users[0] }
+      - "signature_location": Signed electronically through the court’s protective order portal at ${ court_location }, Alaska
       - "users_safe_mailing_address": |
           ${ users[0].address.on_one_line() }
       - "users_safe_email": ${ users[0].email }
@@ -949,6 +1025,14 @@ attachment:
       - "advocate_birthdate__5": ${ advocate.birthdate }
       - "petitioners5_advocate_relationship": ${ users[4].relationship_to_advocate }
       - "order_no_abuse_yes": Yes
+      - "petitioners_address1_on_one_line": |
+          % if (respondent_live_with_petitioners or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live) and respondent_stay_away_from_petitioners_home) or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live is not True and stay_away_home_address_or_keep_confidential == 'stay away'):
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.address.on_one_line() }
+          % else:
+          ${ users[0].address.on_one_line() }
+          % endif
+          % endif
       - "respondents_name": ${ other_parties }
       - "respondents_birthdate": ${ other_parties.birthdate }
       - "respondents_is_child_yes": ${ other_parties.age_in_years() < 18 }
@@ -1022,7 +1106,7 @@ attachment:
           % endif
 ---
 attachment:
-  name: protective order petition
+  name: Domestic Violence Protective Order Petition
   filename: domestic_violence_protective_order_petition
   variable name: domestic_violence_protective_order_petition[i]
   skip undefined: True
@@ -1042,6 +1126,9 @@ attachment:
       - "respondents_is_child_yes": ${ other_parties.age_in_years() < 18 }
       - "respondents_parent_or_guardian_name__1": ""
       - "respondents_parent_or_guardian_name__2": ${ adult_for_respondent }
+      - "petitioners_address1_on_one_line": ${ users[0].address.on_one_line()}
+
+      
       - "respondents_name_and_aliases": ${""}
       - "respondents_address_block": |
           % if other_parties.age_in_years < 18:
@@ -1110,6 +1197,7 @@ attachment:
           % endif  
 ---
 ---
+---
 attachment:
   name: Sexual Assault Protective Order Petition
   filename: sexual_assault_protective_order_petition
@@ -1117,39 +1205,57 @@ attachment:
   skip undefined: True
   pdf template file: civ_750_petition_for_sexual_assault_protective_order.pdf
   fields:
-    - "court_location": something
+    - "court_location": ${ court_location }
     - "other_respondent_cases1": something
     - "other_respondent_cases1_court_location": something
-    - "petitioners": something
+    - "petitioners": ${ users[0] }
     - "other_respondent_cases2": something
     - "other_respondent_cases2_court_location": something
     - "other_respondent_cases3": something
     - "other_respondent_cases3_court_location": something
-    - "petitioners_birthdate": something
-    - "petitioners_is_child": No
+    - "petitioners_birthdate": ${ users[0].birthdate }
+    - "petitioners_is_child": ${ users[0].age_in_years() < 18 }
     - "docket_number": something
     - "certificate_of_service_signature_date": something
     - "certificate_of_service_signature": something
     - "petitioners_name__3": something
-    - "advocate_name__1": something
-    - "advocate_birthdate__1": something
-    - "petitioners_advocate_relationship": something
-    - "respondents_name": something
+    - "advocate_name__1": ${ advocate.name }
+    - "advocate_birthdate__1": ${ advocate.birthdate }
+    - "petitioners_advocate_relationship": ${ users[0].relationship_to_advocate }
+    - "respondents_name": ${ other_parties }
     - "respondent_live_with_petitioners_yes": No
     - "respondent_live_with_petitioners_no": No
     - "respondent_knows_where_petitioners_live_yes": No
     - "respondent_knows_where_petitioners_live_no": No
     - "respondent_knows_where_petitioners_live_dunno": No
-    - "respondents_birthdate": something
-    - "respondents_is_child_yes": No
+    - "respondents_birthdate": ${ other_parties.birthdate }
+    - "respondents_is_child_yes": ${ other_parties.age_in_years() < 18 }
     - "petitioners_address_confidential_yes": No
     - "petitioners_address_confidential_no": No
     - "short_term_yes": No
     - "respondents_address_is_nearby_feet": No
     - "respondents_address_is_nearby_miles": No
     - "petitioners_safe_mailing_address_on_one_line": something
-    - "petitioners_email": something
-    - "petitioners_cell_phone_number": something
+    - "petitioners_email": |
+          % if petitioners_using_dv128:
+          ${""}
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          advocate.email 
+          % else:
+          users[0].email 
+          % endif
+          % endif
+    - "petitioners_cell_phone_number": |
+          % if petitioners_using_dv128:
+          ${""}
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          phone_number_formatted(advocate.mobile_number)
+          % else:
+          phone_number_formatted(users[0].mobile_number) 
+          % endif
+          % endif
     - "stay_away_petitioners_school_distance": something
     - "stay_away_petitioners_school": No
     - "stay_away_petitioners_school_address": something
@@ -1207,7 +1313,7 @@ attachment:
     - "order_no_follow_etc": No
     - "order_no_contact": No
     - "no_contact_household_members_relationships_list": something
-    - "respondent_stay_away_from_petitioners_home": No
+    - "respondent_stay_away_from_petitioners_home": ${ respondent_stay_away_from_petitioners_home }
     - "petitioners_address1_on_one_line": something
     - "respondents_address_is_unknown_to_me": No
     - "respondents_address_is_in_my_building": No
@@ -1227,13 +1333,25 @@ attachment:
     - "other_protections_description": something
     - "respondents_name_and_aliases": something
     - "respondents_mailing_address_on_one_line": something
-    - "respondents_phone_number": something
+    - "respondents_phone_number": |
+          % if other_parties.age_in_years < 18:
+          phone_number_formatted(adult_for_respondent.phone_number)
+          % else:
+          phone_number_formatted(other_parties.phone_number)
+          % endif
     - "respondents_work_phone": something
-    - "respondents_email": something
-    - "petitioners_using_dv128": No
+    - "respondents_email": |
+          % if other_parties.age_in_years < 18:
+          adult_for_respondent.email
+          % else:
+          other_parties.email
+          % endif
+    - "petitioners_using_dv128": ${ petitioners_using_dv128 }
     - "petitioners_names_and_aliases": something
     - "petitioners_truefiling_exempt": No
     - "petitioners_name__2": something
+
+---
 ---
 attachment:
   name: Stalking Protective Order Petition
@@ -1242,33 +1360,33 @@ attachment:
   skip undefined: True
   pdf template file: civ_752_petition_for_stalking_protective_order.pdfdf
   fields:
-    - "court_location": something
+    - "court_location": ${ court_location }
     - "open_cases1_type": something
     - "open_cases1_court_location": something
     - "open_cases1_litigants": something
-    - "petitioners": something
+    - "petitioners": ${ users[0] }
     - "open_cases2_litigants": something
     - "open_cases2_type": something
     - "open_cases2_court_location": something
-    - "petitioners_birthdate": something
+    - "petitioners_birthdate": ${ users[0].birthdate }
     - "certificate_of_service_signature_date": something
     - "petitioners_name__3": something
     - "certificate_of_service_signature": something
-    - "petitioners_is_child": No
+    - "petitioners_is_child": ${ users[0].age_in_years() < 18 }
     - "docket_number": something
     - "other_respondent_cases1": something
     - "other_respondent_cases1_court_location": something
-    - "advocate_name__1": something
-    - "advocate_birthdate__1": something
+    - "advocate_name__1": ${ advocate.name }
+    - "advocate_birthdate__1": ${ advocate.birthdate }
     - "other_respondent_cases2": something
     - "other_respondent_cases2_court_location": something
     - "protective_order_needed_because_explanation": something
-    - "petitioners_advocate_relationship": something
+    - "petitioners_advocate_relationship": ${ users[0].relationship_to_advocate }
     - "other_respondent_cases3": something
     - "other_respondent_cases3_court_location": something
-    - "respondents_name": something
-    - "respondents_birthdate": something
-    - "respondents_is_child_yes": No
+    - "respondents_name": ${ other_parties }
+    - "respondents_birthdate": ${ other_parties.birthdate }
+    - "respondents_is_child_yes": ${ other_parties.age_in_years() < 18 }
     - "respondent_live_with_petitioners_yes": No
     - "respondent_live_with_petitioners_no": No
     - "respondent_knows_where_petitioners_live_yes": No
@@ -1282,8 +1400,26 @@ attachment:
     - "notify_respondent_yes": No
     - "respondents_address_is_nearby_feet": No
     - "respondents_address_is_nearby_miles": No
-    - "petitioners_email": something
-    - "petitioners_cell_phone_number": something
+    - "petitioners_email": |
+          % if petitioners_using_dv128:
+          ${""}
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          advocate.email 
+          % else:
+          users[0].email 
+          % endif
+          % endif
+    - "petitioners_cell_phone_number": |
+          % if petitioners_using_dv128:
+          ${""}
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          phone_number_formatted(advocate.mobile_number)
+          % else:
+          phone_number_formatted(users[0].mobile_number) 
+          % endif
+          % endif
     - "notify_respondent_efforts": something
     - "long_term_yes": No
     - "stay_away_petitioners_school_feet": No
@@ -1358,10 +1494,20 @@ attachment:
     - "other_protections_description": something
     - "respondents_name_and_aliases": something
     - "respondents_mailing_address_on_one_line": something
-    - "respondents_phone_number": something
+    - "respondents_phone_number": |
+          % if other_parties.age_in_years < 18:
+          phone_number_formatted(adult_for_respondent.phone_number)
+          % else:
+          phone_number_formatted(other_parties.phone_number)
+          % endif
     - "respondents_work_phone": something
-    - "respondents_email": something
-    - "petitioners_using_dv128": No
+    - "respondents_email": |
+          % if other_parties.age_in_years < 18:
+          adult_for_respondent.email
+          % else:
+          other_parties.email
+          % endif
+    - "petitioners_using_dv128": ${ petitioners_using_dv128 }
     - "petitioners_names_and_aliases": something
     - "petitioners_truefiling_exempt": No
     - "petitioners_name__2": something
