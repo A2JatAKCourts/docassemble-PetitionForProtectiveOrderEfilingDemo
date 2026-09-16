@@ -17,12 +17,13 @@ code: |
       for i in range(users.number()):
         users[i].relationship_to_advocate = 'Petitioners advocate'
     else:
-      if not advocate.is_dv_advocate:
-        if advocate.age_in_years() < 18:
-          kickout_advocate_is_too_young
-        else:
-          for i in range(users.number()):
-            users[i].relationship_to_advocate
+      advocate.birthdate
+  
+      if advocate.age_in_years() < 18:
+        kickout_advocate_is_too_young
+      else:
+        for i in range(users.number()):
+          users[i].relationship_to_advocate
   
   other_parties.name.first
   knows_respondents_birthdate
@@ -32,7 +33,7 @@ code: |
   if who_needs_the_order in ('myself', 'child'):
     protective_order_petition_type
   else:
-    protective_order_petition_type = 'dv-100m'
+    protective_order_petition_type = 'DV-100m'
   term
 
   if (respondent_live_with_petitioners or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live) and respondent_stay_away_from_petitioners_home) or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live is not True and stay_away_home_address_or_keep_confidential == 'stay away'):

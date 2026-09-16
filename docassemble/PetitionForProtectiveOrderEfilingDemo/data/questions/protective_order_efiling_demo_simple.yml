@@ -126,6 +126,17 @@ fields:
   - birthdate: users[i].birthdate
     datatype: date
 ---
+code: |
+  if who_needs_the_order in ('myself', 'self and child', 'self and children'):
+    petitioner_personal_pronoun = 'you'
+    petitioner_possesive_pronoun = 'your'
+  elif who_needs_the_order == 'child':    
+    petitioner_personal_pronoun = users[0].familiar()
+    petitioner_possesive_pronoun = f"{users[0].familiar()}'s"
+  elif who_needs_the_order == 'children':
+    petitioner_personal_pronoun = 'the children'
+    petitioner_possesive_pronoun = "the children's"
+---
 id: Advocate info
 sets:
   - advocate.name.first
@@ -174,12 +185,19 @@ buttons:
   - Start over: restart
 ---
 id: relationship to advocate
-sets:
-  - users[i].relationship_to_advocate
 question: |
-  How do you know ${ users[i] }?
+  How are you related to ${ users[i] }?
+subquestion: |
+  Alaska only allows a child's parent or guardian to file a petition for a protective order for the child.  
+
+  But in certain circumstances, a judge **may** give you a **temporary guardianship** so you can ask for a protective order for the child.
 fields:
-  - I am ${ users[i].name.familiar() }'s: users[i].relationship_to_advocate
+  - "I am ${ users[i].name.familiar() }'s": users[i].relationship_to_advocate
+    datatype: radio
+    choices: 
+      - parent
+      - guardian
+      - other
 ---
 id: Respondent's name and birthdate
 sets:
@@ -246,31 +264,43 @@ fields:
 ---
 id: Stay away from petitioner's home
 question: |
-  Do you want the judge to order ${ other_parties.name.familiar() } to stay away from the place you live?
+  % if who_needs_the_order == 'myself':
+  Do you want the judge to order ${ other_parties.familiar() } to stay away from the place you live?
+  % elif who_needs_the_order == 'child':
+  Do you want the judge to order ${ other_parties.familiar() } to stay away from the place ${ users[0].familiar() } lives?
+  % elif who_needs_the_order == 'self and child':
+  Do you want the judge to order ${ other_parties.familiar() } to stay away from the place you and ${ users[1].familiar() } live?
+  % elif who_needs_the_order == 'children':
+  Do you want the judge to order ${ other_parties.familiar() } to stay away from the place your children live?
+  % elif who_needs_the_order == 'self and children':
+  Do you want the judge to order ${ other_parties.familiar() } to stay away from the place you and your children live?
+  % endif
 subquestion: |
-     If the judge orders ${ other_parties.familiar() } to stay away from your place, the address for that place goes into the order.
+     If the judge orders ${ other_parties.familiar() } to stay away from a place, the address for that place goes into the order.
      
-     If ${ other_parties.name.familiar() } does not already know it, they will learn the address of a place because the address will be in the order.
+     If ${ other_parties.name.familiar() } does not already know it, ${ other_parties.name.familiar() } will learn the address of the place because the address will be in the order.
 fields:
-  - Does ${ other_parties.name.familiar() } live with you?: respondent_live_with_petitioners
+  - Does ${ other_parties.name.familiar() } live with ${petitioner_personal_pronoun}?: respondent_live_with_petitioners
     datatype: yesnoradio
-  - Does ${ other_parties.name.familiar() } know where you live?: respondent_knows_where_petitioners_live
+  - Does ${ other_parties.name.familiar() } know where ${ petitioner_personal_pronoun } ${ "lives" if who_needs_the_order == 'child' else "live" }?: respondent_knows_where_petitioners_live
     datatype: yesnomaybe
     show if: 
       variable: respondent_live_with_petitioners
       is: False
-  - "Do you need the judge to order ${other_parties.name.familiar()} to stay away from your place? **or** Do you need to keep your address confidential so it does **not** go onto the order where ${ other_parties.name.familiar() } can see it?": stay_away_home_address_or_keep_confidential
+  - label: |
+      Do you need the judge to order ${other_parties.name.familiar()} to stay away from ${ petitioner_possesive_pronoun } place? **or** Do you need to keep that address confidential so it does **not** go onto the order where ${ other_parties.name.familiar() } can see it?
+    field: stay_away_home_address_or_keep_confidential
     datatype: radio
     choices:
-      - "I want the judge to order ${ other_parties.name.familiar() } to stay away from the place I live": stay away
-      - "It is more important to me that ${ other_parties.name.familiar() } does not see the address of the place I live on the order.": keep confidential
+      code: |
+        stay_away_home_address_or_keep_confidential_choices
     js show if: |
       val("respondent_live_with_petitioners") === false &&
       val("respondent_knows_where_petitioners_live") !== null &&
       val("respondent_knows_where_petitioners_live") !== true
     label above field: True
       
-  - "Do you need the judge to order ${other_parties.name.familiar()} to stay away from your place?": respondent_stay_away_from_petitioners_home
+  - "Do you need the judge to order ${other_parties.name.familiar()} to stay away from ${ petitioner_possesive_pronoun } place?": respondent_stay_away_from_petitioners_home
     datatype: yesno
     js show if: |
       val("respondent_live_with_petitioners") === true ||
@@ -278,6 +308,30 @@ fields:
         val("respondent_live_with_petitioners") === false &&
         val("respondent_knows_where_petitioners_live") === true
       )
+---
+---
+code: |
+  if who_needs_the_order == 'myself':
+    stay_away_home_address_or_keep_confidential_choices = [
+      {'stay away': f"I want the judge to order { other_parties.name.familiar() } to stay away from the place I live." },
+      {'keep confidential': f"It is more important to me that { other_parties.name.familiar() } does not see the address of the place I live on the order." },
+    ]
+  elif who_needs_the_order == 'child':
+    stay_away_home_address_or_keep_confidential_choices = [
+      { 'stay away': f"I want the judge to order { other_parties.name.familiar() } to stay away from the place { users[0].familiar() } lives." },
+      { 'keep confidential': f"It is more important to me that { other_parties.name.familiar() } does not see the address of the place { users[0].familiar() } lives on the order." }
+    ]
+  elif who_needs_the_order == 'children':
+    stay_away_home_address_or_keep_confidential_choices = [
+      { 'stay away': f"I want the judge to order { other_parties.name.familiar() } to stay away from the place the children live." },
+      { 'keep confidential': f"It is more important to me that { other_parties.name.familiar() } does not see the address of the place the children live on the order." },
+    ]
+  else:
+    stay_away_home_address_or_keep_confidential_choices = [
+      { 'stay away': f"I want the judge to order { other_parties.name.familiar() } to stay away from the place we live." },
+      { 'keep confidential': f"It is more important to me that { other_parties.name.familiar() } does not see the address of the place we live on the order." }
+    ]
+
 ---
 id: petitioners stay away from home address
 question: |
@@ -465,8 +519,8 @@ code: |
   else:
     domestic_violence_protective_order_petition_multi.enabled = True
     domestic_violence_protective_order_petition.enabled = False
-    # sexual_assault_protective_order_petition.enabled = False
-    # stalking_protective_order_petition.enabled = False
+    sexual_assault_protective_order_petition.enabled = False
+    stalking_protective_order_petition.enabled = False
 ---
 id: short or long term
 question: |
@@ -708,6 +762,8 @@ subquestion: |
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
 
 progress: 100
+buttons:
+  - Start over: restart
 ---
 ---
 # ALDocument objects specify the metadata for each template
@@ -995,7 +1051,7 @@ attachment:
       - "petitioners_is_child_yes": ${ users[0].age_in_years() < 18 }
       - "advocate_name__1": ${ advocate.name }
       - "advocate_birthdate__1":  ${ advocate.birthdate }
-      - "petitioners1_advocate_relationship": ${ users[0].relationship_to_advocate }
+      - "petitioners_advocate_relationship": ${ users[0].relationship_to_advocate }
       - "petitioners2_name": ${ users[1] }
       - "docket_number__2": ""
       - "petitioners2_birthdate": ${ users[1].birthdate }
