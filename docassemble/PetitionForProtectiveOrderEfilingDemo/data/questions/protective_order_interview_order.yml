@@ -1,5 +1,5 @@
 comment: |
-  2026-09-14
+  2026-09-16
 code: |
   if who_needs_the_order == 'myself':
     users.target_number = 1
@@ -37,7 +37,8 @@ code: |
   term
 
   if (respondent_live_with_petitioners or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live) and respondent_stay_away_from_petitioners_home) or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live is not True and stay_away_home_address_or_keep_confidential == 'stay away'):
-    get_users_stay_away_home_address
+    users[0].address.address
+    # get_users_stay_away_home_address
 
   court_location
   petitioners_using_dv128
