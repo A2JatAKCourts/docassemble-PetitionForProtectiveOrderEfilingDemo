@@ -1,6 +1,7 @@
 comment: |
-  2026-09-16
+  2026-09-24 - bryce
 code: |
+  can_check_efile
   if who_needs_the_order == 'myself':
     users.target_number = 1
   elif who_needs_the_order == 'child':
@@ -11,6 +12,9 @@ code: |
     users.target_number
   for i in range(users.number()):
     users[i].name.first
+    users[i].party_type
+    users[i].is_form_filler
+    users[i].is_new
   if who_needs_the_order in ('child', 'children'):
     advocate.name.first
     if advocate.is_dv_advocate:
@@ -25,9 +29,11 @@ code: |
         for i in range(users.number()):
           users[i].relationship_to_advocate
   
-  other_parties.name.first
+  other_parties[0].name.first
+  other_parties[0].is_new
+  other_parties[0].party_type
   knows_respondents_birthdate
-  if other_parties.age_in_years() < 18:
+  if other_parties[0].age_in_years() < 18:
     knows_adult_for_respondent
   
   if who_needs_the_order in ('myself', 'child'):
@@ -58,16 +64,16 @@ code: |
      
   petitioners_using_dv128
 
-  if other_parties.age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent:
+  if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent:
   # if do_not_know_respondent_address:
     # if knows_adult_for_respondent:
     adult_for_respondent_address_unknown
   else:
-    other_parties.address.address
+     other_parties[0].address.address
 
   court_location
 
-  
   penultimate_screen
+  set_efile_variables
   interview_order_finished = True
 ---
