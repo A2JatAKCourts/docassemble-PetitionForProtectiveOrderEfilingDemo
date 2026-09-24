@@ -476,6 +476,7 @@ comment: |
   The officer will start at the address you give as ${ other_parties.name.familiar() }'s residence.  
 id: Respondents address
 sets:
+  - other_parties.address.has_no_address
   - other_parties.address.address
   - other_parties.address.city
   - other_parties.address.zip
@@ -495,8 +496,7 @@ subquestion: |
   And the court needs to be able to send notices to ${ other_parties.name.familiar() }. 
 fields:
   - code: |
-     other_parties.address_fields(
-        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, allow_no_address=True)
+     other_parties.address_fields(allow_no_address=True)
   # - I do not know address: do_not_know_respondent_address
   #  datatype: yesnoradio
   # - code: |
@@ -512,6 +512,7 @@ fields:
 ---
 id: Respdondent's adult contact info
 sets:
+  - adult_for_respondent.address.has_no_address
   - adult_for_respondent.address.address
   - adult_for_respondent.address.city
   - adult_for_respondent.address.zip
@@ -527,11 +528,15 @@ question: |
 fields:
   - code: |
       adult_for_respondent.address_fields(
-        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
+        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, allow_no_address=True)
   - cell phone: adult_for_respondent.mobile_number
+    required: False
   - home phone: adult_for_respondent.home_number
+    required: False
   - work phone: adult_for_respondent.work_number
+    required: False
   - other phone: adult_for_respondent.other_number
+    required: False
 ---
 question: |
   Does ${ other_parties } go by any other names?
@@ -592,23 +597,25 @@ fields:
   - code: |
       users[0].address_fields(
         country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
-  - label: Cell phone
-    field: "users[0].mobile_number"
+  - cell phone: users[0].mobile_number
     required: False
-  - label: Other phone
-    field: "users[0].other_number"
+  - home phone: users[0].home_number
+    required: False
+  - work phone: users[0].work_number
+    required: False
+  - other phone: users[0].other_number
     required: False
   - label: Email
     field: "users[0].email"
     required: False
 sets:
   - "users[0].phone_number"
-  - "users[0].contact_address.address"
-  - "users[0].contact_address.city"
-  - "users[0].contact_address.zip"
-  - "users[0].contact_address.unit"
-  - "users[0].contact_address.state"
-  - "users[0].contact_address.country"
+  - "users[0].address.address"
+  - "users[0].address.city"
+  - "users[0].address.zip"
+  - "users[0].address.unit"
+  - "users[0].address.state"
+  - "users[0].address.country"
 note: |
   The court needs to be able to reach you.
 
@@ -636,12 +643,22 @@ fields:
       advocate.address_fields(
         country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
   - cell phone: advocate.mobile_number
+    required: False
+  - home phone: advocate.home_number
+    required: False
+  - work phone: advocate.work_number
+    required: False
   - other phone: advocate.other_number
+    required: False
+  - email: advocate.email
+    required: False
 
 ---
 id: For demo - which form do you want to complete?
 question: |
   Which petition do you want to complete?
+subquestion: |
+  For demo only - on production, users would answer questions that determines the appropriate petition for them.
 fields:
   - Petition: protective_order_petition_type
     datatype: radio
