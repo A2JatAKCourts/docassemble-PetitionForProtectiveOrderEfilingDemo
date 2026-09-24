@@ -1,5 +1,5 @@
 comment: |
-  2026-09-14
+  2026-09-16
 code: |
   if who_needs_the_order == 'myself':
     users.target_number = 1
@@ -17,12 +17,13 @@ code: |
       for i in range(users.number()):
         users[i].relationship_to_advocate = 'Petitioners advocate'
     else:
-      if not advocate.is_dv_advocate:
-        if advocate.age_in_years() < 18:
-          kickout_advocate_is_too_young
-        else:
-          for i in range(users.number()):
-            users[i].relationship_to_advocate
+      advocate.birthdate
+  
+      if advocate.age_in_years() < 18:
+        kickout_advocate_is_too_young
+      else:
+        for i in range(users.number()):
+          users[i].relationship_to_advocate
   
   other_parties.name.first
   knows_respondents_birthdate
@@ -32,28 +33,46 @@ code: |
   if who_needs_the_order in ('myself', 'child'):
     protective_order_petition_type
   else:
-    protective_order_petition_type = 'dv-100m'
+    protective_order_petition_type = 'DV-100m'
   term
 
-  if (respondent_live_with_petitioners or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live) and respondent_stay_away_from_petitioners_home) or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live is not True and stay_away_home_address_or_keep_confidential == 'stay away'):
-    get_users_stay_away_home_address
+  # if ((respondent_live_with_petitioners or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live)) and respondent_stay_away_from_petitioners_home) or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live is not True and stay_away_home_address_or_keep_confidential == 'stay away'):
+  #  get_users_stay_away_home_address
+  #  users[0].address = users[0].stay_away_home_address
 
-  court_location
-  petitioners_using_dv128
+  # if respondent_live_with_petitioners or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live):
+  #  show_address_to_police = 'fine' 
+  #  ask_show_address_to_police =  False
+  #  if not respondent_stay_away_from_petitioners_home:
+  #    users[0].address
   
+  # if not respondent_live_with_petitioners and respondent_knows_where_petitioners_live is not True and stay_away_home_address_or_keep_confidential == 'stay away':
+   # show_address_to_police = 'fine' 
+   # ask_show_address_to_police =  False
+   # users[0].address
+
+
+  # if (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live is not True and stay_away_home_address_or_keep_confidential == 'keep confidential'):
+   # ask_show_address_to_police = True
+   # show_address_to_police
+   
   if who_needs_the_order in ('child', 'children'):
     advocate.address.address
   else:
-    users[0].address.address
+    petitioner_contact_info
 
-  if other_parties.age_in_years() < 18:
-    if knows_adult_for_respondent:
-      adult_for_respondent.address.address
-    else:
-      other_parties.address.address
+  if other_parties.address.has_no_address and other_parties.age_in_years < 18:
+  # if do_not_know_respondent_address:
+    # if knows_adult_for_respondent:
+    adult_for_respondent.address.address
   else:
     other_parties.address.address
-        
+  
+  petitioners_using_dv128
+
+  court_location
+
+  
   penultimate_screen
   interview_order_finished = True
 ---
