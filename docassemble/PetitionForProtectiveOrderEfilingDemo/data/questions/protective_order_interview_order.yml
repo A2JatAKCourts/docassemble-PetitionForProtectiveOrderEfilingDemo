@@ -69,7 +69,7 @@ code: |
     # if knows_adult_for_respondent:
     adult_for_respondent_address_unknown
   else:
-     other_parties[0].address.address
+    respondent_address_unknown
 
   court_location
 

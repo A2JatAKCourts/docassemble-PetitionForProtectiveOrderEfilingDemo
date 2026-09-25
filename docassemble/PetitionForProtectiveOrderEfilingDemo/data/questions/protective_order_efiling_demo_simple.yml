@@ -1375,10 +1375,10 @@ attachment:
       - "long_term_yes": ${ term in  ( '1 year', 'both') }      
       - "respondents_name_and_aliases": ${""}
       - "respondents_address_block": |
-          % if other_parties[0].age_in_years < 18:
-          ${ adult_for_respondent.address.on_one_line() }
+          % if other_parties[0].age_in_years() < 18 and not defined('other_parties[0].address_on_one_line()'):
+          ${ adult_for_respondent.address.block() }
           % else:
-          ${ other_parties[0].address.on_one_line() }
+          ${ other_parties[0].address.block() }
           % endif
       - "respondents_phone_number": |
           % if defined('other_parties[0].mobile_number'):
@@ -1484,14 +1484,10 @@ attachment:
       - "petitioners_address1_on_one_line": ${ users[0].address.on_one_line()}
       - "respondents_name_and_aliases": ${""}
       - "respondents_address_block": |
-          % if respondent_live_with_petitioners:
-          ${ users[0].address.block() }
-          $ else:
-          % if other_parties[0].age_in_years < 18:
+          % if other_parties[0].age_in_years() < 18 and not defined('other_parties[0].address_on_one_line()'):
           ${ adult_for_respondent.address.block() }
           % else:
           ${ other_parties[0].address.block() }
-          % endif
           % endif
       - "respondents_phone_number": |
           % if defined('other_parties[0].mobile_number'):
