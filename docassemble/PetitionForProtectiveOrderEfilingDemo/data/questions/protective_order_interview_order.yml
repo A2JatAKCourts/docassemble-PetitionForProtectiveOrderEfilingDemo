@@ -55,11 +55,8 @@ code: |
   # if (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live is not True and stay_away_home_address_or_keep_confidential == 'keep confidential'):
    # ask_show_address_to_police = True
    # show_address_to_police
-   
-  if who_needs_the_order in ('child', 'children'):
-    advocate.address.address
-  else:
-    petitioner_contact_info
+     
+  petitioners_using_dv128
 
   if other_parties.age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent:
   # if do_not_know_respondent_address:
@@ -67,8 +64,6 @@ code: |
     adult_for_respondent_address_unknown
   else:
     other_parties.address.address
-  
-  petitioners_using_dv128
 
   court_location
 

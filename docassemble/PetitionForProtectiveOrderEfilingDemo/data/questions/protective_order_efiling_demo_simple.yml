@@ -566,7 +566,7 @@ question: |
 subquestion: |
   The court needs your mailing address so they can send court papers and notices about your hearing dates to you. If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties.name.familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties.name.familiar() }.
 fields:
-  - "Do you need to use DV-128?": petitioners_using_dv128
+  - "Do you need to use DV-128?": petitioners_using_dv128_back
     datatype: yesnoradio
 ---
 code: |
@@ -597,10 +597,17 @@ code: |
     users_with_aliases = str(users[0])
 ---
 id: "Petitioner's contact info"
-question: How can the court get in touch with you?
+question: |
+  How can the court get in touch with you?
+subquestion: |
+  The court needs your mailing address so they can send court papers and notices about your hearing dates to you. 
+  
+  If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties.name.familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties.name.familiar() }.  
 fields:
+  - "Do you need to use DV-128?": petitioners_using_dv128
+    datatype: yesnoradio
   - code: |
-      users[0].address_fields(
+      users[0].mailing_address.address_fields(
         country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
   - cell phone: users[0].mobile_number
     required: False
@@ -615,21 +622,23 @@ fields:
     required: False
 sets:
   - "users[0].phone_number"
-  - "users[0].address.address"
-  - "users[0].address.city"
-  - "users[0].address.zip"
-  - "users[0].address.unit"
-  - "users[0].address.state"
-  - "users[0].address.country"
+  - "users[0].mailing_address.address"
+  - "users[0].mailing_address.city"
+  - "users[0].mailing_address.zip"
+  - "users[0].mailing_address.unit"
+  - "users[0].mailing_address.state"
+  - "users[0].mailing_ address.country"
 note: |
   The court needs to be able to reach you.
 
   You can ask the to keep your address, phone, and email confidential, so that only court staff can see this information.
 validation code: |
   if (not showifdef('users[0].mobile_number') and \
-      (not showifdef('users[0].other_number')) and \
-      (not showifdef('users[0].email'))):
-    validation_error(word("You need to give the court at least one way to get in touch with you."), field="users[0].other_contact_method")
+      not showifdef('users[0].home_number') and \
+      not showifdef('users[0].work_number') and \
+      not showifdef('users[0].other_number') and \
+      not showifdef('users[0].email')):
+    validation_error(word("You need to give the court at least one way, besides your mailing address to get in touch with you."), field="users[0].other_contact_method")
 continue button field: petitioner_contact_info
 ---
 id: Advocate's contact info
@@ -939,16 +948,20 @@ subquestion: |
 
   ## Respondent
   * Respondent name: ${ other_parties.name }
-  * Respondent's birthdate:  ${ showifdef("other_parties.birthdate") }
+  * Respondent's birthdate:  
+  % if knows_respondents_birthdate:
+  { other_parties.birthdate }
+  % else:
+  ${ other_parties.age } years
+  % endif
   * Is ${ other_parties.name.familiar() } a child? ${ "Yes" if other_parties.age_in_years() < 18 else "No" }
   % if other_parties.age_in_years() < 18 and knows_adult_for_respondent:
   * Respondent's parent or guardian: ${ adult_for_respondent }
   % endif
   * Respondent's address: 
   % if other_parties.age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent and not adult_for_respondent_address_unknown:
-  
-  * Adult responsible for ${ other_parties.name.familiar() }'s address: 
-  ${ adult_for_respondent.address.block() }
+      * Adult responsible for ${ other_parties.name.familiar() }'s address: 
+  ${ adult_for_respondent.address.block() } (parent or guardian)
   % else:
   % if not respondent_address_unknown:
   ${ other_parties.address.block() }
@@ -1127,7 +1140,12 @@ attachment:
       - "respondents_current_location_address": ${ other_parties.current_location_address }
       - "respondents_sex": ${ other_parties.gender }
       - "respondents_race": ${ other_parties.race }
-      - "respondents_birthdate": ${ other_parties.birthdate }
+      - "respondents_birthdate": |
+          % if knows_respondents_birthdate:
+          { other_parties.birthdate }
+          % else:
+          ${ other_parties.age } years
+          % endif
       - "respondents_height": ${ other_parties.height }
       - "respondents_weight": ${ other_parties.weight }
       - "respondents_hair_color": ${ other_parties.hair_color }
@@ -1228,7 +1246,7 @@ attachment:
       - "truefiling": Yes
       - "other_no_notary_reason_checked": No
       - "other_no_notary_reason": something
-      - "signature_date": ${ signature_date }
+      - "signature_date": ${ today() }
       - "Signature_0": /s/ ${ users[0] }
       - "signature_location": Signed electronically through the court’s protective order portal at ${ court_location }, Alaska
       - "users_safe_mailing_address": |
@@ -1264,12 +1282,12 @@ attachment:
       - "docket_number": ${ docket_number }
       - "petitioners_name": ${ users[0] }
       - "respondents_name": ${ other_parties }
-      - "users_is_petitioner": Yes
-      - "users_is_respondent": No
+      - "users_is_petitioner": True
+      - "users_is_respondent": False
       - "users_is_other": No
       - "users_other_role": ${ "" }
       - "users_name_and_aliases": ${users_with_aliases }
-      - "users_phone_numbers": ${ users[0].phone_numbers }
+      - "users_phone_numbers": ${ users[0].phone_numbers() }
       - "users_email": |
           % if who_needs_the_order in ('child', 'children'):
           ${ advocate.email }
@@ -1280,9 +1298,9 @@ attachment:
           % if who_needs_the_order in ('child', 'children'):
           ${ advocate.address.on_one_line() }
           % else:
-          ${ users[0].address.on_one_line() }
+          ${ users[0].mailing_address.on_one_line() }
           % endif
-      - "users_signature_date": some date
+      - "users_signature_date": ${ today() }
       - "users_name": ${ users[0] }
       - "users_signature": |
           ${ user.signature }
@@ -1341,10 +1359,17 @@ attachment:
           % endif
           % endif
       - "respondents_name": ${ other_parties }
-      - "respondents_birthdate": ${ other_parties.birthdate }
+      - "respondents_birthdate": |
+          % if knows_respondents_birthdate:
+          { other_parties.birthdate }
+          % else:
+          ${ other_parties.age } years
+          % endif
       - "respondents_is_child_yes": ${ other_parties.age_in_years() < 18 }
       - "respondents_parent_or_guardian_name__1": ""
-      - "respondents_parent_or_guardian_name__2": ${ adult_for_respondent }
+      - "respondents_parent_or_guardian_name__2": ${ adult_for_respondent }   
+      - "short_term_yes": ${ term in  ('20 days', 'both') }
+      - "long_term_yes": ${ term in  ( '1 year', 'both') }      
       - "respondents_name_and_aliases": ${""}
       - "respondents_address_block": |
           % if other_parties.age_in_years < 18:
@@ -1384,17 +1409,17 @@ attachment:
       - "petitioners_using_dv128": ${ petitioners_using_dv128 }
       - "petitioners_safe_mailing_address_block": |
           % if petitioners_using_dv128:
-          ${""}
+          Confidential - See form DV-128
           % else:
           % if who_needs_the_order in ('child', 'children'):
-          advocate.address.on_one_line()
+          ${ advocate.address.on_one_line() }
           % else:
-          users[0].address.on_one_line() 
+          ${ users[0].mailing_address.on_one_line() }
           % endif
           % endif
       - "petitioners_cell_phone_number": |
           % if petitioners_using_dv128:
-          ${""}
+          Confidential - See form DV-128
           % else:
           % if who_needs_the_order in ('child', 'children'):
           phone_number_formatted(advocate.mobile_number)
@@ -1404,7 +1429,7 @@ attachment:
           % endif
       - "petitioners_other_phone": |
           % if petitioners_using_dv128:
-          ${""}
+          Confidential - See form DV-128
           % else:
           % if who_needs_the_order in ('child', 'children'):
           phone_number_formatted(advocate.other_number)
@@ -1422,6 +1447,8 @@ attachment:
           ${ users[0].email }
           % endif
           % endif
+      - "petitioners_truefiling_exempt" : True
+      - "petitioners_name__2": ${ users[0] }
 ---
 attachment:
   name: Domestic Violence Protective Order Petition
@@ -1440,12 +1467,18 @@ attachment:
       - "petitioners1_advocate_relationship": ${ users[0].relationship_to_advocate }
       - "order_no_abuse_yes": Yes
       - "respondents_name": ${ other_parties }
-      - "respondents_birthdate": ${ other_parties.birthdate }
+      - "respondents_birthdate": |
+          % if knows_respondents_birthdate:
+          { other_parties.birthdate }
+          % else:
+          ${ other_parties.age } years
+          % endif
       - "respondents_is_child_yes": ${ other_parties.age_in_years() < 18 }
       - "respondents_parent_or_guardian_name__1": ""
-      - "respondents_parent_or_guardian_name__2": ${ adult_for_respondent }
+      - "respondents_parent_or_guardian_name__2": ${ adult_for_respondent }   
+      - "short_term_yes": ${ term in  ('20 days', 'both') }
+      - "long_term_yes": ${ term in  ( '1 year', 'both') }
       - "petitioners_address1_on_one_line": ${ users[0].address.on_one_line()}
-
       - "respondents_name_and_aliases": ${""}
       - "respondents_address_block": |
           % if respondent_live_with_petitioners:
@@ -1491,9 +1524,9 @@ attachment:
           Confidential - See form DV-128
           % else:
           % if who_needs_the_order in ('child', 'children'):
-          advocate.address.on_one_line()
+          ${ advocate.address.on_one_line() }
           % else:
-          users[0].address.on_one_line()
+          ${ users[0].mailing_address.on_one_line() }
           % endif
           % endif
       - "petitioners_cell_phone_number": |
@@ -1526,6 +1559,8 @@ attachment:
           ${ users[0].email }
           % endif
           % endif
+      - "petitioners_truefiling_exempt" : True
+      - "petitioners_name__2": ${ users[0] }
 ---
 ---
 ---
@@ -1554,19 +1589,40 @@ attachment:
     - "advocate_birthdate__1": ${ advocate.birthdate }
     - "petitioners_advocate_relationship": ${ users[0].relationship_to_advocate }
     - "respondents_name": ${ other_parties }
+    - "respondents_birthdate": |
+        % if knows_respondents_birthdate:
+        { other_parties.birthdate }
+        % else:
+        ${ other_parties.age } years
+        % endif
     - "respondent_live_with_petitioners_yes": No
     - "respondent_live_with_petitioners_no": No
     - "respondent_knows_where_petitioners_live_yes": No
     - "respondent_knows_where_petitioners_live_no": No
     - "respondent_knows_where_petitioners_live_dunno": No
-    - "respondents_birthdate": ${ other_parties.birthdate }
+    - "respondents_birthdate": |
+          % if knows_respondents_birthdate:
+          { other_parties.birthdate }
+          % else:
+          ${ other_parties.age } years
+          % endif
     - "respondents_is_child_yes": ${ other_parties.age_in_years() < 18 }
-    - "petitioners_address_confidential_yes": No
-    - "petitioners_address_confidential_no": No
-    - "short_term_yes": No
+    - "petitioners_address_confidential_yes": ${ petitioners_using_dv128 }
+    - "petitioners_address_confidential_no": ${ petitioners_using_dv128 }
+    - "short_term_yes": ${ term in  ('20 days', 'both') }
+    - "long_term_yes": ${ term in  ( '1 year', 'both') }
     - "respondents_address_is_nearby_feet": No
     - "respondents_address_is_nearby_miles": No
-    - "petitioners_safe_mailing_address_on_one_line": something
+    - "petitioners_safe_mailing_address_on_one_line": |
+         % if petitioners_using_dv128:
+         Confidential - See form DV-128
+         % else:
+         % if who_needs_the_order in ('child', 'children'):
+         ${ advocate.address.on_one_line() }
+         % else:
+         ${ users[0].mailing_address.on_one_line() }
+         % endif
+         % endif
     - "petitioners_email": |
           % if petitioners_using_dv128:
           Confidential - See form DV-128
@@ -1579,7 +1635,7 @@ attachment:
           % endif
     - "petitioners_cell_phone_number": |
           % if petitioners_using_dv128:
-          ${""}
+          Confidential - See form DV-128
           % else:
           % if who_needs_the_order in ('child', 'children'):
           phone_number_formatted(advocate.mobile_number)
@@ -1690,8 +1746,8 @@ attachment:
           % endif
     - "petitioners_using_dv128": ${ petitioners_using_dv128 }
     - "petitioners_names_and_aliases": something
-    - "petitioners_truefiling_exempt": No
-    - "petitioners_name__2": something
+    - "petitioners_truefiling_exempt" : True
+    - "petitioners_name__2": ${ users[0] }
 
 ---
 ---
@@ -1727,18 +1783,33 @@ attachment:
     - "other_respondent_cases3": something
     - "other_respondent_cases3_court_location": something
     - "respondents_name": ${ other_parties }
-    - "respondents_birthdate": ${ other_parties.birthdate }
+    - "respondents_birthdate": |
+          % if knows_respondents_birthdate:
+          { other_parties.birthdate }
+          % else:
+          ${ other_parties.age } years
+          % endif
     - "respondents_is_child_yes": ${ other_parties.age_in_years() < 18 }
     - "respondent_live_with_petitioners_yes": No
     - "respondent_live_with_petitioners_no": No
     - "respondent_knows_where_petitioners_live_yes": No
     - "respondent_knows_where_petitioners_live_no": No
     - "respondent_knows_where_petitioners_live_dunno": No
-    - "short_term_yes": No
+    - "short_term_yes": ${ term in  ('20 days', 'both') }
+    - "long_term_yes": ${ term in  ( '1 year', 'both') }
     - "petitioners_address_confidential_yes": No
     - "petitioners_address_confidential_no": No
     - "notify_respondent_no": No
-    - "petitioners_safe_mailing_address_on_one_line": something
+    - "petitioners_safe_mailing_address_on_one_line": |
+         % if petitioners_using_dv128:
+         Confidential - See form DV-128
+         % else:
+         % if who_needs_the_order in ('child', 'children'):
+         ${ advocate.address.on_one_line() }
+         % else:
+         ${ users[0].mailing_address.on_one_line() }
+         % endif
+         % endif
     - "notify_respondent_yes": No
     - "respondents_address_is_nearby_feet": No
     - "respondents_address_is_nearby_miles": No
@@ -1862,5 +1933,5 @@ attachment:
           % endif
     - "petitioners_using_dv128": ${ petitioners_using_dv128 }
     - "petitioners_names_and_aliases": something
-    - "petitioners_truefiling_exempt": No
-    - "petitioners_name__2": something
+    - "petitioners_truefiling_exempt": True
+    - "petitioners_name__2": ${ users[0] }
