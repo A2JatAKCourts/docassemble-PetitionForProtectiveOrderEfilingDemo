@@ -61,10 +61,10 @@ code: |
   else:
     petitioner_contact_info
 
-  if other_parties.address.has_no_address and other_parties.age_in_years() < 18:
+  if other_parties.age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent:
   # if do_not_know_respondent_address:
     # if knows_adult_for_respondent:
-    adult_for_respondent.address.address
+    adult_for_respondent_address_unknown
   else:
     other_parties.address.address
   

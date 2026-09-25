@@ -495,8 +495,11 @@ subquestion: |
 
   And the court needs to be able to send notices to ${ other_parties.name.familiar() }. 
 fields:
+  - I do not have any contact information for ${other_parties.familiar()}: respondent_address_unknown
+    datatype: yesno
+    disable others: True
   - code: |
-     other_parties.address_fields(required={'city': False, 'state': False, 'zip': False, 'address': False},country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, allow_no_address=True)
+     other_parties.address_fields(required={'city': False, 'state': False, 'zip': False, 'address': False},country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
   # - I do not know address: do_not_know_respondent_address
   #  datatype: yesnoradio
   # - code: |
@@ -526,9 +529,11 @@ sets:
 question: |
   How can the court get in touch with ${ adult_for_respondent }?
 fields:
+  - I do not have any contact information for ${other_parties.familiar()}'s parent or guardian: adult_for_respondent_address_unknown
+    datatype: yesno
+    disable others: True
   - code: |
-      adult_for_respondent.address_fields(
-        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, allow_no_address=True)
+      adult_for_respondent.address_fields(required={'city': False, 'state': False, 'zip': False, 'address': False},country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
   - cell phone: adult_for_respondent.mobile_number
     required: False
   - home phone: adult_for_respondent.home_number
@@ -761,7 +766,7 @@ subquestion: |
   <div class="alert alert-info" role="alert">
   Ultimately, we will put in the name and address of ${users[0].name.familiar()}'s local court here, possibly with a map showing where the court is.
   </div>
-  * at { other_parties.name.familiar() }'s local court, or
+  * at ${ other_parties.name.familiar() }'s local court, or
   <div class="alert alert-info" role="alert">
   Ultimately, we will put in the name and address of ${other_parties.name.familiar()}'s local court here, possibly with a map showing where the court is.
   </div>
@@ -898,6 +903,11 @@ code: |
       court_code = '4TO'
 
 ---
+comment: |
+  took out:
+    * their birthdate: ${ adult_for_respondent.birthdate }
+    * their relationship to respondent: ${ other_parties.relationship_to_person_signing_for_them }
+id: data points screen 
 event: penultimate_screen
 question: |
   Final screen
@@ -906,12 +916,13 @@ subquestion: |
 
   Also reckoning variables along the way:
 
-  * who_needs_the_order: ${ who_needs_the_order }
-  * users: ${ users }
-  * al_person_answering: ${ al_person_answering }
-  * users.target_number: ${ users.target_number }
+  ## Petitioner
 
-  * al_person_answering: ${ al_person_answering }
+  * Who needs the order: ${ who_needs_the_order }
+  * Petitioner's name: ${ users }
+  * Parent or Guardian or petitioner filling out for themself: ${ al_person_answering }
+  * Number of petitioners: ${ users.target_number }
+  * Who is answering the questions in this interview? ${ al_person_answering }
   % if who_needs_the_order in ('child', 'children'):
   % if advocate.is_dv_advocate:
   * Advocate name: ${ advocate.name.full() }
@@ -930,30 +941,21 @@ subquestion: |
   * Respondent name: ${ other_parties.name }
   * Respondent's birthdate:  ${ showifdef("other_parties.birthdate") }
   * Is ${ other_parties.name.familiar() } a child? ${ "Yes" if other_parties.age_in_years() < 18 else "No" }
-  % if other_parties.age_in_years() < 18:
-  * adult_for_respondent: ${ adult_for_respondent }
-    * their birthdate: ${ adult_for_respondent.birthdate }
-    * their relationship to respondent: ${ other_parties.relationship_to_person_signing_for_them }
+  % if other_parties.age_in_years() < 18 and knows_adult_for_respondent:
+  * Respondent's parent or guardian: ${ adult_for_respondent }
   % endif
-  Respondent's address: 
-  % if respondent_live_with_petitioners and use_users_address_to_serve_other_parties:
-  ${ users[0].address.block() }
-  $ else:
-  % if other_parties.age_in_years < 18:
+  * Respondent's address: 
+  % if other_parties.age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent and not adult_for_respondent_address_unknown:
+  
+  * Adult responsible for ${ other_parties.name.familiar() }'s address: 
   ${ adult_for_respondent.address.block() }
   % else:
+  % if not respondent_address_unknown:
   ${ other_parties.address.block() }
   % endif
   % endif
-  
-  **Respondent's mailing address**:
-  % if other_parties_address_also_mailing_address:
-  % if respondent_live_with_petitioners and use_users_address_to_serve_other_parties:
-  ${ users[0].address.block() }
-  
-  % endif
-  % endif
-  
+
+
   
 
   ## Type of Protective Order petition
