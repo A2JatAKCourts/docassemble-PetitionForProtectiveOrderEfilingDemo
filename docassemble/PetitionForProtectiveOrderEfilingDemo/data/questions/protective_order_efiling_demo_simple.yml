@@ -12,7 +12,6 @@ include:
   - efiling.yml
   - protective_order_interview_order.yml
 ---
----
 metadata:
   title: >-
     Protective Order petition
@@ -209,8 +208,6 @@ fields:
       users[i].name_fields()
   - Birthdate: users[i].birthdate
     datatype: date
-  - Email: users[i].email
-    datatype: email
 ---
 code: |
   if who_needs_the_order in ('myself', 'self and child', 'self and children'):
@@ -294,7 +291,7 @@ sets:
 question: |
   What is the name of the person
   % if who_needs_the_order == 'myself':
-  you
+  you need
   % elif who_needs_the_order == 'child':
   ${ users[0].name.familiar() } needs
   % elif who_needs_the_order == 'children':
@@ -607,6 +604,10 @@ subquestion: |
   
   If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties[0].name.familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties[0].name.familiar() }.  
 fields:
+  - note: |
+      The court needs to be able to reach you.
+
+      You can ask the to keep your address, phone, and email confidential, so that only court staff can see this information.
   - "Do you need to use DV-128?": petitioners_using_dv128
     datatype: yesnoradio
   - code: |
@@ -631,10 +632,6 @@ sets:
   - "users[0].mailing_address.unit"
   - "users[0].mailing_address.state"
   - "users[0].mailing_ address.country"
-comment: |
-  The court needs to be able to reach you.
-
-  You can ask the to keep your address, phone, and email confidential, so that only court staff can see this information.
 validation code: |
   if (not showifdef('users[0].mobile_number') and \
       not showifdef('users[0].home_number') and \

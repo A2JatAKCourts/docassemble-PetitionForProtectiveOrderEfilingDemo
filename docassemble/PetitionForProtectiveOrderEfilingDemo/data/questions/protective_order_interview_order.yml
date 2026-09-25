@@ -17,6 +17,8 @@ code: |
     users[i].is_new
   if who_needs_the_order in ('child', 'children'):
     advocate.name.first
+    advocate.party_type
+    advocate.is_new
     if advocate.is_dv_advocate:
       for i in range(users.number()):
         users[i].relationship_to_advocate = 'Petitioners advocate'
@@ -64,6 +66,9 @@ code: |
      
   petitioners_using_dv128
 
+  if other_parties[0].age_in_years() < 18 and knows_adult_for_respondent:
+    adult_for_respondent.party_type
+    adult_for_respondent.is_new
   if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent:
   # if do_not_know_respondent_address:
     # if knows_adult_for_respondent:

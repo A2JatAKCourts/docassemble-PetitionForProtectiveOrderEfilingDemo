@@ -54,7 +54,7 @@ code: |
   dv_127_confidential_law_enforcement_information_sheet.filing_type_filters = ["Law Enforcement Information Sheet (DV-127) - CONFIDENTIAL"]
 ---
 code: |
-  dv_128_confidential_contact_information_sheet.filing_type_filters = ["Other - Confidential Filing(s)"]
+  dv_128_confidential_contact_information_sheet.filing_type_filters = ["Confidential Contact Information Sheet (DV-128) - CONFIDENTIAL",  "Other - Confidential Filing(s)"]
 ---
 code: |
   tf_835_self_certification_no_notary_available.filing_type_filters = ["Self-Certification (No Notary Available) - TF-835"]
@@ -77,10 +77,22 @@ code: |
   x.optional_services.there_are_any = False
 ---
 code: |
-  users[i].party_type_filters = [CodeType('PET'), "Petitioner"]
+  if users[i].age_in_years() < 18:
+    users[i].party_type_filters = [CodeType('MPET'), "Minor Petitioner"]
+  else:
+    users[i].party_type_filters = [CodeType('PET'), "Petitioner"]
 ---
 code: |
-  other_parties[i].party_type_filters = [CodeType('RESP'), "Respondent"]
+  if other_parties[i].age_in_years() < 18:
+    other_parties[i].party_type_filters = [CodeType('MRESP'), "Minor Respondent"]
+  else:
+    other_parties[i].party_type_filters = [CodeType('RESP'), "Respondent"]
+---
+code: |
+  advocate.party_type_filter = [CodeType('ADBM'), "Adult on Behalf of a Minor"]
+---
+code: |
+  adult_for_respondent.party_type_filter = [CodeType('ADBM'), "Adult on Behalf of a Minor"]
 ---
 if: can_check_efile
 code: |
@@ -104,12 +116,17 @@ code: |
 
   # Don't need to show fees, it will always be $0.
   tyler_payment_id = None
-  review_fees = True 
+  # review_fees = True 
 
   # Don't show redundant screen confirming things
   efile_user_reviewed = True
 
   all_required_screens_shown
+
+
+  # Slight hack: set the email here to be something anonymous if desired
+  if not defined("users[0].email") or users[0].email is None or len(users[0].email) == 0:
+    users[0].email = "not-real-email-to-anonymize@example.com"
 
   set_efile_variables = True
 ---
