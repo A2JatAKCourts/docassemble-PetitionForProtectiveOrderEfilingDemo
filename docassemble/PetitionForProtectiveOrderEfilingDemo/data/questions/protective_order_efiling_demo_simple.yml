@@ -963,6 +963,39 @@ subquestion: |
   ${users[i].name.familiar()}'s ${ users[i].relationship_to_advocate }
   % endfor
   % endif
+  
+  Petitioners mailing address, phone and email:
+  % if petitioners_using_dv128:
+  Confidential - See form DV-128
+  % else:
+  % if who_needs_the_order in ('child', 'children'):
+  ${ advocate.address.on_one_line() }
+  % else:
+  ${ users[0].address.on_one_line() }
+  % endif
+  % endif
+  
+  phone number(s): 
+  % if petitioners_using_dv128:
+  Confidential - See form DV-128
+  % else:
+  % if who_needs_the_order in ('child', 'children'):
+  ${ advocate.phone_numbers() }
+  % else:
+  ${ users[0].phone_numbers() }
+  % endif
+  % endif
+
+  email: 
+   % if petitioners_using_dv128:
+  Confidential - See form DV-128
+  % else:
+  % if who_needs_the_order in ('child', 'children'):
+  ${ advocate.email }
+  % else:
+  ${ users[0].email }
+  % endif
+  % endif
 
 
   ## Respondent
@@ -1257,7 +1290,7 @@ attachment:
       - "family_protective_orders_guardianship_case": Yes
       - "plaintiffs_petitioners": ${ users.comma_and_list() }
       - "defendant_respondents": ${ other_parties[0] }
-      - "other_named_case": No
+      - "other_named_case": ${""}
       - "other_case": No
       - "docket_number": ${docket_number}
       - "users": ${users[0]}
@@ -1290,7 +1323,16 @@ attachment:
           ${ users[0].email }
           % endif
           % endif
-      - "users_safe_phone": ${ users[0].phone_number }
+      - "users_safe_phone": |
+          % if petitioners_using_dv128:
+          Confidential - See form DV-128
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.phone_numbers() }
+          % else:
+          ${ users[0].phone_numbers() }
+          % endif
+          % endif
 ---
 attachment:
   name: DV-128 Confidential Contact Information Sheet
