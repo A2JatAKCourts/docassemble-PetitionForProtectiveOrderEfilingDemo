@@ -954,11 +954,9 @@ subquestion: |
   * Number of petitioners: ${ users.target_number }
   * Who is answering the questions in this interview? ${ al_person_answering }
   % if who_needs_the_order in ('child', 'children'):
-  % if advocate.is_dv_advocate:
-  * Advocate name: ${ advocate.name.full() }
   % if advocate.is_attorney:
+  * Advocate name: ${ advocate.name.full() }
   * advocate.bar_number:  ${ advocate.bar_number }
-  % endif
   % endif
   * I am
   % for i in range(users.number()):

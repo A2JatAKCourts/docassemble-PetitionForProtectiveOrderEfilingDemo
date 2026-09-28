@@ -89,10 +89,12 @@ code: |
     other_parties[i].party_type_filters = [CodeType('RESP'), "Respondent"]
 ---
 code: |
-  advocate.party_type_filter = [CodeType('ADBM'), "Adult on Behalf of a Minor"]
+  advocate.party_type_filters = [CodeType('ADBM'), "Adult on Behalf of a Minor"]
+  advocate.party_type_default = None
 ---
 code: |
-  adult_for_respondent.party_type_filter = [CodeType('ADBM'), "Adult on Behalf of a Minor"]
+  adult_for_respondent.party_type_filters = [CodeType('ADBM'), "Adult on Behalf of a Minor"]
+  adult_for_respondent.party_type_default = None
 ---
 if: can_check_efile
 code: |
