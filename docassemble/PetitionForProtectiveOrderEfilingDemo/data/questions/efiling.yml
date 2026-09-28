@@ -98,6 +98,26 @@ code: |
 ---
 if: can_check_efile
 code: |
+  # This stuff is usually set in the interview order, but we want to ask if folks want to e-file
+  # at the latest possible point
+
+  for i in range(users.number()):
+    users[i].party_type
+    users[i].is_form_filler
+    users[i].is_new
+  
+  if who_needs_the_order in ('child', 'children'):
+    advocate.party_type
+    advocate.is_new
+
+  other_parties[0].is_new
+  other_parties[0].party_type
+
+  if other_parties[0].age_in_years() < 18 and knows_adult_for_respondent:
+    adult_for_respondent.party_type
+    adult_for_respondent.is_new
+  
+  # The rest is usually set at the end.
   efile_case_category
   efile_case_type
   allow_anon_user
@@ -118,7 +138,7 @@ code: |
 
   # Don't need to show fees, it will always be $0.
   tyler_payment_id = None
-  # review_fees = True 
+  review_fees = True 
 
   # Don't show redundant screen confirming things
   efile_user_reviewed = True

@@ -1,7 +1,6 @@
 comment: |
   2026-09-25 - Caroline
 code: |
-  can_check_efile
   if who_needs_the_order == 'myself':
     users.target_number = 1
   elif who_needs_the_order == 'child':
@@ -12,15 +11,8 @@ code: |
     users.target_number
   for i in range(users.number()):
     users[i].name.first
-    if can_check_efile:
-      users[i].party_type
-      users[i].is_form_filler
-      users[i].is_new
   if who_needs_the_order in ('child', 'children'):
     advocate.name.first
-    if can_check_efile:
-      advocate.party_type
-      advocate.is_new
     if advocate.is_attorney:
       for i in range(users.number()):
         users[i].relationship_to_advocate = 'Petitioners advocate'
@@ -34,9 +26,6 @@ code: |
           users[i].relationship_to_advocate
   
   other_parties[0].name.first
-  if can_check_efile:
-    other_parties[0].is_new
-    other_parties[0].party_type
   knows_respondents_birthdate
   if other_parties[0].age_in_years() < 18:
     knows_adult_for_respondent
@@ -69,9 +58,6 @@ code: |
      
   petitioners_using_dv128
 
-  if can_check_efile and other_parties[0].age_in_years() < 18 and knows_adult_for_respondent:
-    adult_for_respondent.party_type
-    adult_for_respondent.is_new
   if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent:
   # if do_not_know_respondent_address:
     # if knows_adult_for_respondent:
