@@ -116,7 +116,7 @@ objects:
   - users: ALPeopleList.using(ask_number=True)
   - advocate: ALIndividual
   - children: ALPeopleList.using(there_are_any=True, complete_attribute='complete')
-  - other_parties: ALPeopleList.using(there_are_any=True, target_number=1)
+  - other_parties: ALPeopleList.using(there_are_any=True, there_is_another=False, target_number=1)
   - adult_for_respondent: ALIndividual
 ---
 objects: 
@@ -135,7 +135,6 @@ features:
       font-size: 1rem !important;
     }
 
----
 ---
 id: who needs a protective order
 question: |
@@ -609,6 +608,7 @@ code: |
   else:
     users_with_aliases = str(users[0])
 ---
+if: who_needs_the_order in ("myself", "self and child", "self and children")
 id: "Petitioner's contact info"
 question: |
   How can the court get in touch with you?
@@ -658,6 +658,19 @@ validation code: |
     validation_error(word("You need to give the court at least one way, besides your mailing address to get in touch with you."), field="users[0].other_contact_method")
 continue button field: petitioner_contact_info
 ---
+if: who_needs_the_order in ("child", "children")
+id: "Petitioner's contact info"
+question: |
+  Do you want to keep your child's address, phone, and email confidential?
+subquestion: |
+  The court needs to be able to reach you.
+
+  You can ask the to keep your address, phone, and email confidential, so that only court staff can see this information.
+fields:
+  - "Do you need to use DV-128?": petitioners_using_dv128
+    datatype: yesnoradio
+continue button field: petitioner_contact_info
+---
 id: Advocate's contact info
 sets:
   - advocate.address.address
@@ -685,10 +698,14 @@ fields:
   - Other phone: advocate.other_number
     datatype: al_international_phone
     required: False
+  - note: |
+      In order to e-file, you need to provide your email.
+    show if:
+      code: |
+        defined("can_check_efile") and can_check_efile
   - Email: advocate.email
     datatype: email
-    required: False
-
+    required: defined("can_check_efile") and can_check_efile
 ---
 id: For demo - which form do you want to complete?
 question: |
@@ -779,9 +796,9 @@ fields:
       - 'I am staying with a friend': friend
       - 'I am staying with family': family
       - 'I do not feel safe sharing where I am staying with anyone': unsafe to share
-    show if:
-      code: |
-         ask_show_address_to_police
+    #show if:
+    #  code: |
+    #     ask_show_address_to_police
   - code: |
       users[0].address_fields(show_if={'variable': 'show_address_to_police', 'is': 'fine'})
   - code: |
@@ -963,39 +980,6 @@ subquestion: |
   % for i in range(users.number()):
   ${users[i].name.familiar()}'s ${ users[i].relationship_to_advocate }
   % endfor
-  % endif
-  
-  Petitioners mailing address, phone and email:
-  % if petitioners_using_dv128:
-  Confidential - See form DV-128
-  % else:
-  % if who_needs_the_order in ('child', 'children'):
-  ${ advocate.address.on_one_line() }
-  % else:
-  ${ users[0].address.on_one_line() }
-  % endif
-  % endif
-  
-  phone number(s): 
-  % if petitioners_using_dv128:
-  Confidential - See form DV-128
-  % else:
-  % if who_needs_the_order in ('child', 'children'):
-  ${ advocate.phone_numbers() }
-  % else:
-  ${ users[0].phone_numbers() }
-  % endif
-  % endif
-
-  email: 
-   % if petitioners_using_dv128:
-  Confidential - See form DV-128
-  % else:
-  % if who_needs_the_order in ('child', 'children'):
-  ${ advocate.email }
-  % else:
-  ${ users[0].email }
-  % endif
   % endif
 
 
@@ -1289,7 +1273,7 @@ attachment:
       - "family_protective_orders_guardianship_case": Yes
       - "plaintiffs_petitioners": ${ users.comma_and_list() }
       - "defendant_respondents": ${ other_parties[0] }
-      - "other_named_case": ${""}
+      - "other_named_case": No
       - "other_case": No
       - "docket_number": ${docket_number}
       - "users": ${users[0]}
@@ -1322,16 +1306,7 @@ attachment:
           ${ users[0].email }
           % endif
           % endif
-      - "users_safe_phone": |
-          % if petitioners_using_dv128:
-          Confidential - See form DV-128
-          % else:
-          % if who_needs_the_order in ('child', 'children'):
-          ${ advocate.phone_numbers() }
-          % else:
-          ${ users[0].phone_numbers() }
-          % endif
-          % endif
+      - "users_safe_phone": ${ users[0].phone_number }
 ---
 attachment:
   name: DV-128 Confidential Contact Information Sheet
