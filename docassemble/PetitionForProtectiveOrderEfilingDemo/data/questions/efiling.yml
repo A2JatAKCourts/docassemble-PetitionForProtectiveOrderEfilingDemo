@@ -148,6 +148,15 @@ fields:
   - Do you want to e-file?: user_wants_efile
     datatype: yesnoradio
 ---
+id: you-will-not-be-able-to-efile
+question: |
+  You will *not* be able to e-file this document
+subquestion: |
+  Unfortunately, you cannot e-file this document through this program.
+
+  However, you can still continue and download a completed form at the end.
+continue button field: show_no_efile
+---
 id: submitted form
 question: |
   % if efile_resp.response_code == 200:

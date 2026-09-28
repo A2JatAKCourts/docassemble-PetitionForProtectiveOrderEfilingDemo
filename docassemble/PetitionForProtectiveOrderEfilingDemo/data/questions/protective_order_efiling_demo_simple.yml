@@ -32,8 +32,8 @@ metadata:
     - Prepare to attend a hearing if required.
   when_you_are_finished: |
     After you submit your petition, the court will review your request. If granted, the protective order will help keep you and your children safe from the respondent. You may need to attend a hearing for long-term orders.
-  efiling_enabled: False
-  integrated_efiling: False
+  efiling_enabled: True
+  integrated_efiling: True
   integrated_email_filing: False
   requires_notarization: False
   unlisted: False
@@ -1041,10 +1041,9 @@ question: |
 subquestion: |
   Thank you ${users}. Your form is ready to download and deliver.
 
-  Use the options on this page to view, download and send your form. Use the
-  "Edit answers" button to fix any mistakes.
+  Use the options on this page to view, download and send your form.
 
-  % if not (defined('efile') and efile):
+  % if can_check_efile and not (defined('efile') and efile):
   ${ action_button_html(url_ask([{'recompute': ['efile_and_email']}]), label='E-File', id_tag='efile-button', icon='file-export', size='md')}
   % endif
 
@@ -1055,7 +1054,6 @@ subquestion: |
 progress: 100
 buttons:
   - Start over: restart
----
 ---
 # ALDocument objects specify the metadata for each template
 objects:
