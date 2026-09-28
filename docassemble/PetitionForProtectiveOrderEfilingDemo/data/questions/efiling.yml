@@ -8,7 +8,7 @@ code: |
 code: |
   # Only one "trial count" for AK. The actual court selection is baked
   # into the case types
-  trial_court = "55da5b11-2bc4-4881-abd1-b0dfdb506bb1"
+  trial_court = next(iter([c for c in proxy_conn.get_courts(fileable_only=True, with_names=True).data if c['name'] == "Alaska Court"]), "")
 ---
 code: |
   allow_anon_user = True
@@ -140,10 +140,9 @@ code: |
   if tf_835_self_certification_no_notary_available.enabled:
     tf_835_self_certification_no_notary_available.completed
 
-
   # Slight hack: email is required if efiling, but we ask for it before we know if the users is efiling
   if users[0].is_form_filler and (not defined("users[0].email") or users[0].email is None or len(users[0].email) == 0):
-    del users[0].email
+    undefine("users[0].email")
     users[0].email
   if defined("advocate.is_form_filler") and advocate.is_form_filler and (not defined("advocate.email") or advocate.email is None or len(advocate.email) == 0):
     undefine("advocate.email")

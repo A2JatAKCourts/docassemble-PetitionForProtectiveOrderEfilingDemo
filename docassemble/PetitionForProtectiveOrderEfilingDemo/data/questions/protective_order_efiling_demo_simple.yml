@@ -647,7 +647,7 @@ fields:
         defined("can_check_efile") and can_check_efile
   - Email: users[0].email
     datatype: email
-    required:  defined("can_check_efile") and can_check_efile
+    required: defined("can_check_efile") and can_check_efile
 sets:
   - "users[0].phone_number"
   - "users[0].mailing_address.address"
