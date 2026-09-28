@@ -79,6 +79,7 @@ code: |
   court_location
 
   penultimate_screen
-  set_efile_variables
+  if can_check_efile:
+    set_efile_variables
   interview_order_finished = True
 ---
