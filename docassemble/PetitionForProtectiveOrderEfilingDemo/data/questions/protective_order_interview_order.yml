@@ -1,5 +1,5 @@
 comment: |
-  2026-09-24 - bryce
+  2026-09-25 - Caroline
 code: |
   can_check_efile
   if who_needs_the_order == 'myself':
@@ -19,7 +19,7 @@ code: |
     advocate.name.first
     advocate.party_type
     advocate.is_new
-    if advocate.is_dv_advocate:
+    if advocate.is_attorney:
       for i in range(users.number()):
         users[i].relationship_to_advocate = 'Petitioners advocate'
     else:

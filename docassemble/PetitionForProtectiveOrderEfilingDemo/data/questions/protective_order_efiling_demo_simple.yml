@@ -1,5 +1,5 @@
 comment: |
-  2026-09-24 - just for testing data points demo next week
+  2026-09-25 - after meeting w Bryce and Bonnie
   Working on conditions for stay away home address and putting on confidential sheets at the same time.
   This is a simple version of the protective order efiling demo.
   Building the gathering portion for adults, and children.
@@ -11,6 +11,7 @@ include:
   - docassemble.AKA2JBranding:custom_organization.yml
   - efiling.yml
   - protective_order_interview_order.yml
+  - docassemble.ALToolbox:phone-number-validation.yml
 ---
 metadata:
   title: >-
@@ -238,11 +239,8 @@ fields:
   - note: What is your name?
   - code: |
       advocate.name_fields()
-  - 'Are you a domestic violence advocate?': advocate.is_dv_advocate
-    datatype: yesnoradio
   - 'Are you an attorney?': advocate.is_attorney
     datatype: yesnoradio
-    show if: advocate.is_dv_advocate
   - Attorney bar number: advocate.bar_number
     show if:
       variable: advocate.is_attorney
@@ -251,7 +249,7 @@ fields:
     datatype: date
     max: ${ today() }
     show if:
-      variable: advocate.is_dv_advocate
+      variable: advocate.is_attorney
       is: false
 ---
 id: kickout when advocate is too young to file
@@ -505,12 +503,19 @@ fields:
   # - code: |
   #    other_parties[0].address_fields(hide_if={"variable": "do_not_know_respondent_address", "is": "False"}) 
   - Business phone: other_parties[0].work_number
+    datatype: al_international_phone
     required: False
   - Cell phone: other_parties[0].mobile_number
+    datatype: al_international_phone
     required: False
   - Home phone: other_parties[0].home_number
+    datatype: al_international_phone
     required: False
   - Message phone: other_parties[0].phone_number
+    datatype: al_international_phone
+    required: False
+  - Email: other_parties[0].email
+    datatype: email
     required: False
 ---
 id: Respdondent's adult contact info
@@ -534,13 +539,20 @@ fields:
     disable others: True
   - code: |
       adult_for_respondent.address_fields(required={'city': False, 'state': False, 'zip': False, 'address': False},country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
-  - cell phone: adult_for_respondent.mobile_number
+  - Cell phone: adult_for_respondent.mobile_number
+    datatype: al_international_phone
     required: False
-  - home phone: adult_for_respondent.home_number
+  - Home phone: adult_for_respondent.home_number
+    datatype: al_international_phone
     required: False
-  - work phone: adult_for_respondent.work_number
+  - Work phone: adult_for_respondent.work_number
+    datatype: al_international_phone
     required: False
-  - other phone: adult_for_respondent.other_number
+  - Other phone: adult_for_respondent.other_number
+    datatype: al_international_phone
+    required: False
+  - Email: adult_for_respondent.email
+    datatype: email
     required: False
 ---
 question: |
@@ -613,16 +625,20 @@ fields:
   - code: |
       users[0].mailing_address.address_fields(
         country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
-  - cell phone: users[0].mobile_number
+  - Cell phone: users[0].mobile_number
+    datatype: al_international_phone
     required: False
-  - home phone: users[0].home_number
+  - Home phone: users[0].home_number
+    datatype: al_international_phone
     required: False
-  - work phone: users[0].work_number
+  - Work phone: users[0].work_number
+    datatype: al_international_phone
     required: False
-  - other phone: users[0].other_number
+  - Other phone: users[0].other_number
+    datatype: al_international_phone
     required: False
-  - label: Email
-    field: "users[0].email"
+  - Email: users[0].email
+    datatype: email
     required: False
 sets:
   - "users[0].phone_number"
@@ -656,15 +672,20 @@ fields:
   - code: |
       advocate.address_fields(
         country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
-  - cell phone: advocate.mobile_number
+  - Cell phone: advocate.mobile_number
+    datatype: al_international_phone
     required: False
-  - home phone: advocate.home_number
+  - Home phone: advocate.home_number
+    datatype: al_international_phone
     required: False
-  - work phone: advocate.work_number
+  - Work phone: advocate.work_number
+    datatype: al_international_phone
     required: False
-  - other phone: advocate.other_number
+  - Other phone: advocate.other_number
+    datatype: al_international_phone
     required: False
-  - email: advocate.email
+  - Email: advocate.email
+    datatype: email
     required: False
 
 ---
@@ -1017,9 +1038,9 @@ objects:
 
   - dv_127_confidential_law_enforcement_information_sheet: ALDocument.using(title="DV-127 Confidential Law Enforcement Information Sheet", filename="dv_127_confidential_law_enforcement_information_sheet", enabled=True, has_addendum=False)
 
-  - dv_128_confidential_contact_information_sheet: ALDocument.using(title="DV-128-Confidential-Contact-Information-Sheet", filename="dv_128_confidential_contact_information_sheet", has_addendum=False)
+  - dv_128_confidential_contact_information_sheet: ALDocument.using(title="DV-128 Confidential Contact Information Sheet", filename="dv_128_confidential_contact_information_sheet", has_addendum=False)
 
-  - tf_835_self_certification_no_notary_available: ALDocument.using(title="TF 835 Self Certification No Notary Available", filename="tf_835_self_certification_no_notary_available", enabled=True, has_addendum=False)
+  - tf_835_self_certification_no_notary_available: ALDocument.using(title="TF-835 Self-Certification (No Notary Available)", filename="tf_835_self_certification_no_notary_available", enabled=True, has_addendum=False)
 ---
 # Bundles group the ALDocuments into separate downloads, such as for court and for the user
 objects:
@@ -1100,15 +1121,17 @@ attachment:
       - "petitioners_email_safe_yes": ${ users[0].email_safe }
       - "petitioners_email_safe_no": ${ not users[0].email_safe }
       - "petitioners_unavailable_times": ${ users[0].unavailable_times }
-      - "respondents_name": ${ other_parties }
+      - "respondents_name": ${ other_parties[0] }
       - "respondents_aliases": ${ other_parties[0].alias_text_list }
       - "respondents_is_child": ${ other_parties[0].age_in_years() < 18 }
       - "respondents_address": |
-          % if other_parties[0].age_in_years() < 18 and not defined('other_parties[0].address_on_one_line()'):
-          ${ adult_for_respondent.address.on_one_line() }
+          % if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent and not adult_for_respondent_address_unknown:
+          ${ adult_for_respondent.address.block() } (parent or guardian)
           % else:
-          ${ other_parties[0].address.on_one_line() }
+          % if not respondent_address_unknown:
+          ${ other_parties[0].address.block() }
           % endif
+          % endif          
       - "respondents_ssn_last_four": ${ other_parties[0].ssn_last_four }
       - "stay_away_from_respondents_residence_yes": ${ other_parties[0].stay_away_from_residence }
       - "stay_away_from_respondents_residence_no": ${ not other_parties[0].stay_away_from_residence }
@@ -1124,7 +1147,7 @@ attachment:
           % if defined('other_parties[0].other_number'):
           ${ phone_number_formatted(other_parties[0].other_number) }
           % if defined('other_parties[0].other_number_other'):
-          ${ other_parties[0].other_number_other }
+          ${ phone_number_formatted(other_parties[0].other_number_other) }
           % endif
           % endif
           % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.other_number'):
@@ -1230,12 +1253,12 @@ attachment:
   skip undefined: True
   tagged pdf: True
   fields:
-      - "trial_court_county": court_location
+      - "court_location": court_location
       - "cina_case": No
       - "in_the_matter_of": No
       - "family_protective_orders_guardianship_case": Yes
       - "plaintiffs_petitioners": ${ users.comma_and_list() }
-      - "defendant_respondents": ${other_parties}
+      - "defendant_respondents": ${ other_parties[0] }
       - "other_named_case": No
       - "other_case": No
       - "docket_number": ${docket_number}
@@ -1245,7 +1268,7 @@ attachment:
       - "illness_disability_transportation_hours_expense": No
       - "truefiling": Yes
       - "other_no_notary_reason_checked": No
-      - "other_no_notary_reason": something
+      - "other_no_notary_reason": ${""}
       - "signature_date": ${ today() }
       - "Signature_0": /s/ ${ users[0] }
       - "signature_location": Signed electronically through the court’s protective order portal at ${ court_location }, Alaska
@@ -1273,7 +1296,7 @@ attachment:
 ---
 attachment:
   name: DV-128 Confidential Contact Information Sheet
-  filename: DV-128-Confidential-Contact-Information-Sheet
+  filename: DV-128 Confidential Contact Information Sheet
   variable name: dv_128_confidential_contact_information_sheet[i]
   pdf template file: dv_128_confidential_contact_information_sheet.pdf
   skip undefined: True
@@ -1281,7 +1304,7 @@ attachment:
   fields:
       - "docket_number": ${ docket_number }
       - "petitioners_name": ${ users[0] }
-      - "respondents_name": ${ other_parties }
+      - "respondents_name": ${ other_parties[0] }
       - "users_is_petitioner": True
       - "users_is_respondent": False
       - "users_is_other": No
@@ -1313,7 +1336,7 @@ attachment:
   skip undefined: True
   pdf template file: dv_100m_petition_for_domestic_violence_protective_order.pdf
   fields:
-      - "trial_court_county": ${ court_location }
+      - "court_location": ${ court_location }
       - "petitioners_name": ${ users[0] }
       - "docket_number__1": ""
       - "petitioners_birthdate": ${ users[0].birthdate }
@@ -1358,7 +1381,7 @@ attachment:
           ${ users[0].address.on_one_line() }
           % endif
           % endif
-      - "respondents_name": ${ other_parties }
+      - "respondents_name": ${ other_parties[0] }
       - "respondents_birthdate": |
           % if knows_respondents_birthdate:
           ${ other_parties[0].birthdate }
@@ -1370,12 +1393,14 @@ attachment:
       - "respondents_parent_or_guardian_name__2": ${ adult_for_respondent }   
       - "short_term_yes": ${ term in  ('20 days', 'both') }
       - "long_term_yes": ${ term in  ( '1 year', 'both') }      
-      - "respondents_name_and_aliases": ${""}
+      - "respondents_name_and_aliases": ${ other_parties[0] }
       - "respondents_address_block": |
-          % if other_parties[0].age_in_years() < 18 and not defined('other_parties[0].address_on_one_line()'):
-          ${ adult_for_respondent.address.block() }
+          % if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent and not adult_for_respondent_address_unknown:
+          ${ adult_for_respondent.address.block() } (parent or guardian)
           % else:
+          % if not respondent_address_unknown:
           ${ other_parties[0].address.block() }
+          % endif
           % endif
       - "respondents_phone_number": |
           % if defined('other_parties[0].mobile_number'):
@@ -1457,7 +1482,7 @@ attachment:
   skip undefined: True
   pdf template file: dv_100_petition_for_domestic_violence_protective_order.pdf
   fields:
-      - "trial_court_county": ${ court_location }
+      - "court_location": ${ court_location }
       - "petitioners_name": ${ users[0] }
       - "docket_number__1": ""
       - "petitioners_birthdate": ${ users[0].birthdate }
@@ -1466,7 +1491,7 @@ attachment:
       - "advocate_birthdate__1":  ${ advocate.birthdate }
       - "petitioners1_advocate_relationship": ${ users[0].relationship_to_advocate }
       - "order_no_abuse_yes": Yes
-      - "respondents_name": ${ other_parties }
+      - "respondents_name": ${ other_parties[0] }
       - "respondents_birthdate": |
           % if knows_respondents_birthdate:
           ${ other_parties[0].birthdate }
@@ -1479,12 +1504,14 @@ attachment:
       - "short_term_yes": ${ term in  ('20 days', 'both') }
       - "long_term_yes": ${ term in  ( '1 year', 'both') }
       - "petitioners_address1_on_one_line": ${ users[0].address.on_one_line()}
-      - "respondents_name_and_aliases": ${""}
+      - "respondents_name_and_aliases": ${ other_parties[0] }
       - "respondents_address_block": |
-          % if other_parties[0].age_in_years() < 18 and not defined('other_parties[0].address_on_one_line()'):
-          ${ adult_for_respondent.address.block() }
+          % if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent and not adult_for_respondent_address_unknown:
+          ${ adult_for_respondent.address.block() } (parent or guardian)
           % else:
+          % if not respondent_address_unknown:
           ${ other_parties[0].address.block() }
+          % endif
           % endif
       - "respondents_phone_number": |
           % if defined('other_parties[0].mobile_number'):
@@ -1582,7 +1609,7 @@ attachment:
     - "advocate_name__1": ${ advocate.name }
     - "advocate_birthdate__1": ${ advocate.birthdate }
     - "petitioners_advocate_relationship": ${ users[0].relationship_to_advocate }
-    - "respondents_name": ${ other_parties }
+    - "respondents_name": ${ other_parties[0] }
     - "respondents_birthdate": |
         % if knows_respondents_birthdate:
         ${ other_parties[0].birthdate }
@@ -1712,7 +1739,7 @@ attachment:
     - "stay_away_exceptions": something
     - "other_protections_requested_checked": No
     - "other_protections_description": something
-    - "respondents_name_and_aliases": something
+    - "respondents_name_and_aliases": ${ other_parties[0] }
     - "respondents_mailing_address_on_one_line": something
     - "respondents_phone_number": |
           % if defined('other_parties[0].mobile_number'):
@@ -1774,7 +1801,7 @@ attachment:
     - "petitioners_advocate_relationship": ${ users[0].relationship_to_advocate }
     - "other_respondent_cases3": something
     - "other_respondent_cases3_court_location": something
-    - "respondents_name": ${ other_parties }
+    - "respondents_name": ${ other_parties[0] }
     - "respondents_birthdate": |
           % if knows_respondents_birthdate:
           ${ other_parties[0].birthdate }
@@ -1897,7 +1924,7 @@ attachment:
     - "stay_away_exceptions": something
     - "other_protections_requested_checked": No
     - "other_protections_description": something
-    - "respondents_name_and_aliases": something
+    - "respondents_name_and_aliases": ${ other_parties[0] }
     - "respondents_mailing_address_on_one_line": something
     - "respondents_phone_number": |
           % if defined('other_parties[0].mobile_number'):
