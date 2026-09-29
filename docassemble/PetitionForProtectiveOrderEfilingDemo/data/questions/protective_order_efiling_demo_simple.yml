@@ -1300,7 +1300,7 @@ attachment:
       - "other_no_notary_reason": ${""}
       - "signature_date": ${ today() }
       - "Signature_0": /s/ ${ users[0] }
-      - "signature_location": Signed electronically through the court’s protective order portal at ${ court_location }, Alaska
+      - "signature_location": E-signed on the court's portal at ${ court_location } Alaska
       - "users_safe_mailing_address": |
          % if petitioners_using_dv128:
          Confidential - See form DV-128
