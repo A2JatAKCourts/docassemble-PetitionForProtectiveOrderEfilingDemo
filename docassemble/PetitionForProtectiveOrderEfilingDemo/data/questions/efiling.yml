@@ -109,7 +109,6 @@ code: |
   if who_needs_the_order in ('child', 'children'):
     advocate.party_type
     advocate.is_new
-    advocate.is_form_filler = True
 
   other_parties[0].is_new
   other_parties[0].party_type
@@ -137,15 +136,6 @@ code: |
   if tf_835_self_certification_no_notary_available.enabled:
     tf_835_self_certification_no_notary_available.completed
 
-
-  # Slight hack: email is required if efiling, but we ask for it before we know if the users is efiling
-  if users[0].is_form_filler and (not defined("users[0].email") or users[0].email is None or len(users[0].email) == 0):
-    del users[0].email
-    users[0].email
-  if advocate.is_form_filler and (not defined("advocate.email") or advocate.email is None or len(advocate.email) == 0):
-    undefine("advocate.email")
-    advocate.email
-
   # Don't need to show fees, it will always be $0.
   tyler_payment_id = None
   review_fees = True 
@@ -154,6 +144,11 @@ code: |
   efile_user_reviewed = True
 
   all_required_screens_shown
+
+
+  # Slight hack: set the email here to be something anonymous if desired
+  if not defined("users[0].email") or users[0].email is None or len(users[0].email) == 0:
+    users[0].email = "not-real-email-to-anonymize@example.com"
 
   set_efile_variables = True
 ---
