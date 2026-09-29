@@ -1528,7 +1528,7 @@ attachment:
       - "petitioners_is_child_yes": ${ users[0].age_in_years() < 18 }
       - "advocate_name__1": ${ advocate.name }
       - "advocate_birthdate__1":  ${ advocate.birthdate }
-      - "petitioners1_advocate_relationship": ${ users[0].relationship_to_advocate }
+      - "petitioners_advocate_relationship": ${ users[0].relationship_to_advocate }
       - "order_no_abuse_yes": Yes
       - "respondents_name": ${ other_parties[0] }
       - "respondents_birthdate": |
