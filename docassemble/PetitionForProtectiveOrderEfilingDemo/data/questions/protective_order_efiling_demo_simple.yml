@@ -572,14 +572,14 @@ code: |
   else:
     users_with_aliases = str(users[0])
 ---
-id: Keeping filer's address confidential
-question: |
-  Do you need the court to keep your contact information confidential?
-subquestion: |
-  The court needs your mailing address so they can send court papers and notices about your hearing dates to you. If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties[0].name.familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties[0].name.familiar() }.
-fields:
-  - "Do you need to use DV-128?": petitioners_using_dv128_back
-    datatype: yesnoradio
+# id: Keeping filer's address confidential
+# question: |
+#   Do you need the court to keep your contact information confidential?
+# subquestion: |
+#   The court needs your mailing address so they can send court papers and notices about your hearing dates to you. If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties[0].name.familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties[0].name.familiar() }.
+# fields:
+#   - "Do you need to use DV-128?": petitioners_using_dv128_back
+#     datatype: yesnoradio
 ---
 code: |
   dv_128_confidential_contact_information_sheet.enabled = petitioners_using_dv128
@@ -680,7 +680,10 @@ Comment: |
 #     datatype: yesnoradio
 # continue button field: petitioner_contact_info
 ---
-id: Advocate's contact info
+Comment: |
+  2026-09-29, we ask this question of advocates i.e. parents or guardians of a child or children also, this condition limits - parent/guardians also need to be able to keep their information confidential. So do not want this condition. Id is in quotes because of apostrophe?
+# if: who_needs_the_order in ("myself", "self and child", "self and children")
+id: "Advocate's contact info"
 sets:
   - advocate.address.address
   - advocate.address.city
@@ -691,7 +694,18 @@ sets:
   - advocate.other_number
 question: |
   How can the court get in touch with you?
+
+subquestion: |
+  The court needs your mailing address so they can send court papers and notices about hearing dates to you. 
+  
+  If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties[0].name.familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties[0].name.familiar() }.  
 fields:
+  - note: |
+      The court needs to be able to reach you.
+
+      You can ask the to keep your address, phone, and email confidential, so that only court staff can see this information.
+  - "Do you the court to keep your information confidential?": petitioners_using_dv128
+    datatype: yesnoradio
   - code: |
       advocate.address_fields(
         country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
@@ -1370,12 +1384,24 @@ attachment:
       - "docket_number": ${ docket_number }
       - "petitioners_name": ${ users[0] }
       - "respondents_name": ${ other_parties[0] }
-      - "users_is_petitioner": True
+      - "users_is_petitioner": ${ who_needs_order in ('myself','self and child','self and children') }
       - "users_is_respondent": False
-      - "users_is_other": No
-      - "users_other_role": ${ "" }
+      - "users_is_other": ${ who_needs_order in ('child','children') }
+      - "users_other_role": |
+          % if who_needs_order in ('child', 'children'):
+          ${ users[0].relationship_to_advocate } of ${ users[0] }
+          % else:
+          ${ "" }
+          % endif   
       - "users_name_and_aliases": ${users_with_aliases }
-      - "users_phone_numbers": ${ users[0].phone_numbers() }
+      - "users_phone_numbers": |
+          % if who_needs_the_order in ('child', 'children'):
+          ${ users[0].relationship_to_advocate } 
+          ${ advocate.phone_numbers() }
+          % else:
+          ${ users[0].phone_numbers() }
+          % endif
+          ${ users[0].phone_numbers() }
       - "users_email": |
           % if who_needs_the_order in ('child', 'children'):
           ${ advocate.email }
@@ -1389,7 +1415,12 @@ attachment:
           ${ users[0].mailing_address.on_one_line() }
           % endif
       - "users_signature_date": ${ today() }
-      - "users_name": ${ users[0] }
+      - "users_name": |
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.name } ${ users[0].relationship_to_advocate }
+          % else:
+          ${ users[0] }
+          % endif
       - "users_signature": |
           ${ user.signature }
 ---
