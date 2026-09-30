@@ -989,6 +989,22 @@ subquestion: |
 
   ## Petitioner
 
+  -  **users_is_petitioner** checkbox =  (who_needs_the_order in ('myself','self and child','self and children')): ${ who_needs_the_order in ('myself','self and child','self and children') }
+  
+  - **users_is_respondent** : False
+  
+  - **users_is_other** checkbox = (who_needs_the_order in ('child','children')): ${ who_needs_the_order in ('child','children') }
+  
+  - **users_other_role** code to give either nothing or users[0].relationship_to_advocate:
+      % if who_needs_the_order in ('child', 'children'):
+      ${ users[0].relationship_to_advocate } of ${ users[0] }
+      % else:
+      ${ "" }
+      % endif   
+
+
+
+  
   * Who needs the order: ${ who_needs_the_order }
   * Petitioner's name: ${ users }
   * Parent or Guardian or petitioner filling out for themself: ${ al_person_answering }
@@ -1384,11 +1400,11 @@ attachment:
       - "docket_number": ${ docket_number }
       - "petitioners_name": ${ users[0] }
       - "respondents_name": ${ other_parties[0] }
-      - "users_is_petitioner": ${ who_needs_order in ('myself','self and child','self and children') }
+      - "users_is_petitioner": ${ who_needs_the_order in ('myself','self and child','self and children') }
       - "users_is_respondent": False
-      - "users_is_other": ${ who_needs_order in ('child','children') }
+      - "users_is_other": ${ who_needs_the_order in ('child','children') }
       - "users_other_role": |
-          % if who_needs_order in ('child', 'children'):
+          % if who_needs_the_order in ('child', 'children'):
           ${ users[0].relationship_to_advocate } of ${ users[0] }
           % else:
           ${ "" }
@@ -1417,7 +1433,7 @@ attachment:
       - "users_signature_date": ${ today() }
       - "users_name": |
           % if who_needs_the_order in ('child', 'children'):
-          ${ advocate.name } ${ users[0].relationship_to_advocate }
+          ${ advocate.name }
           % else:
           ${ users[0] }
           % endif
