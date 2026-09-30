@@ -39,3 +39,8 @@ sdist/
 var/
 wheels/
 share/python-wheels/
+
+# Kiln stuff
+alkiln-*
+cucumber-report.txt
+runtime_config.json
