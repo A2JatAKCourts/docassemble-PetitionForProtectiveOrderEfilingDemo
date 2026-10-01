@@ -700,12 +700,6 @@ subquestion: |
   
   If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties[0].name.familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties[0].name.familiar() }.  
 fields:
-  - note: |
-      The court needs to be able to reach you.
-
-      You can ask the to keep your address, phone, and email confidential, so that only court staff can see this information.
-  - "Do you the court to keep your information confidential?": petitioners_using_dv128
-    datatype: yesnoradio
   - code: |
       advocate.address_fields(
         country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
