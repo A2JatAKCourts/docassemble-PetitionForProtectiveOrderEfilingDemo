@@ -1,5 +1,5 @@
 comment: |
-  2026-09-25 - Caroline
+  2026-10-02 - Caroline - changed ask for users address to users mailing_address l. 63
 code: |
   if who_needs_the_order == 'myself':
     users.target_number = 1
@@ -60,7 +60,7 @@ code: |
   if who_needs_the_order in ('child', 'children'):
     advocate.address.address
   else: 
-    users[0].address.address
+    users[0].mailing_address.address
 
   if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent:
   # if do_not_know_respondent_address:
