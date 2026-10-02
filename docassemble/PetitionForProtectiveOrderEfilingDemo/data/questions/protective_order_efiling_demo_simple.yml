@@ -647,7 +647,7 @@ fields:
         defined("can_check_efile") and can_check_efile
   - Email: users[0].email
     datatype: email
-    required:  defined("can_check_efile") and can_check_efile
+    required: defined("can_check_efile") and can_check_efile
 sets:
   - "users[0].phone_number"
   - "users[0].mailing_address.address"
@@ -822,10 +822,10 @@ fields:
     #show if:
     #  code: |
     #     ask_show_address_to_police
-  - code: |
-      users[0].address_fields(show_if={'variable': 'show_address_to_police', 'is': 'fine'})
-  - code: |
-      users[0].address_fields(show_if={ 'code': "not ask_show_address_to_police and show_address_to_police == 'fine'" })
+ # - code: |
+ #     users[0].address_fields(show_if={'variable': 'show_address_to_police', 'is': 'fine'})
+ # - code: |
+ #     users[0].address_fields(show_if={ 'code': "not ask_show_address_to_police and show_address_to_police == 'fine'" })
 ---
 id: court location
 question: |
