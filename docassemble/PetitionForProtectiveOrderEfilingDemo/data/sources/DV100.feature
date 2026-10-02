@@ -28,11 +28,11 @@ Feature: I need a protective order
       | users[0].mailing_address.state   | AK                      |         |
       | users[0].mailing_address.unit    |                         |         |
       | users[0].mailing_address.zip     | 99508                   |         |
-      | advocate.home_number             | 2248163888              |         |
-      | advocate.mobile_number           | 9733301265              |         |
-      | advocate.other_number            | 7322970338              |         |
-      | advocate.work_number             | 9155240816              |         |
-      | advocate.email                   | edavis@gmail.com        |         |
+      | users[0].home_number             | 2248163888              |         |
+      | users[0].mobile_number           | 9733301265              |         |
+      | users[0].other_number            | 7322970338              |         |
+      | users[0].work_number             | 9155240816              |         |
+      | users[0].email                   | edavis@gmail.com        |         |
       | respondent_address_unknown       | False                   |         |
       | other_parties[0].address.address | 7894 South Ogard Street |         |
       | other_parties[0].address.city    | Wasilla                 |         |
