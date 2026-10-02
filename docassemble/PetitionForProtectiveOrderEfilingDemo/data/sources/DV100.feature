@@ -53,7 +53,6 @@ Feature: I need a protective order
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
-  adult_for_respondent_address_unknown
 
   @2AI
   Scenario: 2AI I am an adult who needs a 20 day dv 100 respondent is child knows_adult_for_respondent and not respondent_address_unknown
