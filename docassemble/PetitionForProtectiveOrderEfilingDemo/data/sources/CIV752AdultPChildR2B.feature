@@ -1,4 +1,7 @@
-Feature: Protective order - CIV-752 - tab 2
+@CIV7522
+  # 2026-10-04
+
+Feature: Protective order - CIV-752 Adult Petitioner Child Respondent - tab 2
 
   @2BI
   Scenario: 2BI protective order petition - 20 days
