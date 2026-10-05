@@ -2,7 +2,7 @@ name: DV100 ChildP AdultR 3A ALKiln v5 Sandbox tests
 # See https://assemblyline.suffolklitlab.org/docs/components/ALKiln/setup#sandbox-details
 
 on:
-  push:
+#  push:
   pull_request:
   workflow_dispatch:
     inputs:
