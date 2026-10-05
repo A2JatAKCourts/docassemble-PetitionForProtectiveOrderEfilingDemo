@@ -2,7 +2,7 @@ name: CIV750 ChildP AdultR 3C ALKiln v5 Sandbox tests
 # See https://assemblyline.suffolklitlab.org/docs/components/ALKiln/setup#sandbox-details
 
 on:
-#  push:
+  push:
   pull_request:
   workflow_dispatch:
     inputs:
