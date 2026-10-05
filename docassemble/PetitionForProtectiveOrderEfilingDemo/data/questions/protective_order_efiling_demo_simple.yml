@@ -1029,7 +1029,7 @@ subquestion: |
   % if who_needs_the_order in ('child', 'children'):
   ${ advocate.address.on_one_line() }
   % else:
-  ${ users[0].address.on_one_line() }
+  ${ users[0].mailing_address.on_one_line() }
   % endif
   % endif
   
