@@ -50,7 +50,7 @@ Feature: Protective order - CIV-750 Child Petitioner Adult Respondent - tab 3
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "sexual_assault_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -92,7 +92,7 @@ Feature: Protective order - CIV-750 Child Petitioner Adult Respondent - tab 3
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "sexual_assault_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -144,7 +144,7 @@ Feature: Protective order - CIV-750 Child Petitioner Adult Respondent - tab 3
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "sexual_assault_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -185,7 +185,7 @@ Feature: Protective order - CIV-750 Child Petitioner Adult Respondent - tab 3
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "sexual_assault_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -236,7 +236,7 @@ Feature: Protective order - CIV-750 Child Petitioner Adult Respondent - tab 3
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "sexual_assault_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -278,7 +278,7 @@ Feature: Protective order - CIV-750 Child Petitioner Adult Respondent - tab 3
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "sexual_assault_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -330,7 +330,7 @@ Feature: Protective order - CIV-750 Child Petitioner Adult Respondent - tab 3
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "sexual_assault_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -371,7 +371,7 @@ Feature: Protective order - CIV-750 Child Petitioner Adult Respondent - tab 3
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "sexual_assault_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -422,7 +422,7 @@ Feature: Protective order - CIV-750 Child Petitioner Adult Respondent - tab 3
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "sexual_assault_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -464,7 +464,7 @@ Feature: Protective order - CIV-750 Child Petitioner Adult Respondent - tab 3
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "sexual_assault_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -516,7 +516,7 @@ Feature: Protective order - CIV-750 Child Petitioner Adult Respondent - tab 3
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "sexual_assault_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -557,7 +557,7 @@ Feature: Protective order - CIV-750 Child Petitioner Adult Respondent - tab 3
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "sexual_assault_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
