@@ -1,5 +1,5 @@
 @CIV7522
-  # 2026-10-05
+  # 2026-10-06
 
 Feature: Protective order - CIV-752 Adult Petitioner Child Respondent - tab 2
 
@@ -859,7 +859,7 @@ Feature: Protective order - CIV-752 Adult Petitioner Child Respondent - tab 2
       | other_parties[0].work_number | 9072000721 | |
       | other_parties[0].other_number | 9072000723 | |
       | other_parties[0].email | hparker@gmail.com | |
-      | court_location | St. Paul Island | |
+      | court_location | Saint Paul Island | |
       | penultimate_screen | True | |
       | user_wants_efile | False | |
       | can_check_efile | False | |

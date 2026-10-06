@@ -883,7 +883,7 @@ dropdown:
   - Seward
   - Sitka
   - Skagway
-  - St. Paul Island
+  - Saint Paul Island
   - Tok
   - Unalakleet
   - Unalaska
@@ -933,6 +933,8 @@ code: |
       court_code = '3GL'
   elif court_location == 'Homer':
       court_code = '3HO'
+  elif court_location == 'Kake':
+      court_code = '1PE'
   elif court_location == 'Kenai':
       court_code = '3KN'
   elif court_location == 'Kodiak':

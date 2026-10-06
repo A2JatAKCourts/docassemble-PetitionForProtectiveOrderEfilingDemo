@@ -1,5 +1,5 @@
 @DV100m6
-  # 2026-10-05
+  # 2026-10-06
 
 Feature: Protective order - DV-100m adult and child petitioners, child respondent - tab 6
 
@@ -616,7 +616,7 @@ Feature: Protective order - DV-100m adult and child petitioners, child responden
       | petitioners_using_dv128 | True | |
       | users[0].mailing_address.address | 2648 Mountain Street | |
       | users[0].mailing_address.unit |  | |
-      | users[0].mailing_address.city | St. Paul Island | |
+      | users[0].mailing_address.city | Saint Paul Island | |
       | users[0].mailing_address.state | AK | |
       | users[0].mailing_address.zip | 99660 | |
       | users[0].mobile_number | 9075551132 | |
@@ -2193,7 +2193,7 @@ Feature: Protective order - DV-100m adult and child petitioners, child responden
       | petitioners_using_dv128 | False | |
       | users[0].mailing_address.address | 8968 Mountain Court | |
       | users[0].mailing_address.unit |  | |
-      | users[0].mailing_address.city | St. Paul Island | |
+      | users[0].mailing_address.city | Saint Paul Island | |
       | users[0].mailing_address.state | AK | |
       | users[0].mailing_address.zip | 99660 | |
       | users[0].mobile_number | 9075551452 | |
@@ -2678,7 +2678,7 @@ Feature: Protective order - DV-100m adult and child petitioners, child responden
       | users[0].other_number | 9075551551 | |
       | users[0].email | ncallahan@gmail.com | |
       | respondent_address_unknown | True | |
-      | court_location | St. Paul Island | |
+      | court_location | Saint Paul Island | |
       | penultimate_screen | True | |
       | user_wants_efile | False | |
       | can_check_efile | False | |
@@ -3000,7 +3000,7 @@ Feature: Protective order - DV-100m adult and child petitioners, child responden
       | petitioners_using_dv128 | True | |
       | users[0].mailing_address.address | 12128 Mountain Lane | |
       | users[0].mailing_address.unit |  | |
-      | users[0].mailing_address.city | St. Paul Island | |
+      | users[0].mailing_address.city | Saint Paul Island | |
       | users[0].mailing_address.state | AK | |
       | users[0].mailing_address.zip | 99660 | |
       | users[0].mobile_number | 9075551612 | |
@@ -3771,7 +3771,7 @@ Feature: Protective order - DV-100m adult and child petitioners, child responden
       | petitioners_using_dv128 | True | |
       | users[0].mailing_address.address | 15288 Mountain Drive | |
       | users[0].mailing_address.unit |  | |
-      | users[0].mailing_address.city | St. Paul Island | |
+      | users[0].mailing_address.city | Saint Paul Island | |
       | users[0].mailing_address.state | AK | |
       | users[0].mailing_address.zip | 99660 | |
       | users[0].mobile_number | 9075551772 | |
@@ -4583,7 +4583,7 @@ Feature: Protective order - DV-100m adult and child petitioners, child responden
       | petitioners_using_dv128 | False | |
       | users[0].mailing_address.address | 18448 Mountain Way | |
       | users[0].mailing_address.unit |  | |
-      | users[0].mailing_address.city | St. Paul Island | |
+      | users[0].mailing_address.city | Saint Paul Island | |
       | users[0].mailing_address.state | AK | |
       | users[0].mailing_address.zip | 99660 | |
       | users[0].mobile_number | 9075551932 | |
