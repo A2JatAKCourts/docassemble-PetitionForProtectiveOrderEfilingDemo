@@ -3,7 +3,7 @@ name: DV100 AdultP AdultR 1A ALKiln v5 Sandbox tests
 
 on:
 #  push:
-  pull_request:
+  # pull_request:
   workflow_dispatch:
     inputs:
       tags:

@@ -3,7 +3,7 @@ name: CIV752 ChildP ChildR 4B ALKiln v5 Sandbox tests
 
 on:
 #  push:
-  pull_request:
+  # pull_request:
   workflow_dispatch:
     inputs:
       tags:

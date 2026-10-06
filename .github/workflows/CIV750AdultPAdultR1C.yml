@@ -3,7 +3,7 @@ name: CIV750 AdultP AdultR 1C ALKiln v5 Sandbox tests
 
 on:
 #  push:
-  pull_request:
+  # pull_request:
   workflow_dispatch:
     inputs:
       tags:
