@@ -705,7 +705,7 @@ fields:
       The court needs to be able to reach you.
 
       You can ask the to keep your address, phone, and email confidential, so that only court staff can see this information.
-  - "Do you the court to keep your information confidential?": petitioners_using_dv128
+  - "Do you need the court to keep your information confidential?": petitioners_using_dv128
     datatype: yesnoradio
   - code: |
       advocate.address_fields(

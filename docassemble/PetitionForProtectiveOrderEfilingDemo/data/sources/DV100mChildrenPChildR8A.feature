@@ -33,11 +33,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 145 Birch Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Bethel | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99559 | |
+      | advocate.address.address | 145 Birch Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Bethel | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99559 | |
       | advocate.mobile_number | 9075551000 | |
       | advocate.home_number | 9075551001 | |
       | advocate.work_number | 9075551002 | |
@@ -59,7 +59,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -93,11 +93,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 223 Spruce Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Kake | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99830 | |
+      | advocate.address.address | 223 Spruce Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Kake | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99830 | |
       | advocate.mobile_number | 9075551008 | |
       | advocate.home_number | 9075551009 | |
       | advocate.work_number | 9075551010 | |
@@ -119,7 +119,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -156,11 +156,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 301 Cedar Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Skagway | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99840 | |
+      | advocate.address.address | 301 Cedar Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Skagway | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99840 | |
       | advocate.mobile_number | 9075551016 | |
       | advocate.home_number | 9075551017 | |
       | advocate.work_number | 9075551018 | |
@@ -182,7 +182,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -213,11 +213,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 379 Raven Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Delta Junction | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99737 | |
+      | advocate.address.address | 379 Raven Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Delta Junction | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99737 | |
       | advocate.mobile_number | 9075551024 | |
       | advocate.home_number | 9075551025 | |
       | advocate.work_number | 9075551026 | |
@@ -229,7 +229,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -261,11 +261,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 418 Glacier Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Haines | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99827 | |
+      | advocate.address.address | 418 Glacier Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Haines | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99827 | |
       | advocate.mobile_number | 9075551028 | |
       | advocate.home_number | 9075551029 | |
       | advocate.work_number | 9075551030 | |
@@ -278,7 +278,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -314,11 +314,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 457 Aurora Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Ketchikan | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99901 | |
+      | advocate.address.address | 457 Aurora Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Ketchikan | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99901 | |
       | advocate.mobile_number | 9075551032 | |
       | advocate.home_number | 9075551033 | |
       | advocate.work_number | 9075551034 | |
@@ -340,7 +340,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -372,11 +372,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 535 Tundra Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Tok | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99780 | |
+      | advocate.address.address | 535 Tundra Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Tok | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99780 | |
       | advocate.mobile_number | 9075551040 | |
       | advocate.home_number | 9075551041 | |
       | advocate.work_number | 9075551042 | |
@@ -398,7 +398,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -428,11 +428,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 613 Mountain Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Emmonak | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99581 | |
+      | advocate.address.address | 613 Mountain Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Emmonak | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99581 | |
       | advocate.mobile_number | 9075551048 | |
       | advocate.home_number | 9075551049 | |
       | advocate.work_number | 9075551050 | |
@@ -454,7 +454,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -491,11 +491,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 691 Salmon Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Kotzebue | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99752 | |
+      | advocate.address.address | 691 Salmon Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Kotzebue | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99752 | |
       | advocate.mobile_number | 9075551056 | |
       | advocate.home_number | 9075551057 | |
       | advocate.work_number | 9075551058 | |
@@ -518,7 +518,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -554,11 +554,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 769 Ptarmigan Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Unalaska | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99685 | |
+      | advocate.address.address | 769 Ptarmigan Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Unalaska | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99685 | |
       | advocate.mobile_number | 9075551064 | |
       | advocate.home_number | 9075551065 | |
       | advocate.work_number | 9075551066 | |
@@ -571,7 +571,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -601,11 +601,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 808 Birch Road | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Aniak | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99557 | |
+      | advocate.address.address | 808 Birch Road | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Aniak | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99557 | |
       | advocate.mobile_number | 9075551068 | |
       | advocate.home_number | 9075551069 | |
       | advocate.work_number | 9075551070 | |
@@ -627,7 +627,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -661,11 +661,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 886 Spruce Road | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Juneau | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99801 | |
+      | advocate.address.address | 886 Spruce Road | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Juneau | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99801 | |
       | advocate.mobile_number | 9075551076 | |
       | advocate.home_number | 9075551077 | |
       | advocate.work_number | 9075551078 | |
@@ -677,7 +677,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -713,11 +713,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 925 Willow Road | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Nenana | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99760 | |
+      | advocate.address.address | 925 Willow Road | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Nenana | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99760 | |
       | advocate.mobile_number | 9075551080 | |
       | advocate.home_number | 9075551081 | |
       | advocate.work_number | 9075551082 | |
@@ -740,7 +740,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -773,11 +773,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1003 Hemlock Road | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Valdez | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99686 | |
+      | advocate.address.address | 1003 Hemlock Road | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Valdez | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99686 | |
       | advocate.mobile_number | 9075551088 | |
       | advocate.home_number | 9075551089 | |
       | advocate.work_number | 9075551090 | |
@@ -800,7 +800,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -832,11 +832,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1081 Glacier Road | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Glennallen | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99588 | |
+      | advocate.address.address | 1081 Glacier Road | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Glennallen | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99588 | |
       | advocate.mobile_number | 9075551096 | |
       | advocate.home_number | 9075551097 | |
       | advocate.work_number | 9075551098 | |
@@ -858,7 +858,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -891,11 +891,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1159 Aspen Road | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Palmer | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99645 | |
+      | advocate.address.address | 1159 Aspen Road | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Palmer | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99645 | |
       | advocate.mobile_number | 9075551104 | |
       | advocate.home_number | 9075551105 | |
       | advocate.work_number | 9075551106 | |
@@ -918,7 +918,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -955,11 +955,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1237 Harbor Road | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Yakutat | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99689 | |
+      | advocate.address.address | 1237 Harbor Road | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Yakutat | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99689 | |
       | advocate.mobile_number | 9075551112 | |
       | advocate.home_number | 9075551113 | |
       | advocate.work_number | 9075551114 | |
@@ -972,7 +972,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -1005,11 +1005,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1276 Mountain Road | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Dillingham | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99576 | |
+      | advocate.address.address | 1276 Mountain Road | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Dillingham | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99576 | |
       | advocate.mobile_number | 9075551116 | |
       | advocate.home_number | 9075551117 | |
       | advocate.work_number | 9075551118 | |
@@ -1022,7 +1022,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -1057,11 +1057,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1315 Meadow Road | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Homer | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99603 | |
+      | advocate.address.address | 1315 Meadow Road | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Homer | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99603 | |
       | advocate.mobile_number | 9075551120 | |
       | advocate.home_number | 9075551121 | |
       | advocate.work_number | 9075551122 | |
@@ -1073,7 +1073,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -1104,11 +1104,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1354 Salmon Road | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Kodiak | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99615 | |
+      | advocate.address.address | 1354 Salmon Road | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Kodiak | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99615 | |
       | advocate.mobile_number | 9075551124 | |
       | advocate.home_number | 9075551125 | |
       | advocate.work_number | 9075551126 | |
@@ -1120,7 +1120,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -1153,11 +1153,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1393 Tamarack Road | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Prince of Wales | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99921 | |
+      | advocate.address.address | 1393 Tamarack Road | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Prince of Wales | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99921 | |
       | advocate.mobile_number | 9075551128 | |
       | advocate.home_number | 9075551129 | |
       | advocate.work_number | 9075551130 | |
@@ -1179,7 +1179,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -1216,11 +1216,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1471 Birch Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Angoon | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99820 | |
+      | advocate.address.address | 1471 Birch Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Angoon | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99820 | |
       | advocate.mobile_number | 9075551136 | |
       | advocate.home_number | 9075551137 | |
       | advocate.work_number | 9075551138 | |
@@ -1242,7 +1242,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -1272,11 +1272,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1549 Spruce Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Hooper Bay | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99604 | |
+      | advocate.address.address | 1549 Spruce Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Hooper Bay | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99604 | |
       | advocate.mobile_number | 9075551144 | |
       | advocate.home_number | 9075551145 | |
       | advocate.work_number | 9075551146 | |
@@ -1298,7 +1298,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -1333,11 +1333,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1627 Cedar Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Seward | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99664 | |
+      | advocate.address.address | 1627 Cedar Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Seward | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99664 | |
       | advocate.mobile_number | 9075551152 | |
       | advocate.home_number | 9075551153 | |
       | advocate.work_number | 9075551154 | |
@@ -1349,7 +1349,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -1380,11 +1380,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1666 Hemlock Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Utqiagvik | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99723 | |
+      | advocate.address.address | 1666 Hemlock Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Utqiagvik | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99723 | |
       | advocate.mobile_number | 9075551156 | |
       | advocate.home_number | 9075551157 | |
       | advocate.work_number | 9075551158 | |
@@ -1396,7 +1396,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -1431,11 +1431,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1705 Raven Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Bethel | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99559 | |
+      | advocate.address.address | 1705 Raven Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Bethel | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99559 | |
       | advocate.mobile_number | 9075551160 | |
       | advocate.home_number | 9075551161 | |
       | advocate.work_number | 9075551162 | |
@@ -1457,7 +1457,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -1490,11 +1490,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1783 Aurora Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Kake | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99830 | |
+      | advocate.address.address | 1783 Aurora Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Kake | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99830 | |
       | advocate.mobile_number | 9075551168 | |
       | advocate.home_number | 9075551169 | |
       | advocate.work_number | 9075551170 | |
@@ -1507,7 +1507,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -1540,11 +1540,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1822 Aspen Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Nome | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99762 | |
+      | advocate.address.address | 1822 Aspen Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Nome | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99762 | |
       | advocate.mobile_number | 9075551172 | |
       | advocate.home_number | 9075551173 | |
       | advocate.work_number | 9075551174 | |
@@ -1557,7 +1557,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -1593,11 +1593,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1861 Tundra Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Skagway | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99840 | |
+      | advocate.address.address | 1861 Tundra Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Skagway | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99840 | |
       | advocate.mobile_number | 9075551176 | |
       | advocate.home_number | 9075551177 | |
       | advocate.work_number | 9075551178 | |
@@ -1619,7 +1619,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -1654,11 +1654,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1939 Mountain Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Delta Junction | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99737 | |
+      | advocate.address.address | 1939 Mountain Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Delta Junction | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99737 | |
       | advocate.mobile_number | 9075551184 | |
       | advocate.home_number | 9075551185 | |
       | advocate.work_number | 9075551186 | |
@@ -1670,7 +1670,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -1706,11 +1706,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1978 Meadow Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Haines | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99827 | |
+      | advocate.address.address | 1978 Meadow Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Haines | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99827 | |
       | advocate.mobile_number | 9075551188 | |
       | advocate.home_number | 9075551189 | |
       | advocate.work_number | 9075551190 | |
@@ -1723,7 +1723,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -1756,11 +1756,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 2017 Salmon Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Ketchikan | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99901 | |
+      | advocate.address.address | 2017 Salmon Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Ketchikan | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99901 | |
       | advocate.mobile_number | 9075551192 | |
       | advocate.home_number | 9075551193 | |
       | advocate.work_number | 9075551194 | |
@@ -1783,7 +1783,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -1815,11 +1815,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 2095 Ptarmigan Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Tok | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99780 | |
+      | advocate.address.address | 2095 Ptarmigan Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Tok | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99780 | |
       | advocate.mobile_number | 9075551200 | |
       | advocate.home_number | 9075551201 | |
       | advocate.work_number | 9075551202 | |
@@ -1842,7 +1842,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -1879,11 +1879,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 2173 Alder Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Emmonak | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99581 | |
+      | advocate.address.address | 2173 Alder Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Emmonak | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99581 | |
       | advocate.mobile_number | 9075551208 | |
       | advocate.home_number | 9075551209 | |
       | advocate.work_number | 9075551210 | |
@@ -1896,7 +1896,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -1932,11 +1932,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 2212 Spruce Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Hoonah | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99829 | |
+      | advocate.address.address | 2212 Spruce Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Hoonah | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99829 | |
       | advocate.mobile_number | 9075551212 | |
       | advocate.home_number | 9075551213 | |
       | advocate.work_number | 9075551214 | |
@@ -1959,7 +1959,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -1995,11 +1995,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 2290 Cedar Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Sand Point | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99661 | |
+      | advocate.address.address | 2290 Cedar Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Sand Point | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99661 | |
       | advocate.mobile_number | 9075551220 | |
       | advocate.home_number | 9075551221 | |
       | advocate.work_number | 9075551222 | |
@@ -2022,7 +2022,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -2053,11 +2053,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 2368 Raven Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Aniak | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99557 | |
+      | advocate.address.address | 2368 Raven Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Aniak | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99557 | |
       | advocate.mobile_number | 9075551228 | |
       | advocate.home_number | 9075551229 | |
       | advocate.work_number | 9075551230 | |
@@ -2079,7 +2079,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -2109,11 +2109,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 2446 Aurora Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Juneau | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99801 | |
+      | advocate.address.address | 2446 Aurora Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Juneau | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99801 | |
       | advocate.mobile_number | 9075551236 | |
       | advocate.home_number | 9075551237 | |
       | advocate.work_number | 9075551238 | |
@@ -2125,7 +2125,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -2157,11 +2157,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 2485 Aspen Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Nenana | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99760 | |
+      | advocate.address.address | 2485 Aspen Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Nenana | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99760 | |
       | advocate.mobile_number | 9075551240 | |
       | advocate.home_number | 9075551241 | |
       | advocate.work_number | 9075551242 | |
@@ -2183,7 +2183,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -2217,11 +2217,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 2563 Harbor Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Valdez | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99686 | |
+      | advocate.address.address | 2563 Harbor Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Valdez | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99686 | |
       | advocate.mobile_number | 9075551248 | |
       | advocate.home_number | 9075551249 | |
       | advocate.work_number | 9075551250 | |
@@ -2243,7 +2243,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -2277,11 +2277,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 2641 Meadow Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Glennallen | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99588 | |
+      | advocate.address.address | 2641 Meadow Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Glennallen | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99588 | |
       | advocate.mobile_number | 9075551256 | |
       | advocate.home_number | 9075551257 | |
       | advocate.work_number | 9075551258 | |
@@ -2303,7 +2303,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -2336,11 +2336,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 2719 Tamarack Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Palmer | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99645 | |
+      | advocate.address.address | 2719 Tamarack Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Palmer | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99645 | |
       | advocate.mobile_number | 9075551264 | |
       | advocate.home_number | 9075551265 | |
       | advocate.work_number | 9075551266 | |
@@ -2353,7 +2353,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -2385,11 +2385,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 2758 Ptarmigan Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | St. Paul Island | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99660 | |
+      | advocate.address.address | 2758 Ptarmigan Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | St. Paul Island | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99660 | |
       | advocate.mobile_number | 9075551268 | |
       | advocate.home_number | 9075551269 | |
       | advocate.work_number | 9075551270 | |
@@ -2402,7 +2402,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -2439,11 +2439,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 2797 Birch Way | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Yakutat | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99689 | |
+      | advocate.address.address | 2797 Birch Way | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Yakutat | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99689 | |
       | advocate.mobile_number | 9075551272 | |
       | advocate.home_number | 9075551273 | |
       | advocate.work_number | 9075551274 | |
@@ -2466,7 +2466,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -2498,11 +2498,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 2875 Spruce Way | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Homer | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99603 | |
+      | advocate.address.address | 2875 Spruce Way | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Homer | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99603 | |
       | advocate.mobile_number | 9075551280 | |
       | advocate.home_number | 9075551281 | |
       | advocate.work_number | 9075551282 | |
@@ -2524,7 +2524,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -2559,11 +2559,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 2953 Cedar Way | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Prince of Wales | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99921 | |
+      | advocate.address.address | 2953 Cedar Way | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Prince of Wales | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99921 | |
       | advocate.mobile_number | 9075551288 | |
       | advocate.home_number | 9075551289 | |
       | advocate.work_number | 9075551290 | |
@@ -2575,7 +2575,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -2607,11 +2607,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 2992 Hemlock Way | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Unalakleet | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99684 | |
+      | advocate.address.address | 2992 Hemlock Way | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Unalakleet | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99684 | |
       | advocate.mobile_number | 9075551292 | |
       | advocate.home_number | 9075551293 | |
       | advocate.work_number | 9075551294 | |
@@ -2634,7 +2634,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -2665,11 +2665,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 3070 Glacier Way | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Fairbanks | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99701 | |
+      | advocate.address.address | 3070 Glacier Way | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Fairbanks | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99701 | |
       | advocate.mobile_number | 9075551300 | |
       | advocate.home_number | 9075551301 | |
       | advocate.work_number | 9075551302 | |
@@ -2681,7 +2681,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -2718,11 +2718,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 3109 Aurora Way | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Hooper Bay | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99604 | |
+      | advocate.address.address | 3109 Aurora Way | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Hooper Bay | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99604 | |
       | advocate.mobile_number | 9075551304 | |
       | advocate.home_number | 9075551305 | |
       | advocate.work_number | 9075551306 | |
@@ -2744,7 +2744,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -2781,11 +2781,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 3187 Tundra Way | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Seward | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99664 | |
+      | advocate.address.address | 3187 Tundra Way | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Seward | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99664 | |
       | advocate.mobile_number | 9075551312 | |
       | advocate.home_number | 9075551313 | |
       | advocate.work_number | 9075551314 | |
@@ -2798,7 +2798,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -2829,11 +2829,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 3226 Harbor Way | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Utqiagvik | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99723 | |
+      | advocate.address.address | 3226 Harbor Way | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Utqiagvik | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99723 | |
       | advocate.mobile_number | 9075551316 | |
       | advocate.home_number | 9075551317 | |
       | advocate.work_number | 9075551318 | |
@@ -2855,7 +2855,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -2890,11 +2890,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 3304 Meadow Way | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Galena | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99741 | |
+      | advocate.address.address | 3304 Meadow Way | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Galena | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99741 | |
       | advocate.mobile_number | 9075551324 | |
       | advocate.home_number | 9075551325 | |
       | advocate.work_number | 9075551326 | |
@@ -2906,7 +2906,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -2943,11 +2943,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 3343 Salmon Way | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Kake | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99830 | |
+      | advocate.address.address | 3343 Salmon Way | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Kake | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99830 | |
       | advocate.mobile_number | 9075551328 | |
       | advocate.home_number | 9075551329 | |
       | advocate.work_number | 9075551330 | |
@@ -2969,7 +2969,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -3003,11 +3003,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 3421 Ptarmigan Way | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Skagway | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99840 | |
+      | advocate.address.address | 3421 Ptarmigan Way | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Skagway | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99840 | |
       | advocate.mobile_number | 9075551336 | |
       | advocate.home_number | 9075551337 | |
       | advocate.work_number | 9075551338 | |
@@ -3029,7 +3029,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -3065,11 +3065,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 3499 Alder Court | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Delta Junction | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99737 | |
+      | advocate.address.address | 3499 Alder Court | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Delta Junction | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99737 | |
       | advocate.mobile_number | 9075551344 | |
       | advocate.home_number | 9075551345 | |
       | advocate.work_number | 9075551346 | |
@@ -3092,7 +3092,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
     And I download "dv_128_confidential_contact_information_sheet.pdf"
@@ -3125,11 +3125,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 3577 Willow Court | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Ketchikan | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99901 | |
+      | advocate.address.address | 3577 Willow Court | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Ketchikan | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99901 | |
       | advocate.mobile_number | 9075551352 | |
       | advocate.home_number | 9075551353 | |
       | advocate.work_number | 9075551354 | |
@@ -3151,7 +3151,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -3181,11 +3181,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 3655 Hemlock Court | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Tok | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99780 | |
+      | advocate.address.address | 3655 Hemlock Court | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Tok | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99780 | |
       | advocate.mobile_number | 9075551360 | |
       | advocate.home_number | 9075551361 | |
       | advocate.work_number | 9075551362 | |
@@ -3197,7 +3197,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -3229,11 +3229,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 3694 Raven Court | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Anchorage | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99508 | |
+      | advocate.address.address | 3694 Raven Court | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Anchorage | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99508 | |
       | advocate.mobile_number | 9075551364 | |
       | advocate.home_number | 9075551365 | |
       | advocate.work_number | 9075551366 | |
@@ -3256,7 +3256,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -3286,11 +3286,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 3772 Aurora Court | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Hoonah | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99829 | |
+      | advocate.address.address | 3772 Aurora Court | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Hoonah | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99829 | |
       | advocate.mobile_number | 9075551372 | |
       | advocate.home_number | 9075551373 | |
       | advocate.work_number | 9075551374 | |
@@ -3312,7 +3312,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 
@@ -3348,11 +3348,11 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | protective_order_petition_type | DV-100m | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 3850 Tundra Court | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Sand Point | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99661 | |
+      | advocate.address.address | 3850 Tundra Court | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Sand Point | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99661 | |
       | advocate.mobile_number | 9075551380 | |
       | advocate.home_number | 9075551381 | |
       | advocate.work_number | 9075551382 | |
@@ -3365,7 +3365,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | user_wants_efile | False | |
       | can_check_efile | False | |
     And I download "protective_order_petition_next_steps.pdf"
-    And I download "domestic_violence_protective_order_petition.pdf"
+    And I download "domestic_violence_protective_order_petition_multi.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
 

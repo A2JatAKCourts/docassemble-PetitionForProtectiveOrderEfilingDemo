@@ -27,11 +27,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1302 Alder Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Anchorage | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99508 | |
+      | advocate.address.address | 1302 Alder Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Anchorage | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99508 | |
       | advocate.mobile_number | 9072000336 | |
       | advocate.home_number | 9072000338 | |
       | advocate.work_number | 9072000340 | |
@@ -82,11 +82,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1328 Spruce Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Sitka | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99835 | |
+      | advocate.address.address | 1328 Spruce Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Sitka | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99835 | |
       | advocate.mobile_number | 9072000344 | |
       | advocate.home_number | 9072000346 | |
       | advocate.work_number | 9072000348 | |
@@ -136,11 +136,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1354 Cedar Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Juneau | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99801 | |
+      | advocate.address.address | 1354 Cedar Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Juneau | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99801 | |
       | advocate.mobile_number | 9072000352 | |
       | advocate.home_number | 9072000354 | |
       | advocate.work_number | 9072000356 | |
@@ -192,11 +192,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1380 Raven Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Palmer | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99645 | |
+      | advocate.address.address | 1380 Raven Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Palmer | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99645 | |
       | advocate.mobile_number | 9072000360 | |
       | advocate.home_number | 9072000362 | |
       | advocate.work_number | 9072000364 | |
@@ -247,11 +247,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1406 Glacier Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Valdez | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99686 | |
+      | advocate.address.address | 1406 Glacier Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Valdez | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99686 | |
       | advocate.mobile_number | 9072000368 | |
       | advocate.home_number | 9072000369 | |
       | advocate.work_number | 9072000370 | |
@@ -293,11 +293,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1419 Hemlock Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Fairbanks | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99701 | |
+      | advocate.address.address | 1419 Hemlock Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Fairbanks | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99701 | |
       | advocate.mobile_number | 9072000372 | |
       | advocate.home_number | 9072000373 | |
       | advocate.work_number | 9072000374 | |
@@ -336,11 +336,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1432 Tundra Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Bethel | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99559 | |
+      | advocate.address.address | 1432 Tundra Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Bethel | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99559 | |
       | advocate.mobile_number | 9072000376 | |
       | advocate.home_number | 9072000378 | |
       | advocate.work_number | 9072000380 | |
@@ -389,11 +389,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1458 Meadow Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Kenai | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99611 | |
+      | advocate.address.address | 1458 Meadow Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Kenai | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99611 | |
       | advocate.mobile_number | 9072000384 | |
       | advocate.home_number | 9072000386 | |
       | advocate.work_number | 9072000388 | |
@@ -441,11 +441,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1484 Alder Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Anchorage | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99508 | |
+      | advocate.address.address | 1484 Alder Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Anchorage | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99508 | |
       | advocate.mobile_number | 9072000392 | |
       | advocate.home_number | 9072000393 | |
       | advocate.work_number | 9072000394 | |
@@ -484,11 +484,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1497 Birch Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Homer | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99603 | |
+      | advocate.address.address | 1497 Birch Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Homer | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99603 | |
       | advocate.mobile_number | 9072000396 | |
       | advocate.home_number | 9072000397 | |
       | advocate.work_number | 9072000398 | |
@@ -528,11 +528,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1510 Spruce Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Sitka | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99835 | |
+      | advocate.address.address | 1510 Spruce Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Sitka | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99835 | |
       | advocate.mobile_number | 9072000400 | |
       | advocate.home_number | 9072000402 | |
       | advocate.work_number | 9072000404 | |
@@ -583,11 +583,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1536 Cedar Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Juneau | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99801 | |
+      | advocate.address.address | 1536 Cedar Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Juneau | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99801 | |
       | advocate.mobile_number | 9072000408 | |
       | advocate.home_number | 9072000410 | |
       | advocate.work_number | 9072000412 | |
@@ -637,11 +637,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1562 Raven Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Palmer | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99645 | |
+      | advocate.address.address | 1562 Raven Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Palmer | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99645 | |
       | advocate.mobile_number | 9072000416 | |
       | advocate.home_number | 9072000418 | |
       | advocate.work_number | 9072000420 | |
@@ -693,11 +693,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1588 Glacier Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Valdez | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99686 | |
+      | advocate.address.address | 1588 Glacier Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Valdez | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99686 | |
       | advocate.mobile_number | 9072000424 | |
       | advocate.home_number | 9072000426 | |
       | advocate.work_number | 9072000428 | |
@@ -748,11 +748,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1614 Tundra Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Bethel | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99559 | |
+      | advocate.address.address | 1614 Tundra Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Bethel | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99559 | |
       | advocate.mobile_number | 9072000432 | |
       | advocate.home_number | 9072000433 | |
       | advocate.work_number | 9072000434 | |
@@ -794,11 +794,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1627 Harbor Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Seward | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99664 | |
+      | advocate.address.address | 1627 Harbor Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Seward | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99664 | |
       | advocate.mobile_number | 9072000436 | |
       | advocate.home_number | 9072000437 | |
       | advocate.work_number | 9072000438 | |
@@ -837,11 +837,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1640 Meadow Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Kenai | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99611 | |
+      | advocate.address.address | 1640 Meadow Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Kenai | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99611 | |
       | advocate.mobile_number | 9072000440 | |
       | advocate.home_number | 9072000442 | |
       | advocate.work_number | 9072000444 | |
@@ -890,11 +890,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1666 Alder Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Anchorage | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99508 | |
+      | advocate.address.address | 1666 Alder Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Anchorage | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99508 | |
       | advocate.mobile_number | 9072000448 | |
       | advocate.home_number | 9072000450 | |
       | advocate.work_number | 9072000452 | |
@@ -942,11 +942,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1692 Spruce Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Sitka | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99835 | |
+      | advocate.address.address | 1692 Spruce Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Sitka | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99835 | |
       | advocate.mobile_number | 9072000456 | |
       | advocate.home_number | 9072000457 | |
       | advocate.work_number | 9072000458 | |
@@ -985,11 +985,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1705 Willow Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Wasilla | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99654 | |
+      | advocate.address.address | 1705 Willow Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Wasilla | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99654 | |
       | advocate.mobile_number | 9072000460 | |
       | advocate.home_number | 9072000461 | |
       | advocate.work_number | 9072000462 | |
@@ -1029,11 +1029,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1718 Cedar Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Juneau | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99801 | |
+      | advocate.address.address | 1718 Cedar Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Juneau | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99801 | |
       | advocate.mobile_number | 9072000464 | |
       | advocate.home_number | 9072000466 | |
       | advocate.work_number | 9072000468 | |
@@ -1084,11 +1084,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1744 Raven Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Palmer | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99645 | |
+      | advocate.address.address | 1744 Raven Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Palmer | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99645 | |
       | advocate.mobile_number | 9072000472 | |
       | advocate.home_number | 9072000474 | |
       | advocate.work_number | 9072000476 | |
@@ -1138,11 +1138,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1770 Glacier Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Valdez | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99686 | |
+      | advocate.address.address | 1770 Glacier Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Valdez | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99686 | |
       | advocate.mobile_number | 9072000480 | |
       | advocate.home_number | 9072000482 | |
       | advocate.work_number | 9072000484 | |
@@ -1194,11 +1194,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1796 Tundra Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Bethel | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99559 | |
+      | advocate.address.address | 1796 Tundra Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Bethel | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99559 | |
       | advocate.mobile_number | 9072000488 | |
       | advocate.home_number | 9072000490 | |
       | advocate.work_number | 9072000492 | |
@@ -1249,11 +1249,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1822 Meadow Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Kenai | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99611 | |
+      | advocate.address.address | 1822 Meadow Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Kenai | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99611 | |
       | advocate.mobile_number | 9072000496 | |
       | advocate.home_number | 9072000497 | |
       | advocate.work_number | 9072000498 | |
@@ -1295,11 +1295,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1835 Tamarack Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Nome | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99762 | |
+      | advocate.address.address | 1835 Tamarack Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Nome | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99762 | |
       | advocate.mobile_number | 9072000500 | |
       | advocate.home_number | 9072000501 | |
       | advocate.work_number | 9072000502 | |
@@ -1338,11 +1338,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1848 Alder Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Anchorage | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99508 | |
+      | advocate.address.address | 1848 Alder Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Anchorage | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99508 | |
       | advocate.mobile_number | 9072000504 | |
       | advocate.home_number | 9072000506 | |
       | advocate.work_number | 9072000508 | |
@@ -1391,11 +1391,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1874 Spruce Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Sitka | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99835 | |
+      | advocate.address.address | 1874 Spruce Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Sitka | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99835 | |
       | advocate.mobile_number | 9072000512 | |
       | advocate.home_number | 9072000514 | |
       | advocate.work_number | 9072000516 | |
@@ -1443,11 +1443,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1900 Cedar Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Juneau | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99801 | |
+      | advocate.address.address | 1900 Cedar Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Juneau | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99801 | |
       | advocate.mobile_number | 9072000520 | |
       | advocate.home_number | 9072000521 | |
       | advocate.work_number | 9072000522 | |
@@ -1486,11 +1486,11 @@ Feature: Protective order - CIV-750 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | CIV-750 | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1913 Aspen Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Ketchikan | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99901 | |
+      | advocate.address.address | 1913 Aspen Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Ketchikan | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99901 | |
       | advocate.mobile_number | 9072000524 | |
       | advocate.home_number | 9072000525 | |
       | advocate.work_number | 9072000526 | |

@@ -27,11 +27,11 @@ Feature: Protective order - DV-100 Child Petitioner Adult Respondent - tab 3
       | protective_order_petition_type | DV-100 | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 418 Willow Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Anchorage | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99501 | |
+      | advocate.address.address | 418 Willow Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Anchorage | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99501 | |
       | advocate.mobile_number | 9075550100 | |
       | advocate.home_number | 9075550101 | |
       | advocate.work_number | 9075550102 | |
@@ -79,11 +79,11 @@ Feature: Protective order - DV-100 Child Petitioner Adult Respondent - tab 3
       | protective_order_petition_type | DV-100 | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 732 Harbor View Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Juneau | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99801 | |
+      | advocate.address.address | 732 Harbor View Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Juneau | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99801 | |
       | advocate.mobile_number | 9075550108 | |
       | advocate.home_number | 9075550109 | |
       | advocate.work_number | 9075550110 | |
@@ -121,11 +121,11 @@ Feature: Protective order - DV-100 Child Petitioner Adult Respondent - tab 3
       | protective_order_petition_type | DV-100 | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1960 Birch Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Fairbanks | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99701 | |
+      | advocate.address.address | 1960 Birch Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Fairbanks | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99701 | |
       | advocate.mobile_number | 9075550112 | |
       | advocate.home_number | 9075550113 | |
       | advocate.work_number | 9075550114 | |
@@ -172,11 +172,11 @@ Feature: Protective order - DV-100 Child Petitioner Adult Respondent - tab 3
       | protective_order_petition_type | DV-100 | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 529 Spruce Road | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Kodiak | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99615 | |
+      | advocate.address.address | 529 Spruce Road | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Kodiak | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99615 | |
       | advocate.mobile_number | 9075550120 | |
       | advocate.home_number | 9075550121 | |
       | advocate.work_number | 9075550122 | |
@@ -213,11 +213,11 @@ Feature: Protective order - DV-100 Child Petitioner Adult Respondent - tab 3
       | protective_order_petition_type | DV-100 | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1100 Aspen Walk | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Palmer | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99645 | |
+      | advocate.address.address | 1100 Aspen Walk | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Palmer | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99645 | |
       | advocate.mobile_number | 9075550124 | |
       | advocate.home_number | 9075550125 | |
       | advocate.work_number | 9075550126 | |
@@ -265,11 +265,11 @@ Feature: Protective order - DV-100 Child Petitioner Adult Respondent - tab 3
       | protective_order_petition_type | DV-100 | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1119 Riverbend Road | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Homer | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99603 | |
+      | advocate.address.address | 1119 Riverbend Road | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Homer | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99603 | |
       | advocate.mobile_number | 9075550132 | |
       | advocate.home_number | 9075550133 | |
       | advocate.work_number | 9075550134 | |
@@ -307,11 +307,11 @@ Feature: Protective order - DV-100 Child Petitioner Adult Respondent - tab 3
       | protective_order_petition_type | DV-100 | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1138 Ptarmigan Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Sitka | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99835 | |
+      | advocate.address.address | 1138 Ptarmigan Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Sitka | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99835 | |
       | advocate.mobile_number | 9075550140 | |
       | advocate.home_number | 9075550141 | |
       | advocate.work_number | 9075550142 | |
@@ -358,11 +358,11 @@ Feature: Protective order - DV-100 Child Petitioner Adult Respondent - tab 3
       | protective_order_petition_type | DV-100 | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1157 Aurora Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Bethel | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99559 | |
+      | advocate.address.address | 1157 Aurora Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Bethel | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99559 | |
       | advocate.mobile_number | 9075550148 | |
       | advocate.home_number | 9075550149 | |
       | advocate.work_number | 9075550150 | |
@@ -399,11 +399,11 @@ Feature: Protective order - DV-100 Child Petitioner Adult Respondent - tab 3
       | protective_order_petition_type | DV-100 | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1176 Hemlock Court | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Ketchikan | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99901 | |
+      | advocate.address.address | 1176 Hemlock Court | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Ketchikan | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99901 | |
       | advocate.mobile_number | 9075550156 | |
       | advocate.home_number | 9075550157 | |
       | advocate.work_number | 9075550158 | |
@@ -451,11 +451,11 @@ Feature: Protective order - DV-100 Child Petitioner Adult Respondent - tab 3
       | protective_order_petition_type | DV-100 | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1195 Salmonberry Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Seward | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99664 | |
+      | advocate.address.address | 1195 Salmonberry Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Seward | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99664 | |
       | advocate.mobile_number | 9075550164 | |
       | advocate.home_number | 9075550165 | |
       | advocate.work_number | 9075550166 | |
@@ -493,11 +493,11 @@ Feature: Protective order - DV-100 Child Petitioner Adult Respondent - tab 3
       | protective_order_petition_type | DV-100 | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1214 Raven Way | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Valdez | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99686 | |
+      | advocate.address.address | 1214 Raven Way | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Valdez | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99686 | |
       | advocate.mobile_number | 9075550172 | |
       | advocate.home_number | 9075550173 | |
       | advocate.work_number | 9075550174 | |
@@ -544,11 +544,11 @@ Feature: Protective order - DV-100 Child Petitioner Adult Respondent - tab 3
       | protective_order_petition_type | DV-100 | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1233 Tundra Avenue | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Nome | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99762 | |
+      | advocate.address.address | 1233 Tundra Avenue | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Nome | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99762 | |
       | advocate.mobile_number | 9075550180 | |
       | advocate.home_number | 9075550181 | |
       | advocate.work_number | 9075550182 | |

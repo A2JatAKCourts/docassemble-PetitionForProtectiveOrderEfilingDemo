@@ -27,11 +27,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 351 Alder Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Wasilla | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99654 | |
+      | advocate.address.address | 351 Alder Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Wasilla | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99654 | |
       | advocate.mobile_number | 9075550100 | |
       | advocate.home_number | 9075550101 | |
       | advocate.work_number | 9075550102 | |
@@ -82,11 +82,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 462 Cedar Avenue | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Palmer | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99645 | |
+      | advocate.address.address | 462 Cedar Avenue | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Palmer | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99645 | |
       | advocate.mobile_number | 9075550108 | |
       | advocate.home_number | 9075550109 | |
       | advocate.work_number | 9075550110 | |
@@ -136,11 +136,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 573 Spruce Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Bethel | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99559 | |
+      | advocate.address.address | 573 Spruce Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Bethel | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99559 | |
       | advocate.mobile_number | 9075550116 | |
       | advocate.home_number | 9075550117 | |
       | advocate.work_number | 9075550118 | |
@@ -192,11 +192,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 684 Hemlock Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Valdez | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99686 | |
+      | advocate.address.address | 684 Hemlock Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Valdez | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99686 | |
       | advocate.mobile_number | 9075550124 | |
       | advocate.home_number | 9075550125 | |
       | advocate.work_number | 9075550126 | |
@@ -247,11 +247,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 795 Maple Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Kotzebue | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99752 | |
+      | advocate.address.address | 795 Maple Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Kotzebue | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99752 | |
       | advocate.mobile_number | 9075550132 | |
       | advocate.home_number | 9075550133 | |
       | advocate.work_number | 9075550134 | |
@@ -293,11 +293,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 906 Willow Avenue | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Haines | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99827 | |
+      | advocate.address.address | 906 Willow Avenue | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Haines | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99827 | |
       | advocate.mobile_number | 9075550136 | |
       | advocate.home_number | 9075550137 | |
       | advocate.work_number | 9075550138 | |
@@ -336,11 +336,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1017 Aspen Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Petersburg | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99833 | |
+      | advocate.address.address | 1017 Aspen Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Petersburg | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99833 | |
       | advocate.mobile_number | 9075550140 | |
       | advocate.home_number | 9075550141 | |
       | advocate.work_number | 9075550142 | |
@@ -389,11 +389,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1128 Birch Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Yakutat | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99689 | |
+      | advocate.address.address | 1128 Birch Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Yakutat | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99689 | |
       | advocate.mobile_number | 9075550148 | |
       | advocate.home_number | 9075550149 | |
       | advocate.work_number | 9075550150 | |
@@ -441,11 +441,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 20 days | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1239 Alder Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Angoon | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99820 | |
+      | advocate.address.address | 1239 Alder Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Angoon | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99820 | |
       | advocate.mobile_number | 9075550156 | |
       | advocate.home_number | 9075550157 | |
       | advocate.work_number | 9075550158 | |
@@ -484,11 +484,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 20 days | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1350 Cedar Avenue | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Anchorage | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99501 | |
+      | advocate.address.address | 1350 Cedar Avenue | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Anchorage | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99501 | |
       | advocate.mobile_number | 9075550160 | |
       | advocate.home_number | 9075550161 | |
       | advocate.work_number | 9075550162 | |
@@ -528,11 +528,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1461 Spruce Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Wasilla | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99654 | |
+      | advocate.address.address | 1461 Spruce Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Wasilla | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99654 | |
       | advocate.mobile_number | 9075550164 | |
       | advocate.home_number | 9075550165 | |
       | advocate.work_number | 9075550166 | |
@@ -583,11 +583,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1572 Hemlock Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Palmer | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99645 | |
+      | advocate.address.address | 1572 Hemlock Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Palmer | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99645 | |
       | advocate.mobile_number | 9075550172 | |
       | advocate.home_number | 9075550173 | |
       | advocate.work_number | 9075550174 | |
@@ -637,11 +637,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1683 Maple Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Bethel | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99559 | |
+      | advocate.address.address | 1683 Maple Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Bethel | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99559 | |
       | advocate.mobile_number | 9075550180 | |
       | advocate.home_number | 9075550181 | |
       | advocate.work_number | 9075550182 | |
@@ -693,11 +693,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 1794 Willow Avenue | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Valdez | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99686 | |
+      | advocate.address.address | 1794 Willow Avenue | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Valdez | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99686 | |
       | advocate.mobile_number | 9075550188 | |
       | advocate.home_number | 9075550189 | |
       | advocate.work_number | 9075550190 | |
@@ -748,11 +748,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 1905 Aspen Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Kotzebue | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99752 | |
+      | advocate.address.address | 1905 Aspen Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Kotzebue | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99752 | |
       | advocate.mobile_number | 9075550196 | |
       | advocate.home_number | 9075550197 | |
       | advocate.work_number | 9075550198 | |
@@ -794,11 +794,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 2016 Birch Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Haines | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99827 | |
+      | advocate.address.address | 2016 Birch Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Haines | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99827 | |
       | advocate.mobile_number | 9075550200 | |
       | advocate.home_number | 9075550201 | |
       | advocate.work_number | 9075550202 | |
@@ -837,11 +837,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 2127 Alder Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Petersburg | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99833 | |
+      | advocate.address.address | 2127 Alder Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Petersburg | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99833 | |
       | advocate.mobile_number | 9075550204 | |
       | advocate.home_number | 9075550205 | |
       | advocate.work_number | 9075550206 | |
@@ -890,11 +890,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 2238 Cedar Avenue | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Yakutat | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99689 | |
+      | advocate.address.address | 2238 Cedar Avenue | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Yakutat | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99689 | |
       | advocate.mobile_number | 9075550212 | |
       | advocate.home_number | 9075550213 | |
       | advocate.work_number | 9075550214 | |
@@ -942,11 +942,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 1 year | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 2349 Spruce Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Angoon | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99820 | |
+      | advocate.address.address | 2349 Spruce Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Angoon | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99820 | |
       | advocate.mobile_number | 9075550220 | |
       | advocate.home_number | 9075550221 | |
       | advocate.work_number | 9075550222 | |
@@ -985,11 +985,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | 1 year | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 2460 Hemlock Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Anchorage | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99501 | |
+      | advocate.address.address | 2460 Hemlock Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Anchorage | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99501 | |
       | advocate.mobile_number | 9075550224 | |
       | advocate.home_number | 9075550225 | |
       | advocate.work_number | 9075550226 | |
@@ -1029,11 +1029,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 2571 Maple Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Wasilla | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99654 | |
+      | advocate.address.address | 2571 Maple Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Wasilla | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99654 | |
       | advocate.mobile_number | 9075550228 | |
       | advocate.home_number | 9075550229 | |
       | advocate.work_number | 9075550230 | |
@@ -1084,11 +1084,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 2682 Willow Avenue | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Palmer | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99645 | |
+      | advocate.address.address | 2682 Willow Avenue | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Palmer | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99645 | |
       | advocate.mobile_number | 9075550236 | |
       | advocate.home_number | 9075550237 | |
       | advocate.work_number | 9075550238 | |
@@ -1138,11 +1138,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 2793 Aspen Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Bethel | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99559 | |
+      | advocate.address.address | 2793 Aspen Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Bethel | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99559 | |
       | advocate.mobile_number | 9075550244 | |
       | advocate.home_number | 9075550245 | |
       | advocate.work_number | 9075550246 | |
@@ -1194,11 +1194,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 2904 Birch Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Valdez | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99686 | |
+      | advocate.address.address | 2904 Birch Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Valdez | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99686 | |
       | advocate.mobile_number | 9075550252 | |
       | advocate.home_number | 9075550253 | |
       | advocate.work_number | 9075550254 | |
@@ -1249,11 +1249,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 3015 Alder Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Kotzebue | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99752 | |
+      | advocate.address.address | 3015 Alder Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Kotzebue | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99752 | |
       | advocate.mobile_number | 9075550260 | |
       | advocate.home_number | 9075550261 | |
       | advocate.work_number | 9075550262 | |
@@ -1295,11 +1295,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 3126 Cedar Avenue | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Haines | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99827 | |
+      | advocate.address.address | 3126 Cedar Avenue | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Haines | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99827 | |
       | advocate.mobile_number | 9075550264 | |
       | advocate.home_number | 9075550265 | |
       | advocate.work_number | 9075550266 | |
@@ -1338,11 +1338,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 3237 Spruce Lane | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Petersburg | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99833 | |
+      | advocate.address.address | 3237 Spruce Lane | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Petersburg | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99833 | |
       | advocate.mobile_number | 9075550268 | |
       | advocate.home_number | 9075550269 | |
       | advocate.work_number | 9075550270 | |
@@ -1391,11 +1391,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 3348 Hemlock Street | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Yakutat | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99689 | |
+      | advocate.address.address | 3348 Hemlock Street | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Yakutat | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99689 | |
       | advocate.mobile_number | 9075550276 | |
       | advocate.home_number | 9075550277 | |
       | advocate.work_number | 9075550278 | |
@@ -1443,11 +1443,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | both | |
       | petitioners_using_dv128 | True | |
-      | advocate.mailing_address.address | 3459 Maple Drive | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Angoon | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99820 | |
+      | advocate.address.address | 3459 Maple Drive | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Angoon | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99820 | |
       | advocate.mobile_number | 9075550284 | |
       | advocate.home_number | 9075550285 | |
       | advocate.work_number | 9075550286 | |
@@ -1486,11 +1486,11 @@ Feature: Protective order - DV-100 Child Petitioner Child Respondent - tab 4
       | protective_order_petition_type | DV-100 | |
       | term | both | |
       | petitioners_using_dv128 | False | |
-      | advocate.mailing_address.address | 3570 Willow Avenue | |
-      | advocate.mailing_address.unit |  | |
-      | advocate.mailing_address.city | Anchorage | |
-      | advocate.mailing_address.state | AK | |
-      | advocate.mailing_address.zip | 99501 | |
+      | advocate.address.address | 3570 Willow Avenue | |
+      | advocate.address.unit |  | |
+      | advocate.address.city | Anchorage | |
+      | advocate.address.state | AK | |
+      | advocate.address.zip | 99501 | |
       | advocate.mobile_number | 9075550288 | |
       | advocate.home_number | 9075550289 | |
       | advocate.work_number | 9075550290 | |
