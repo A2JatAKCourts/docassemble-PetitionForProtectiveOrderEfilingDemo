@@ -1,5 +1,5 @@
 @DV100m5
-  # 2026-10-05
+  # 2026-10-06
 
 Feature: Protective order - DV-100m adult and child petitioners, adult respondent - tab 5
 
@@ -8,7 +8,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Zane | |
       | users[0].name.last | Goodwin | |
       | users[0].birthdate | 05/21/1978 | |
@@ -57,7 +57,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Winter | |
       | users[0].name.last | Clayton | |
       | users[0].birthdate | 02/03/1994 | |
@@ -97,7 +97,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Delaney | |
       | users[0].name.last | Merritt | |
       | users[0].birthdate | 06/16/1982 | |
@@ -150,7 +150,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Griffin | |
       | users[0].name.last | Prescott | |
       | users[0].birthdate | 07/27/2002 | |
@@ -192,7 +192,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Nico | |
       | users[0].name.last | Dawson | |
       | users[0].birthdate | 08/18/2000 | |
@@ -247,7 +247,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Hollis | |
       | users[0].name.last | Barrett | |
       | users[0].birthdate | 09/11/1972 | |
@@ -293,7 +293,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Jules | |
       | users[0].name.last | Stanton | |
       | users[0].birthdate | 09/28/1989 | |
@@ -343,7 +343,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Kieran | |
       | users[0].name.last | Grant | |
       | users[0].birthdate | 06/15/1973 | |
@@ -382,7 +382,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Indigo | |
       | users[0].name.last | Sutton | |
       | users[0].birthdate | 02/18/1996 | |
@@ -434,7 +434,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Addison | |
       | users[0].name.last | York | |
       | users[0].birthdate | 04/21/1990 | |
@@ -477,7 +477,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Sage | |
       | users[0].name.last | Spencer | |
       | users[0].birthdate | 12/28/1997 | |
@@ -533,7 +533,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Cameron | |
       | users[0].name.last | Crawford | |
       | users[0].birthdate | 09/28/1986 | |
@@ -578,7 +578,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Lane | |
       | users[0].name.last | Garner | |
       | users[0].birthdate | 10/10/2002 | |
@@ -627,7 +627,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Beatrice | |
       | users[0].name.last | Harlow | |
       | users[0].birthdate | 07/16/1982 | |
@@ -667,7 +667,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Parker | |
       | users[0].name.last | Fenwick | |
       | users[0].birthdate | 08/15/1985 | |
@@ -720,7 +720,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Gray | |
       | users[0].name.last | Hollis | |
       | users[0].birthdate | 08/23/1985 | |
@@ -762,7 +762,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Noelle | |
       | users[0].name.last | Westfield | |
       | users[0].birthdate | 05/03/1986 | |
@@ -817,7 +817,7 @@ Feature: Protective order - DV-100m adult and child petitioners, adult responden
     Given I start the interview at "protective_order_efiling_demo_simple.yml"
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
-      | who_needs_the_order | self and children | |
+      | who_needs_the_order | self and child | |
       | users[0].name.first | Drew | |
       | users[0].name.last | Judd | |
       | users[0].birthdate | 11/28/1996 | |
