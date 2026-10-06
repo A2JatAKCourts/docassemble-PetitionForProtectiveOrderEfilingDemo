@@ -1,5 +1,5 @@
 @DV1001
-  # 2026-10-05
+  # 2026-10-06
 
 Feature: Protective order - DV-100 Adult Petitioner Adult Respondent - tab 1
 
@@ -132,7 +132,6 @@ Feature: Protective order - DV-100 Adult Petitioner Adult Respondent - tab 1
     And I download "domestic_violence_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
-    And I download "dv_128_confidential_contact_information_sheet.pdf"
 
   @1AId
   Scenario: 1AId I need a protective order (20 days) - Aniak
@@ -169,7 +168,6 @@ Feature: Protective order - DV-100 Adult Petitioner Adult Respondent - tab 1
     And I download "domestic_violence_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
-    And I download "dv_128_confidential_contact_information_sheet.pdf"
 
   @1AII
   Scenario: 1AII I need a protective order (1 year) - Bethel
@@ -300,7 +298,6 @@ Feature: Protective order - DV-100 Adult Petitioner Adult Respondent - tab 1
     And I download "domestic_violence_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
-    And I download "dv_128_confidential_contact_information_sheet.pdf"
 
   @1AIId
   Scenario: 1AIId I need a protective order (1 year) - Dillingham
@@ -337,7 +334,6 @@ Feature: Protective order - DV-100 Adult Petitioner Adult Respondent - tab 1
     And I download "domestic_violence_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
-    And I download "dv_128_confidential_contact_information_sheet.pdf"
 
   @1AIII
   Scenario: 1AIII I need a protective order (both) - Emmonak
@@ -468,7 +464,6 @@ Feature: Protective order - DV-100 Adult Petitioner Adult Respondent - tab 1
     And I download "domestic_violence_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
-    And I download "dv_128_confidential_contact_information_sheet.pdf"
 
   @1AIIId
   Scenario: 1AIIId I need a protective order (both) - Galena
@@ -505,4 +500,3 @@ Feature: Protective order - DV-100 Adult Petitioner Adult Respondent - tab 1
     And I download "domestic_violence_protective_order_petition.pdf"
     And I download "dv_127_confidential_law_enforcement_information_sheet.pdf"
     And I download "tf_835_self_certification_no_notary_available.pdf"
-    And I download "dv_128_confidential_contact_information_sheet.pdf"
