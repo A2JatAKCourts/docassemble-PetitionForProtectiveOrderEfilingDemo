@@ -1,5 +1,5 @@
 @CIV7502
-  # 2026-10-05
+  # 2026-10-06
 Feature: Protective order - CIV-750 - AdultPetitioner Child Respondent tab 2
 
   @2CI
@@ -858,7 +858,7 @@ Feature: Protective order - CIV-750 - AdultPetitioner Child Respondent tab 2
       | other_parties[0].work_number | 9072000193 | |
       | other_parties[0].other_number | 9072000195 | |
       | other_parties[0].email | voakes@gmail.com | |
-      | court_location | St. Paul Island | |
+      | court_location | Saint Paul Island | |
       | penultimate_screen | True | |
       | user_wants_efile | False | |
       | can_check_efile | False | |

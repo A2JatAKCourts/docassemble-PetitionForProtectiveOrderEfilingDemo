@@ -1,5 +1,5 @@
 @DV100m8
-  # 2026-10-05
+  # 2026-10-06
 
 Feature: Protective order - DV-100m multiple child petitioners, child respondent - tab 8
 
@@ -9,6 +9,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Janelle | |
       | users[0].name.last | Beckett | |
       | users[0].birthdate | 07/09/2022 | |
@@ -69,6 +70,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Kendall | |
       | users[0].name.last | Underwood | |
       | users[0].birthdate | 08/21/2010 | |
@@ -130,6 +132,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Ainsley | |
       | users[0].name.last | Carver | |
       | users[0].birthdate | 08/26/2012 | |
@@ -193,6 +196,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Pierce | |
       | users[0].name.last | Langley | |
       | users[0].birthdate | 10/02/2020 | |
@@ -239,6 +243,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Blake | |
       | users[0].name.last | Holloway | |
       | users[0].birthdate | 11/10/2015 | |
@@ -288,6 +293,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Frankie | |
       | users[0].name.last | Rivers | |
       | users[0].birthdate | 01/07/2010 | |
@@ -350,6 +356,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Damien | |
       | users[0].name.last | Ashby | |
       | users[0].birthdate | 01/28/2013 | |
@@ -408,6 +415,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Phoebe | |
       | users[0].name.last | Rollins | |
       | users[0].birthdate | 09/03/2014 | |
@@ -465,6 +473,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Felix | |
       | users[0].name.last | Isley | |
       | users[0].birthdate | 10/10/2010 | |
@@ -528,6 +537,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Lila | |
       | users[0].name.last | Penrose | |
       | users[0].birthdate | 06/04/2022 | |
@@ -581,6 +591,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Amelia | |
       | users[0].name.last | Beckett | |
       | users[0].birthdate | 07/04/2015 | |
@@ -637,6 +648,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Jasper | |
       | users[0].name.last | Holloway | |
       | users[0].birthdate | 04/02/2014 | |
@@ -687,6 +699,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Hugo | |
       | users[0].name.last | Barrow | |
       | users[0].birthdate | 12/21/2019 | |
@@ -751,6 +764,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Hazel | |
       | users[0].name.last | Kincaid | |
       | users[0].birthdate | 07/09/2017 | |
@@ -810,6 +824,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Eden | |
       | users[0].name.last | Hamilton | |
       | users[0].birthdate | 04/05/2011 | |
@@ -869,6 +884,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Juliet | |
       | users[0].name.last | Hadley | |
       | users[0].birthdate | 05/10/2016 | |
@@ -905,7 +921,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | adult_for_respondent_address_unknown | False | |
       | adult_for_respondent.address.address | 1198 Tundra Road | |
       | adult_for_respondent.address.unit |  | |
-      | adult_for_respondent.address.city | St. Paul Island | |
+      | adult_for_respondent.address.city | Saint Paul Island | |
       | adult_for_respondent.address.state | AK | |
       | adult_for_respondent.address.zip | 99660 | |
       | adult_for_respondent.mobile_number | 9075551108 | |
@@ -929,6 +945,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Brielle | |
       | users[0].name.last | Emerson | |
       | users[0].birthdate | 08/13/2020 | |
@@ -983,6 +1000,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Ellis | |
       | users[0].name.last | Easton | |
       | users[0].birthdate | 04/01/2016 | |
@@ -1033,6 +1051,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Riley | |
       | users[0].name.last | Newell | |
       | users[0].birthdate | 12/10/2022 | |
@@ -1084,6 +1103,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Riley | |
       | users[0].name.last | Hudson | |
       | users[0].birthdate | 07/20/2010 | |
@@ -1131,6 +1151,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Taylor | |
       | users[0].name.last | Ellington | |
       | users[0].birthdate | 10/12/2010 | |
@@ -1190,6 +1211,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Keene | |
       | users[0].name.last | Patterson | |
       | users[0].birthdate | 11/12/2021 | |
@@ -1252,6 +1274,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Orla | |
       | users[0].name.last | Ingram | |
       | users[0].birthdate | 06/18/2015 | |
@@ -1309,6 +1332,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Wesley | |
       | users[0].name.last | Newell | |
       | users[0].birthdate | 04/19/2017 | |
@@ -1360,6 +1384,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Zachary | |
       | users[0].name.last | Keating | |
       | users[0].birthdate | 07/17/2012 | |
@@ -1407,6 +1432,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Hazel | |
       | users[0].name.last | Fenton | |
       | users[0].birthdate | 04/19/2019 | |
@@ -1468,6 +1494,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Violet | |
       | users[0].name.last | Barrett | |
       | users[0].birthdate | 11/27/2012 | |
@@ -1518,6 +1545,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Winter | |
       | users[0].name.last | Barrett | |
       | users[0].birthdate | 09/17/2021 | |
@@ -1567,6 +1595,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Brooks | |
       | users[0].name.last | Townsend | |
       | users[0].birthdate | 03/03/2022 | |
@@ -1630,6 +1659,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Serena | |
       | users[0].name.last | Russell | |
       | users[0].birthdate | 04/23/2020 | |
@@ -1680,6 +1710,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Vera | |
       | users[0].name.last | Lawson | |
       | users[0].birthdate | 11/08/2019 | |
@@ -1734,6 +1765,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Dana | |
       | users[0].name.last | Keene | |
       | users[0].birthdate | 03/27/2017 | |
@@ -1793,6 +1825,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Graham | |
       | users[0].name.last | Oakley | |
       | users[0].birthdate | 03/11/2017 | |
@@ -1853,6 +1886,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Warren | |
       | users[0].name.last | Telford | |
       | users[0].birthdate | 06/06/2016 | |
@@ -1906,6 +1940,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Drew | |
       | users[0].name.last | Foster | |
       | users[0].birthdate | 11/02/2010 | |
@@ -1969,6 +2004,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Charlotte | |
       | users[0].name.last | Voss | |
       | users[0].birthdate | 11/18/2023 | |
@@ -2033,6 +2069,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Harper | |
       | users[0].name.last | Ramsey | |
       | users[0].birthdate | 12/13/2019 | |
@@ -2089,6 +2126,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Xavier | |
       | users[0].name.last | Barrett | |
       | users[0].birthdate | 03/02/2013 | |
@@ -2135,6 +2173,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Kai | |
       | users[0].name.last | Franklin | |
       | users[0].birthdate | 05/18/2011 | |
@@ -2193,6 +2232,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Jamie | |
       | users[0].name.last | Easton | |
       | users[0].birthdate | 09/15/2010 | |
@@ -2238,7 +2278,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | other_parties[0].work_number | 9075551254 | |
       | other_parties[0].other_number | 9075551255 | |
       | other_parties[0].email | wyork@gmail.com | |
-      | court_location | St. Paul Island | |
+      | court_location | Saint Paul Island | |
       | penultimate_screen | True | |
       | user_wants_efile | False | |
       | can_check_efile | False | |
@@ -2253,6 +2293,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Lucas | |
       | users[0].name.last | Abernathy | |
       | users[0].birthdate | 06/17/2017 | |
@@ -2314,6 +2355,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Adrian | |
       | users[0].name.last | Hadley | |
       | users[0].birthdate | 02/24/2010 | |
@@ -2363,6 +2405,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Franklin | |
       | users[0].name.last | Connelly | |
       | users[0].birthdate | 08/19/2019 | |
@@ -2387,7 +2430,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
       | petitioners_using_dv128 | True | |
       | advocate.address.address | 2758 Ptarmigan Drive | |
       | advocate.address.unit |  | |
-      | advocate.address.city | St. Paul Island | |
+      | advocate.address.city | Saint Paul Island | |
       | advocate.address.state | AK | |
       | advocate.address.zip | 99660 | |
       | advocate.mobile_number | 9075551268 | |
@@ -2413,6 +2456,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Levi | |
       | users[0].name.last | Kendrick | |
       | users[0].birthdate | 05/09/2014 | |
@@ -2476,6 +2520,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Charlotte | |
       | users[0].name.last | Brooks | |
       | users[0].birthdate | 09/19/2016 | |
@@ -2535,6 +2580,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Declan | |
       | users[0].name.last | Wallace | |
       | users[0].birthdate | 09/25/2012 | |
@@ -2585,6 +2631,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Weston | |
       | users[0].name.last | Fenton | |
       | users[0].birthdate | 03/14/2016 | |
@@ -2645,6 +2692,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Blake | |
       | users[0].name.last | Blake | |
       | users[0].birthdate | 12/17/2020 | |
@@ -2692,6 +2740,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Samuel | |
       | users[0].name.last | Whitcomb | |
       | users[0].birthdate | 08/24/2013 | |
@@ -2755,6 +2804,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Cole | |
       | users[0].name.last | Ellis | |
       | users[0].birthdate | 07/07/2013 | |
@@ -2809,6 +2859,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Rafael | |
       | users[0].name.last | Mercer | |
       | users[0].birthdate | 11/09/2014 | |
@@ -2866,6 +2917,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Phoebe | |
       | users[0].name.last | Dorian | |
       | users[0].birthdate | 04/20/2021 | |
@@ -2917,6 +2969,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Madeline | |
       | users[0].name.last | Merrick | |
       | users[0].birthdate | 09/26/2019 | |
@@ -2979,6 +3032,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Evelyn | |
       | users[0].name.last | Grant | |
       | users[0].birthdate | 01/21/2020 | |
@@ -3039,6 +3093,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Zara | |
       | users[0].name.last | Parker | |
       | users[0].birthdate | 09/12/2021 | |
@@ -3103,6 +3158,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Kai | |
       | users[0].name.last | Archer | |
       | users[0].birthdate | 10/28/2018 | |
@@ -3161,6 +3217,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Drew | |
       | users[0].name.last | Carmichael | |
       | users[0].birthdate | 05/25/2022 | |
@@ -3207,6 +3264,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Robin | |
       | users[0].name.last | Halstead | |
       | users[0].birthdate | 04/09/2020 | |
@@ -3266,6 +3324,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 2 | |
       | users[0].name.first | Hudson | |
       | users[0].name.last | Ellington | |
       | users[0].birthdate | 01/08/2012 | |
@@ -3322,6 +3381,7 @@ Feature: Protective order - DV-100m multiple child petitioners, child respondent
     And the user gets to "download protective_order_petition" with this data:
       | var | value | trigger |
       | who_needs_the_order | children | |
+      | users.target_number | 3 | |
       | users[0].name.first | Willow | |
       | users[0].name.last | Crawford | |
       | users[0].birthdate | 06/06/2015 | |

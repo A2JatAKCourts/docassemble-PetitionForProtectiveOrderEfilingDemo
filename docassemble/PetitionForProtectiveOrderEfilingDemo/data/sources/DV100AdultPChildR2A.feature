@@ -1,5 +1,5 @@
 @DV1002
-  # 2026-10-05
+  # 2026-10-06
 
 Feature: Protective order - DV-100 Adult Petitioner Child Respondent - tab 2
 
@@ -862,7 +862,7 @@ Feature: Protective order - DV-100 Adult Petitioner Child Respondent - tab 2
       | other_parties[0].work_number  | 9075550259 |  |
       | other_parties[0].other_number | 9075550256 |  |
       | other_parties[0].email | ieaston@gmail.com | |
-      | court_location | St. Paul Island | |
+      | court_location | Saint Paul Island | |
       | penultimate_screen | True | |
       | user_wants_efile | False | |
       | can_check_efile | False | |
