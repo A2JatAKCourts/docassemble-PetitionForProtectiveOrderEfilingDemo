@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "docassemble.PetitionForProtectiveOrderEfilingDemo"
-version = "26.10.02"
+version = "26.10.06"
 description = "A docassemble extension."
 readme = "README.md"
 authors = [

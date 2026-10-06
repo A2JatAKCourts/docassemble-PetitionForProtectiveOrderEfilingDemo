@@ -1,4 +1,4 @@
-name: ALKiln v5 Sandbox tests
+name: CIV750 ChildP ChildR 4C ALKiln v5 Sandbox tests 
 # See https://assemblyline.suffolklitlab.org/docs/components/ALKiln/setup#sandbox-details
 
 on:
@@ -43,5 +43,5 @@ jobs:
           INSTALL_METHOD: "server"
           # To learn more about these optional inputs, see
           # https://assemblyline.suffolklitlab.org/docs/alkiln/writing#optional-inputs
-          # ALKILN_TAG_EXPRESSION: ""
+          ALKILN_TAG_EXPRESSION: "@CIV7504"
           # ALKILN_VERSION: ""

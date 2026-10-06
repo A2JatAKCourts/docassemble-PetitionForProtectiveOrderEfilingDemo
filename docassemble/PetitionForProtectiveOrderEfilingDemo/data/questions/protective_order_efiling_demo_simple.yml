@@ -705,7 +705,7 @@ fields:
       The court needs to be able to reach you.
 
       You can ask the to keep your address, phone, and email confidential, so that only court staff can see this information.
-  - "Do you the court to keep your information confidential?": petitioners_using_dv128
+  - "Do you need the court to keep your information confidential?": petitioners_using_dv128
     datatype: yesnoradio
   - code: |
       advocate.address_fields(
@@ -883,7 +883,7 @@ dropdown:
   - Seward
   - Sitka
   - Skagway
-  - St. Paul Island
+  - Saint Paul Island
   - Tok
   - Unalakleet
   - Unalaska
@@ -933,6 +933,8 @@ code: |
       court_code = '3GL'
   elif court_location == 'Homer':
       court_code = '3HO'
+  elif court_location == 'Kake':
+      court_code = '1PE'
   elif court_location == 'Kenai':
       court_code = '3KN'
   elif court_location == 'Kodiak':
@@ -1029,7 +1031,7 @@ subquestion: |
   % if who_needs_the_order in ('child', 'children'):
   ${ advocate.address.on_one_line() }
   % else:
-  ${ users[0].address.on_one_line() }
+  ${ users[0].mailing_address.on_one_line() }
   % endif
   % endif
   
