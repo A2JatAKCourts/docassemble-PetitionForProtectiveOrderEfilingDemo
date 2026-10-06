@@ -3,7 +3,7 @@ name: DV100 ChildP ChildR 4A ALKiln v5 Sandbox tests
 
 on:
 #  push:
-  pull_request:
+  # pull_request:
   workflow_dispatch:
     inputs:
       tags:
