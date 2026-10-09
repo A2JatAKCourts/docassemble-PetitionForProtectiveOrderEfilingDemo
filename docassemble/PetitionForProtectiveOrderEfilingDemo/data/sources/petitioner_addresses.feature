@@ -19,13 +19,13 @@ Scenario: Row1 protective order petition - 20 days
     | other_parties[0].birthdate                 | 01/14/1985         |         | 
     | protective_order_petition_type             | CIV-750            |         | 
     | term                                       | 20 days            |         | 
-    | respondent_live_with_petitioners           | TRUE               |         | 
-    | respondent_stay_away_from_petitioners_home | TRUE               |         | 
+    | respondent_live_with_petitioners           | True               |         | 
+    | respondent_stay_away_from_petitioners_home | True               |         | 
     | users[0].stay_away_home_address.address    | Stay Away Lane     |         | 
     | users[0].stay_away_home_address.city       | Anchorage          |         | 
     | users[0].stay_away_home_address.state      | AK                 |         | 
-    | stay_away_is_same_as_mailing_address       | TRUE               |         | 
-    | address_test_results                       | TRUE               |         | 
+    | stay_away_is_same_as_mailing_address       | True               |         | 
+    | address_test_results                       | True               |         | 
     | users[0].mobile_number                     | 9072000000         |         | 
     | users[0].home_number                       | 9072000002         |         | 
     | users[0].work_number                       | 9072000004         |         | 
