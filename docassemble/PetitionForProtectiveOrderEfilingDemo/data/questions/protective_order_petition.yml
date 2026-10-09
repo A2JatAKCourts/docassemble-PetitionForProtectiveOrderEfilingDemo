@@ -1,0 +1,2149 @@
+comment: |
+  2026-10-02 commented out the code blocks we may use for the dv-127 asking about showing physical address to police
+  2026-09-29 ordered sexual assault and stalking attachment fields in PDF tab order
+  2026-09-25 - after meeting w Bryce and Bonnie
+  Working on conditions for stay away home address and putting on confidential sheets at the same time.
+  This is a simple version of the protective order efiling demo.
+  Building the gathering portion for adults, and children.
+  Testing PDFs, DV-100, DV-100m, and CIV-750 for sexual assault, CIV-752 for stalking.
+---
+include:
+  - docassemble.AssemblyLine:assembly_line.yml
+  - docassemble.ALAnyState:any_state.yml
+  - docassemble.AKA2JBranding:custom_organization.yml
+  - efiling.yml
+  - protective_order_interview_order.yml
+  - docassemble.ALToolbox:phone-number-validation.yml
+---
+metadata:
+  title: >-
+    Protective Order petition
+  short title: >-
+    Protective Order petition
+  description: |-
+    This form allows you to petition the court for a protective order in cases of domestic violence. It can help ensure your safety and the safety of any minors involved.
+  can_I_use_this_form: |
+    You can use this form if you are seeking protection from domestic violence and need a court order to keep you and your children safe. It is suitable for multiple petitioners, including minors.
+  before_you_start: |
+    ### Before you get started
+    - Gather information about the incidents of domestic violence.
+    - Ensure you have the details of the respondent and any witnesses.
+
+    ### When you are finished
+    - Submit the completed petition to the court.
+    - Prepare to attend a hearing if required.
+  when_you_are_finished: |
+    After you submit your petition, the court will review your request. If granted, the protective order will help keep you and your children safe from the respondent. You may need to attend a hearing for long-term orders.
+  efiling_enabled: True
+  integrated_efiling: True
+  integrated_email_filing: False
+  requires_notarization: False
+  unlisted: False
+  landing_page_url: >-
+    https://courtguide.akcourts.gov
+  maturity: production
+  estimated_completion_minutes: ""
+  estimated_completion_delta: ""
+  LIST_topics:
+    - "FA-07-00-00-00"
+  # Keep legacy tags behavior for compatibility with downstream tools.
+  tags:
+    - "FA-07-00-00-00"
+  authors:
+    - Alaska Court System, Access to Justice Department
+    - Kathleen Doherty
+    - Abaigeal O'Briend
+    - Braden Seward
+    - Jeannie Sato
+    - Caroline Robinson
+    - Court Forms Online
+  original_form: []
+  original_form_published_on: ""
+  help_page_url: >-
+    https://ak-courts.info/dv
+  help_page_title: >-
+    Domestic Violence, Stalking or Sexual Assault
+  allowed_courts: []
+  typical_role: "plaintiff"
+  al_weaver_version: "2.3.0"
+  generated_on: "2026-08-27"
+  languages:
+    - en
+  jurisdiction: "NAM-US-US+AK"
+  review_date: 2026-08-27
+  form_titles:
+    - Protective Order petition
+  form_numbers: []
+  update_notes: ""
+---
+code: |
+  # This controls the default country and list of states in address field questions
+  AL_DEFAULT_COUNTRY = "US"
+---
+code: |
+  # This controls the default state in address field questions
+  AL_DEFAULT_STATE = "AK"
+---
+code: |
+  github_repo_name = 'PetitionForProtectiveOrderIssues'
+---
+template: interview_short_title
+content: |
+  File your Protective Order petition today
+---
+code: |
+  al_form_type = "starts_case"
+---
+id: alweaver assemblyline settings
+initial: True
+code: |
+  # These exact-name variables drive the reusable next-steps DOCX shell and
+  # are editable in Weaver's AssemblyLine settings panel.
+  user_role = "plaintiff"
+  user_ask_role = "plaintiff"
+  al_next_steps_enabled = False
+  al_next_steps_intro_prompt = 'File your Protective Order petition today'
+  al_next_steps_title = 'Protective Order petition'
+  al_next_steps_document_title = 'petition'
+  al_next_steps_document_purpose = 'application'
+  al_next_steps_help_organization = 'Alaska Legal Services Corporation'
+  al_next_steps_help_url = 'https://www.alsc-law.org'
+  al_next_steps_generate_qr_code = False
+  al_next_steps_what_happens_next = 'After you submit your petition, the court will review your request. If granted, the protective order will help keep you and your children safe from the respondent. You may need to attend a hearing for long-term orders.'
+  al_next_steps_what_can_decision_maker_do = 'The judge can issue temporary protective orders or schedule a hearing for long-term orders. They can also deny the request if there is insufficient evidence.'
+  al_next_steps_what_happens_if_i_win = 'If you win the protective order, you will receive legal protection against the respondent for the duration specified. This may include restrictions on contact and requirements for the respondent to stay away from you and your children.'
+---
+objects:
+  - users: ALPeopleList.using(ask_number=True)
+  - advocate: ALIndividual
+  - children: ALPeopleList.using(there_are_any=True, complete_attribute='complete')
+  - other_parties: ALPeopleList.using(there_are_any=True, there_is_another=False, target_number=1)
+  - adult_for_respondent: ALIndividual
+  - confidential_user: ALIndividual
+---
+objects: 
+  - users[i].stay_away_home_address: ALAddress
+  - users[i].confidential_address: ALAddress
+---
+id: main interview order
+code: |
+  who_needs_the_order
+  ####### from interview_order.yml #################
+  if who_needs_the_order == 'myself':
+    users.target_number = 1
+  elif who_needs_the_order == 'child':
+    users.target_number = 1
+  elif who_needs_the_order == 'self and child':
+    users.target_number = 2
+  elif who_needs_the_order in ('children', 'self and children'):
+    users.target_number
+  for i in range(users.number()):
+    users[i].name.first
+  if who_needs_the_order in ('child', 'children'):
+    advocate.name.first
+    if advocate.is_attorney:
+      for i in range(users.number()):
+        users[i].relationship_to_advocate = 'Petitioners advocate'
+    else:
+      advocate.birthdate
+  
+      if advocate.age_in_years() < 18:
+        kickout_advocate_is_too_young
+      else:
+        for i in range(users.number()):
+          users[i].relationship_to_advocate
+  
+  other_parties[0].name.first
+  knows_respondents_birthdate
+  if other_parties[0].age_in_years() < 18:
+    knows_adult_for_respondent
+  
+  if who_needs_the_order in ('myself', 'child'):
+    protective_order_petition_type
+  else:
+    protective_order_petition_type = 'DV-100m'
+  term
+  
+  if stay_away_address_collected:
+   get_users_stay_away_home_address
+  #  users[0].address = users[0].stay_away_home_address
+  
+  # if respondent_live_with_petitioners or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live):
+  #  show_address_to_police = 'fine' 
+  #  ask_show_address_to_police =  False
+  #  if not respondent_stay_away_from_petitioners_home:
+  #    users[0].address
+  
+  # if not respondent_live_with_petitioners and respondent_knows_where_petitioners_live is not True and stay_away_home_address_or_keep_confidential == 'stay away':
+   # show_address_to_police = 'fine' 
+   # ask_show_address_to_police =  False
+   # users[0].address
+  
+  
+  # if (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live is not True and stay_away_home_address_or_keep_confidential == 'keep confidential'):
+   # ask_show_address_to_police = True
+   # show_address_to_police
+     
+  # petitioners_using_dv128
+  if who_needs_the_order in ('child', 'children'):
+    advocate.address.address
+  else: 
+    petitioner_contact_info
+  
+  if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent:
+  # if do_not_know_respondent_address:
+    # if knows_adult_for_respondent:
+    # adult_for_respondent_address_unknown
+    adult_for_respondent.address.address
+  else:
+    respondent_address_unknown
+    # other_parties[0].address.address
+  
+  court_location
+  
+  penultimate_screen
+  if can_check_efile:
+    set_efile_variables
+  # interview_order_finished = True  
+  ################## end interview order yml ##########
+  # interview_order_finished
+  protective_order_petition_download
+  
+mandatory: True
+---
+features:
+  css: |
+    .alert, .alert p {
+      font-size: 1rem !important;
+    }
+
+---
+id: who needs a protective order
+question: |
+  Who needs protection?
+fields:
+  - Who is the order for?: who_needs_the_order
+    datatype: radio
+    choices:
+    - "me. I need a protective order for myself": myself
+    - "My child": child
+    - "Myself and my minor child": self and child
+    - "More than one of my minor children": children
+    - "Myself and more than one of my minor children": self and children
+under: |
+  #### <i class="fa-regular fa-lightbulb"></i> Learn more####
+  If I get a protective order, does it include my child?
+
+  Your child can be included in your protective order or have their own protective order depending on what you ask for.
+
+  Ask for yourself: If you have children with the person you are asking for the protective order against, you can ask the judge to:
+
+    * make some temporary orders about where the child will live;
+    * order child support; and
+    * order the other person to stay away from specific locations, including your child's school.
+
+  You can ask for these things even if the other person did not commit domestic violence against your child.
+
+  Ask for yourself and your child: You can ask for a protective order for yourself and your child, if your child meets all of the protective order requirements. For example, the other person must have committed domestic violence against your child. You can also ask the judge to:
+
+    * make some temporary orders about where the child will live;
+    * order child support; and
+    * order the other person to stay away from specific locations, including your child's school.
+
+  You must decide before you fill out the court forms so you know which form to use. The court has 2 different forms to ask for a protective order. The forms are called a petition. One petition asks for a protective order for 1 person. The other petition asks for a protective order for more than 1 person.
+---
+code: |
+  if who_needs_the_order in ('child', 'children'):
+    al_person_answering = 'advocate'
+  else:
+    al_person_answering = 'user'
+---
+question: |
+  How many people, ${ "including yourself," if who_needs_the_order == 'self and children' else "all together,"} need this order?
+fields:
+  - Number of people: users.target_number
+    datatype: integer
+    min: 2
+    max: 11
+---
+id: protected person name
+sets:
+  - users[i].name.first
+  - users[i].name.middle
+  - users[i].name.last
+  - users[i].name.suffix
+question: |
+  % if i == 0 and who_needs_the_order in ('myself', 'self and child', 'self and children'):
+  What is your name and birthdate?
+  % elif (i == 0 and who_needs_the_order == 'child') or (i == 1 and who_needs_the_order == 'self and child'):
+  What is your child's name and birthdate?
+  % elif who_needs_the_order in ('self and children','children'):
+  What is the name and birthdate of the
+  % if who_needs_the_order == 'children':
+  ${ ordinal(i) }
+  % elif who_needs_the_order == 'self and children':
+  ${ ordinal(i - 1) }
+  % endif
+  child who needs the protective order?
+  % endif
+fields:
+  - code: |
+      users[i].name_fields()
+  - Birthdate: users[i].birthdate
+    datatype: date
+---
+code: |
+  if who_needs_the_order in ('myself', 'self and child', 'self and children'):
+    petitioner_personal_pronoun = 'you'
+    petitioner_possesive_pronoun = 'your'
+  elif who_needs_the_order == 'child':
+    petitioner_personal_pronoun = users[0].familiar()
+    petitioner_possesive_pronoun = f"{users[0].familiar()}'s"
+  elif who_needs_the_order == 'children':
+    petitioner_personal_pronoun = 'the children'
+    petitioner_possesive_pronoun = "the children's"
+---
+id: Advocate info
+sets:
+  - advocate.name.first
+  - advocate.name.middle
+  - advocate.name.last
+  - advocate.name.suffix
+question: |
+  If you are asking the court for a protective order for someone else
+subquestion: |
+  To file a petition for a Protective Order for someone else, you need to be:
+
+  * 18,
+  * a domestic violence advocate, or
+  * a lawyer.
+fields:
+  - note: What is your name?
+  - code: |
+      advocate.name_fields()
+  - 'Are you an attorney?': advocate.is_attorney
+    datatype: yesnoradio
+  - Attorney bar number: advocate.bar_number
+    show if:
+      variable: advocate.is_attorney
+      is: true
+  - Your birthdate: advocate.birthdate
+    datatype: date
+    max: ${ today() }
+    show if:
+      variable: advocate.is_attorney
+      is: false
+---
+id: kickout when advocate is too young to file
+event: kickout_advocate_is_too_young
+question: |
+  You have to be 18 to file a petition for a Protective Order for someone else
+subquestion: |
+  If you made a mistake, go back and change your birthdate.
+
+  The **Exit** button, takes you to the court's Domestic Violence, Sexual Assault and Stalking Protective Orders web page.
+buttons:
+  - Exit and delete my answers: exit
+    url: https://ak-courts.info/dv
+  - Start over: restart
+---
+id: relationship to advocate
+question: |
+  How are you related to ${ users[i] }?
+subquestion: |
+  Alaska only allows a child's parent or guardian to file a petition for a protective order for the child.  
+
+  But in certain circumstances, a judge **may** give you a **temporary guardianship** so you can ask for a protective order for the child.
+fields:
+  - "I am ${ users[i].name.familiar() }'s": users[i].relationship_to_advocate
+    datatype: radio
+    choices:
+      - parent
+      - guardian
+      - other
+---
+id: Respondent's name and birthdate
+sets:
+  - other_parties[0].name.first
+  - other_parties[0].name.middle
+  - other_parties[0].name.last
+  - other_parties[0].name.suffix
+question: |
+  What is the name of the person
+  % if who_needs_the_order == 'myself':
+  you need
+  % elif who_needs_the_order == 'child':
+  ${ users[0].name.familiar() } needs
+  % elif who_needs_the_order == 'children':
+  ${ comma_and_list([u.name.familiar() for u in users]) } need
+  % elif who_needs_the_order in ('self and child', 'self and children'):
+  you and ${ comma_and_list([u.name.familiar() for u in users[1:]]) } need
+  % endif
+  protection from?
+fields:
+  - code: |
+      other_parties[0].name_fields()
+---
+id: respondent birthdate
+question: |
+  How old is ${ other_parties[0].name.familiar() }?  
+fields:
+  - Do you know ${ other_parties[0].name.familiar() }'s birthdate?: knows_respondents_birthdate
+    datatype: yesnoradio
+    label above field: True
+  - What is ${ other_parties[0].name.familiar() }'s birthdate?: other_parties[0].birthdate
+    datatype: BirthDate
+    show if:
+      variable: knows_respondents_birthdate
+      is: True
+    label above field: True
+  - How old do you think ${ other_parties[0].name.familiar() } is, in years?: other_parties[0].age
+    datatype: integer
+    show if:
+      variable: knows_respondents_birthdate
+      is: False
+    label above field: True
+---
+id: adult for under-age respondent
+sets:
+  - adult_for_respondent.name.first
+  - adult_for_respondent.name.middle
+  - adult_for_respondent.name.last
+  - adult_for_respondent.name.suffix
+question: |
+  Who is responsible for ${ other_parties[0].name.familiar() }?
+fields:
+  - Do you know ${ other_parties[0].name.familiar() }'s parent's or guardian's name?: knows_adult_for_respondent
+    datatype: yesnoradio
+    label above field: True
+  - code: |
+      adult_for_respondent.name_fields(
+        show_if={
+          "variable": "knows_adult_for_respondent",
+          "is": True,
+        }
+      )
+
+---
+id: Stay away from petitioner's home
+question: |
+  % if who_needs_the_order == 'myself':
+  The judge can order ${ other_parties[0].familiar() } to stay away from the place you live
+  % elif who_needs_the_order == 'child':
+  The judge can order ${ other_parties[0].familiar() } to stay away from the place ${ users[0].familiar() } lives
+  % elif who_needs_the_order == 'self and child':
+  The judge can order ${ other_parties[0].familiar() } to stay away from the place you and ${ users[1].familiar() } live
+  % elif who_needs_the_order == 'children':
+  The judge can order ${ other_parties[0].familiar() } to stay away from the place your children live
+  % elif who_needs_the_order == 'self and children':
+  The judge can order ${ other_parties[0].familiar() } to stay away from the place you and your children live
+  % endif
+subquestion: |
+     If the judge orders ${ other_parties[0].familiar() } to stay away from a place, the address for that place goes into the order.
+
+     If ${ other_parties[0].name.familiar() } does not already know it, ${ other_parties[0].name.familiar() } will learn the address of the place because the address will be in the order.
+fields:
+  - Does ${ other_parties[0].name.familiar() } live with ${ petitioner_personal_pronoun }?: respondent_live_with_petitioners
+    datatype: yesnoradio
+  - Does ${ other_parties[0].name.familiar() } know where ${ petitioner_personal_pronoun } ${ "lives" if who_needs_the_order == 'child' else "live" }?: respondent_knows_where_petitioners_live
+    datatype: yesnomaybe
+    show if:
+      variable: respondent_live_with_petitioners
+      is: False
+  - label: |
+      Do you need the judge to order ${other_parties[0].name.familiar()} to stay away from ${ petitioner_possesive_pronoun } place? **or** Do you need to keep that address confidential so it does **not** go onto the order where ${ other_parties[0].name.familiar() } can see it?
+    field: stay_away_home_address_or_keep_confidential
+    datatype: radio
+    choices:
+      code: |
+        stay_away_home_address_or_keep_confidential_choices
+    js show if: |
+      val("respondent_live_with_petitioners") === false &&
+      val("respondent_knows_where_petitioners_live") !== null &&
+      val("respondent_knows_where_petitioners_live") !== true
+    label above field: True
+
+  - "Do you need the judge to order ${other_parties[0].name.familiar()} to stay away from ${ petitioner_possesive_pronoun } place?": respondent_stay_away_from_petitioners_home
+    datatype: yesnoradio
+    js show if: |
+      val("respondent_live_with_petitioners") === true ||
+      (
+        val("respondent_live_with_petitioners") === false &&
+        val("respondent_knows_where_petitioners_live") === true
+      )
+---
+code: |
+  if who_needs_the_order == 'myself':
+    stay_away_home_address_or_keep_confidential_choices = [
+      {'stay away': f"I want the judge to order { other_parties[0].name.familiar() } to stay away from the place I live." },
+      {'keep confidential': f"It is more important to me that { other_parties[0].name.familiar() } does not see the address of the place I live on the order." },
+    ]
+  elif who_needs_the_order == 'child':
+    stay_away_home_address_or_keep_confidential_choices = [
+      { 'stay away': f"I want the judge to order { other_parties[0].name.familiar() } to stay away from the place { users[0].familiar() } lives." },
+      { 'keep confidential': f"It is more important to me that { other_parties[0].name.familiar() } does not see the address of the place { users[0].familiar() } lives on the order." }
+    ]
+  elif who_needs_the_order == 'children':
+    stay_away_home_address_or_keep_confidential_choices = [
+      { 'stay away': f"I want the judge to order { other_parties[0].name.familiar() } to stay away from the place the children live." },
+      { 'keep confidential': f"It is more important to me that { other_parties[0].name.familiar() } does not see the address of the place the children live on the order." },
+    ]
+  else:
+    stay_away_home_address_or_keep_confidential_choices = [
+      { 'stay away': f"I want the judge to order { other_parties[0].name.familiar() } to stay away from the place we live." },
+      { 'keep confidential': f"It is more important to me that { other_parties[0].name.familiar() } does not see the address of the place we live on the order." }
+    ]
+---
+---
+code: |
+  stay_away_address_collected = (
+    (
+      (
+        respondent_live_with_petitioners
+        or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live)
+      )
+      and respondent_stay_away_from_petitioners_home
+    )
+    or (
+      not respondent_live_with_petitioners
+      and respondent_knows_where_petitioners_live is not True
+      and stay_away_home_address_or_keep_confidential == 'stay away'
+    )
+  )
+---
+
+
+---
+code: |
+    if (respondent_live_with_petitioners or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live)) and respondent_stay_away_from_petitioners_home is False:
+      show_address_to_police == 'fine'      
+---
+id: petitioners stay away from home address
+sets: 
+ - "users[0].stay_away_home_address.address"
+ - "users[0].stay_away_home_address.unit"
+ - "users[0].stay_away_home_address.city"
+ - "users[0].stay_away_home_address.state"
+ - "users[0].stay_away_home_address.zip"
+question: |
+  What is the address you need the judge to order ${ other_parties[0].name.familiar() } to stay away from?
+subquestion: |
+  % if respondent_live_with_petitioners is False and not respondent_knows_where_petitioners_live:
+  <div class="alert alert-warning" role="alert">
+   <strong>from outline</strong>: You said you wanted your physical address to be confidential.  If you want the judge to order [RFN] to stay away from it, you have to give the address so [RFN] knows where to say away and law enforcement can . . . ]  What is safer – keeping your physical address safer or listing it so you can call law enforcement if [RFN] comes to your residence. 
+  So what do you want to do?
+  nlocude [addrerss] as a place to stay away on the order
+  Keep [address] confidential even though the court can’t order [RFN] to stay away. 
+  </div>
+  % endif
+fields:
+ # - Street address: users[0].address.address
+  - code: |
+      users[0].stay_away_home_address.address_fields(
+        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
+ # - street address: users[0].address.address  
+ #   address autocomplete:
+ #     locationBias:
+ #       rectangle:
+ #         low:
+ #           latitude: 51.3,
+ #           longitude: -130
+ #         high:
+ #           latitude: 71.83,            
+ #           longitude: 172
+ #      
+ # - Apartment: users[0].address.unit
+ #   required: False
+ # - City: users[0].address.city
+ # - State: users[0].address.state
+ # - ZIP code: users[0].address.zip
+ #   required: False
+  - note: How far away in feet or miles do you need the judge to order ${ other_parties[0].name.familiar() } to stay away?
+  - Distance: stay_away_home_distance
+    required: False
+continue button field: get_users_stay_away_home_address
+---
+comment: |
+  For data points demo, take out subquestion If the judge agrees to give you a Protective Order, a law enforcment officer must give ${ other_parties[0].name.familiar() } a copy of the order. 
+  
+  <div class="alert alert-warning">The order <strong>only</strong> goes into effect once ${ other_parties[0].name.familiar() } gets a copy.</div>
+  % if respondent_live_with_petitioners:
+  You said ${ other_parties[0].name.familiar() } lives with you.
+  % endif
+  % if not respondent_live_with_petitioners:
+   
+  % endif
+  The officer will start at the address you give as ${ other_parties[0].name.familiar() }'s residence.  
+id: Respondents address
+sets:
+  - other_parties[0].address.has_no_address
+   - other_parties[0].address.address
+   - other_parties[0].address.city
+   - other_parties[0].address.zip
+   - other_parties[0].address.unit
+   - other_parties[0].address.state
+ # - other_parties[0].phone_number
+ # - other_parties[0].mailing_address.address
+ # - other_parties[0].mailing_address.city
+ # - other_parties[0].mailing_address.zip
+ # - other_parties[0].mailing_address.unit
+ # - other_parties[0].mailing_address.state
+question: |
+  How can the court and law enforcement get in touch w ${ other_parties[0].name.familiar() }? 
+subquestion: |
+  If the judge grants your petition it does not take effect until law enforcement serves ${ other_parties[0].name.familiar() } with the order.
+
+  And the court needs to be able to send notices to ${ other_parties[0].name.familiar() }. 
+fields:
+  - I do not have any contact information for ${other_parties[0].familiar()}: respondent_address_unknown
+    datatype: yesno
+    disable others: True
+  - code: |
+     other_parties[0].address_fields(required={'city': False, 'state': False, 'zip': False, 'address': False},country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
+  # - I do not know address: do_not_know_respondent_address
+  #  datatype: yesnoradio
+  # - code: |
+  #    other_parties[0].address_fields(hide_if={"variable": "do_not_know_respondent_address", "is": "False"}) 
+  - Business phone: other_parties[0].work_number
+    datatype: al_international_phone
+    required: False
+  - Cell phone: other_parties[0].mobile_number
+    datatype: al_international_phone
+    required: False
+  - Home phone: other_parties[0].home_number
+    datatype: al_international_phone
+    required: False
+  - Message phone: other_parties[0].phone_number
+    datatype: al_international_phone
+    required: False
+  - Email: other_parties[0].email
+    datatype: email
+    required: False
+---
+id: Respdondent's adult contact info
+sets:
+  - adult_for_respondent.address.has_no_address
+  - adult_for_respondent.address.address
+  - adult_for_respondent.address.city
+  - adult_for_respondent.address.zip
+  - adult_for_respondent.address.unit
+  - adult_for_respondent.address.state
+  - adult_for_respondent.mobile_number
+  - adult_for_respondent.home_number
+  - adult_for_respondent.work_number
+  - adult_for_respondent.phone_number
+  - adult_for_respondent.other_number
+question: |
+  How can the court get in touch with ${ adult_for_respondent }?
+fields:
+  - I do not have any contact information for ${other_parties[0].familiar()}'s parent or guardian: adult_for_respondent_address_unknown
+    datatype: yesno
+    disable others: True
+  - code: |
+      adult_for_respondent.address_fields(required={'city': False, 'state': False, 'zip': False, 'address': False},country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
+  - Cell phone: adult_for_respondent.mobile_number
+    datatype: al_international_phone
+    required: False
+  - Home phone: adult_for_respondent.home_number
+    datatype: al_international_phone
+    required: False
+  - Work phone: adult_for_respondent.work_number
+    datatype: al_international_phone
+    required: False
+  - Other phone: adult_for_respondent.other_number
+    datatype: al_international_phone
+    required: False
+  - Email: adult_for_respondent.email
+    datatype: email
+    required: False
+---
+question: |
+  Does ${ other_parties } go by any other names?
+fields:
+  - Do they have any nicknames or aliases?: other_parties_aliases
+    datatype: yesnoradio
+  - What other names do people know them as?: other_parties[0].alias_text_list
+    datatype: area
+    show if: other_parties_aliases
+
+---
+code: |
+  # Check if the text field has content and isn't just spaces
+  if defined('other_parties[0].alias_text_list') and other_parties[0].alias_text_list.strip():
+    users_with_aliases = f"{users[0]} (AKA: {users[0].alias_text_list.strip()})"
+  else:
+    users_with_aliases = str(users[0])
+---
+# id: Keeping filer's address confidential
+# question: |
+#   Do you need the court to keep your contact information confidential?
+# subquestion: |
+#   The court needs your mailing address so they can send court papers and notices about your hearing dates to you. If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties[0].name.familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties[0].name.familiar() }.
+# fields:
+#   - "Do you need to use DV-128?": petitioners_using_dv128_back
+#     datatype: yesnoradio
+---
+code: |
+  dv_128_confidential_contact_information_sheet.enabled = petitioners_using_dv128
+---
+id: Petitioner's aliases
+question: |
+  % if who_needs_the_order in ('myself', 'self and child', 'self and children'):
+  Do you
+  % elif who_needs_the_order == "child":
+  Does ${ users[0].familiar() }
+  % else:
+  Do ${ users[0].familiar() }
+  % endif
+  go by any *other* names?
+fields:
+  - "Do ${ 'you' if who_needs_the_order in ('myself', 'self and child', 'self and children') else 'they' } have any nicknames or aliases?": users_aliases
+    datatype: yesnoradio
+  - "What other names do people know ${ 'you' if who_needs_the_order in ('myself', 'self and child', 'self and children') else 'them' } as?": users[0].alias_text_list
+    datatype: area
+    show if: users_aliases
+---
+code: |
+  # Check if the text field has content and isn't just spaces
+  if defined('users[0].alias_text_list') and users[0].alias_text_list.strip():
+    users_with_aliases = f"{users[0]} (AKA: {users[0].alias_text_list.strip()})"
+  else:
+    users_with_aliases = str(users[0])
+---
+# 2026-10-07
+---
+id: petitioner's contact info
+question: |
+  How can the court get in touch with you?
+
+fields:
+  - note: |
+      You are asking the court to order ${ other_parties[0].name.familiar() } to stay away from ${ users[0].stay_away_home_address.on_one_line() }.
+    show if: stay_away_address_collected
+  - "Can the court use that address to contact you?": stay_away_is_same_as_mailing_address
+    datatype: yesnoradio
+    show if: stay_away_address_collected
+  - "Do you need the court to keep your contact address confidential?": petitioners_using_dv128
+    datatype: yesnoradio
+    js show if: |
+      val("stay_away_is_same_as_mailing_address") !== true
+  - code: |
+      users[0].mailing_address.address_fields(
+        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False,
+        show_if={"variable": "petitioners_using_dv128", "is": False})
+  - code: |
+      users[0].confidential_address.address_fields(
+        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False,
+        show_if={"variable": "petitioners_using_dv128", "is": True})
+sets:
+  - users[0].mailing_address.address
+  - users[0].mailing_address.unit
+  - users[0].mailing_address.city
+  - users[0].mailing_address.state
+  - users[0].mailing_address.zip
+  - users[0].confidential_address.address
+  - users[0].confidential_address.unit
+  - users[0].confidential_address.city
+  - users[0].confidential_address.state
+  - users[0].confidential_address.zip
+
+continue button field: petitioner_contact_info
+---
+code: |
+  if ((respondent_live_with_petitioners or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live)) and respondent_stay_away_from_petitioners_home) or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live is not True and stay_away_home_address_or_keep_confidential == 'stay away'):
+    keep_confidential_checkbox_choices = [
+       {'cell': "my cell phone"},
+       {'work': "my work phone"},
+       {'home': "my home phone"},
+       {'message': "message phone"},
+       {'other': "my other phone"},
+       {'email': "my email addresss"}
+    ]
+  else:
+    keep_confidential_checkbox_choices = [
+       {'mail': "my mailing address"},
+       {'cell': "my cell phone"},
+       {'work': "my work phone"},
+       {'home': "my home phone"},
+       {'message': "message phone"},
+       {'other': "my other phone"},
+       {'email': "my email addresss"}
+    ]
+---
+id: "Advocate's contact info"
+sets:
+  - advocate.address.address
+  - advocate.address.city
+  - advocate.address.zip
+  - advocate.address.unit
+  - advocate.address.state
+  - advocate.mobile_number
+  - advocate.other_number
+question: |
+  How can the court get in touch with you?
+
+subquestion: |
+  The court needs your mailing address so they can send court papers and notices about hearing dates to you. 
+  
+  If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties[0].name.familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties[0].name.familiar() }.  
+fields:
+  - note: |
+      The court needs to be able to reach you.
+
+      You can ask the to keep your address, phone, and email confidential, so that only court staff can see this information.
+  - "Do you need the court to keep your information confidential?": petitioners_using_dv128
+    datatype: yesnoradio
+  - code: |
+      advocate.address_fields(
+        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
+  - Cell phone: advocate.mobile_number
+    datatype: al_international_phone
+    required: False
+  - Home phone: advocate.home_number
+    datatype: al_international_phone
+    required: False
+  - Work phone: advocate.work_number
+    datatype: al_international_phone
+    required: False
+  - Other phone: advocate.other_number
+    datatype: al_international_phone
+    required: False
+  - note: |
+      In order to e-file, you need to provide your email.
+    show if:
+      code: |
+        defined("can_check_efile") and can_check_efile
+  - Email: advocate.email
+    datatype: email
+    required: defined("can_check_efile") and can_check_efile
+---
+id: For demo - which form do you want to complete?
+question: |
+  Which petition do you want to complete?
+subquestion: |
+  For demo only - on production, users would answer questions that determines the appropriate petition for them.
+fields:
+  - Petition: protective_order_petition_type
+    datatype: radio
+    choices:
+      - Petition for Domestic Violence Protective Order: DV-100
+      - Petition for Sexual Assault Protective Order: CIV-750
+      - Petition for Stalking Protective Order: CIV-752
+---
+code: |
+  if who_needs_the_order in ('myself', 'child'):
+    domestic_violence_protective_order_petition.enabled = protective_order_petition_type == 'DV-100'
+    sexual_assault_protective_order_petition.enabled = protective_order_petition_type == 'CIV-750'
+    stalking_protective_order_petition.enabled = protective_order_petition_type == 'CIV-752'
+    domestic_violence_protective_order_petition_multi.enabled = False
+  else:
+    domestic_violence_protective_order_petition_multi.enabled = True
+    domestic_violence_protective_order_petition.enabled = False
+    sexual_assault_protective_order_petition.enabled = False
+    stalking_protective_order_petition.enabled = False
+---
+id: short or long term
+question: |
+  How long do you need the order to last?
+subquestion: |
+  You can ask the court for an order that lasts 20 days, an order that lasts up to a year, or both.
+fields:
+  - I need the order to last: term
+    input type: radio
+    choices:
+      - "20 days": 20 days
+        help: |
+          A **Short-Term Protective Order** (also called an “ex parte” order) gives you immediate protection.  It lasts for 20 days unless the judge extends it. The judge is able to grant or deny the petition based only on what you write in the petition and what you testify about at the hearing, if there is a hearing. The judge can grant this protective order without telling ${ other_parties[0].familiar() } that you filed a petition, and without hearing from ${ other_parties[0].familiar() }. You do not have to tell the ${ other_parties[0].familiar() } that you are asking for a protective order, but if you did, tell the judge how you tried to tell ${ other_parties[0].familiar() } you were asking for the protective order.
+      - "up to one year": 1 year
+        help: |
+          A **Long-Term Order** can last up to one year. A judge can only grant a long-term order after a hearing. ${ other_parties[0].familiar() } must get at least 10 days’ notice of the court hearing and have a chance to speak at the hearing. If ${ other_parties[0].familiar() } had notice, but chose not to come to the hearing, the judge can still grant the order. Police officers or troopers are responsible for notifying ${ other_parties[0].familiar() } about the hearing.
+      - "I need **both** a 20 day order and an order that lasts up to a year": both
+        help: |
+           Both a Short-Term and a Long-Term Order. If you request both orders, and your short-term order is granted, the court will schedule a hearing when the judge will decide on the long-term protective order. ${ other_parties[0].familiar() } has an opportunity to attend the hearing and contest the order. If the short-term order is not granted, the court may or may not schedule a long-term hearing.
+---
+code: |
+  if protective_order_petition_type in ('DV-100', 'DV-100m'):
+    if term == '20 days':
+      cause_of_action_code = 'DV100ST'
+    elif term == '1 year':
+      cause_of_action_code = 'DV100LT'
+    elif term == 'both':
+      cause_of_action_code = 'DV100LT'
+  elif protective_order_petition_type == 'CIV-750':
+    if term == '20 days':
+      cause_of_action_code = 'CIV750ST'
+    elif term == '1 year':
+      cause_of_action_code = 'CIV750LT'
+    elif term == 'both':
+      cause_of_action_code = 'CIV750T'
+  elif protective_order_petition_type == 'CIV-752':
+    if term == '20 days':
+      cause_of_action_code = 'CIV750ST'
+    elif term == '1 year':
+      cause_of_action_code = 'CIV750LT'
+    elif term == 'both':
+      cause_of_action_code = 'CIV750LT'
+---
+id: users physical address
+sets:
+  - users[0].address.address
+  - users[0].address.unit
+  - users[0].address.city
+  - users[0].address.state
+  - users[0].address.zip
+question: |
+  What is the address of the place you are living now? 
+
+subquestion: |
+  The police want the address of the place you are living now because.... 
+  They only use this address to ... and it does not go to ${ other_parties[0].name.familiar() }
+
+fields:
+  - "You have a choice": show_address_to_police
+    datatype: radio
+    choices:
+      - 'I am fine to have the police know my address': fine
+      - 'I am staying with a friend': friend
+      - 'I am staying with family': family
+      - 'I do not feel safe sharing where I am staying with anyone': unsafe to share
+    #show if:
+    #  code: |
+    #     ask_show_address_to_police
+# - code: |
+#     users[0].address_fields(show_if={'variable': 'show_address_to_police', 'is': 'fine'})
+# - code: |
+#     users[0].address_fields(show_if={ 'code': "not ask_show_address_to_police and show_address_to_police == 'fine'" })
+---
+id: court location
+question: |
+  What court do you want to file in?
+subquestion: |
+  You can file:
+
+  * at your local court,
+  <div class="alert alert-info" role="alert">
+  Ultimately, we will put in the name and address of ${users[0].name.familiar()}'s local court here, possibly with a map showing where the court is.
+  </div>
+  * at ${ other_parties[0].name.familiar() }'s local court, or
+  <div class="alert alert-info" role="alert">
+  Ultimately, we will put in the name and address of ${other_parties[0].name.familiar()}'s local court here, possibly with a map showing where the court is.
+  </div>
+  * the court where the abuse, assault or stalking ocurred.
+  <div class="alert alert-info" role="alert">
+   Ultimately, we will put in the name and address of the court local to where the ${ "abuse" if protective_order_petition_type in ('DV-100', 'DV-100m') else "" }${ "assault" if protective_order_petition_type == 'DIV-752' else "" }${ "stalking" if protective_order_petition_type == 'DIV-750' else "" } ocurred, if we have this information, possibly with a map showing where the court is.
+  </div>
+
+  Where do you want to file? 
+
+field: court_location
+dropdown:
+  - Anchorage
+  - Angoon
+  - Aniak
+  - Bethel
+  - Cordova
+  - Delta Junction
+  - Dillingham
+  - Emmonak
+  - Fairbanks
+  - Fort Yukon
+  - Galena
+  - Glennallen
+  - Haines
+  - Homer
+  - Hoonah
+  - Hooper Bay
+  - Juneau
+  - Kake
+  - Kenai
+  - Ketchikan
+  - Kodiak
+  - Kotzebue
+  - Naknek
+  - Nenana
+  - Nome
+  - Palmer
+  - Petersburg
+  - Prince of Wales
+  - Sand Point
+  - Seward
+  - Sitka
+  - Skagway
+  - Saint Paul Island
+  - Tok
+  - Unalakleet
+  - Unalaska
+  - Utqiagvik
+  - Valdez
+  - Wrangell
+  - Yakutat
+---
+code: |
+  if court_location == 'Angoon':
+    court_code = '1AG'
+  elif court_location == 'Haines':
+      court_code = '1HA'
+  elif court_location == 'Hoonah':
+      court_code = '1HN'
+  elif court_location == 'Juneau':
+      court_code = '1JU'
+  elif court_location == 'Ketchikan':
+      court_code = '1KE'
+  elif court_location == 'Petersburg':
+      court_code = '1PE'
+  elif court_location == 'Prince of Wales':
+      court_code = '1PW'
+  elif court_location == 'Sitka':
+      court_code = '1SI'
+  elif court_location == 'Skagway':
+      court_code = '1SK'
+  elif court_location == 'Wrangell':
+      court_code = '1WR'
+  elif court_location == 'Yakutat':
+      court_code = '1YA'
+  elif court_location == 'Utqiagvik':
+      court_code = '2BA'
+  elif court_location == 'Kotzebue':
+      court_code = '2KB'
+  elif court_location == 'Nome':
+      court_code = '2NO'
+  elif court_location == 'Unalakleet':
+      court_code = '2UT'
+  elif court_location == 'Anchorage':
+      court_code = '3AN'
+  elif court_location == 'Cordova':
+      court_code = '3CO'
+  elif court_location == 'Dillingham':
+      court_code = '3DI'
+  elif court_location == 'Glennallen':
+      court_code = '3GL'
+  elif court_location == 'Homer':
+      court_code = '3HO'
+  elif court_location == 'Kake':
+      court_code = '1PE'
+  elif court_location == 'Kenai':
+      court_code = '3KN'
+  elif court_location == 'Kodiak':
+      court_code = '3KO'
+  elif court_location == 'Naknek':
+      court_code = '3NA'
+  elif court_location == 'Palmer':
+      court_code = '3PA'
+  elif court_location == 'Sand Point':
+      court_code = '3SP'
+  elif court_location == 'Saint Paul Island':
+      court_code = '3ST'
+  elif court_location == 'Seward':
+      court_code = '3SW'
+  elif court_location == 'Unalaska':
+      court_code = '3UN'
+  elif court_location == 'Valdez':
+      court_code = '3VA'
+  elif court_location == 'Aniak':
+      court_code = '4AK'
+  elif court_location == 'Bethel':
+      court_code = '4BE'
+  elif court_location == 'Delta Junction':
+      court_code = '4DJ'
+  elif court_location == 'Emmonak':
+      court_code = '4EM'
+  elif court_location == 'Fairbanks':
+      court_code = '4FA'
+  elif court_location == 'Fort Yukon':
+      court_code = '4FY'
+  elif court_location == 'Galena':
+      court_code = '4GA'
+  elif court_location == 'Hooper Bay':
+      court_code = '4HB'
+  elif court_location == 'Nenana':
+      court_code = '4NE'
+  elif court_location == 'Saint Marys':
+      court_code = '4SM'
+  elif court_location == 'Tok':
+      court_code = '4TO'
+
+---
+comment: |
+  took out:
+    * their birthdate: ${ adult_for_respondent.birthdate }
+    * their relationship to respondent: ${ other_parties[0].relationship_to_person_signing_for_them }
+id: data points screen 
+event: penultimate_screen
+question: |
+  Final screen
+subquestion: |
+  Stick in a final screen just so we don't get the error message
+
+  Also reckoning variables along the way:
+
+  ## Petitioner
+
+  -  **users_is_petitioner** checkbox =  (who_needs_the_order in ('myself','self and child','self and children')): ${ who_needs_the_order in ('myself','self and child','self and children') }
+  
+  - **users_is_respondent** : False
+  
+  - **users_is_other** checkbox = (who_needs_the_order in ('child','children')): ${ who_needs_the_order in ('child','children') }
+  
+  - **users_other_role** code to give either nothing or users[0].relationship_to_advocate:
+      % if who_needs_the_order in ('child', 'children'):
+      ${ users[0].relationship_to_advocate } of ${ users[0] }
+      % else:
+      ${ "" }
+      % endif   
+
+
+
+  
+  * Who needs the order: ${ who_needs_the_order }
+  * Petitioner's name: ${ users }
+  * Parent or Guardian or petitioner filling out for themself: ${ al_person_answering }
+  * Number of petitioners: ${ users.target_number }
+  * Who is answering the questions in this interview? ${ al_person_answering }
+  % if who_needs_the_order in ('child', 'children'):
+  % if advocate.is_attorney:
+  * Advocate name: ${ advocate.name.full() }
+  * advocate.bar_number:  ${ advocate.bar_number }
+  % endif
+  * I am
+  % for i in range(users.number()):
+  ${users[i].name.familiar()}'s ${ users[i].relationship_to_advocate }
+  % endfor
+  % endif
+
+   Petitioners mailing address, phone and email:
+  % if petitioners_using_dv128:
+  Confidential - See form DV-128
+  % else:
+  % if who_needs_the_order in ('child', 'children'):
+  ${ advocate.address.on_one_line() }
+  % else:
+  ${ users[0].mailing_address.on_one_line() }
+  % endif
+  % endif
+  
+  phone number(s): 
+  % if petitioners_using_dv128:
+  Confidential - See form DV-128
+  % else:
+  % if who_needs_the_order in ('child', 'children'):
+  ${ advocate.phone_numbers() }
+  % else:
+  ${ users[0].phone_numbers() }
+  % endif
+  % endif
+
+  email: 
+   % if petitioners_using_dv128:
+  Confidential - See form DV-128
+  % else:
+  % if who_needs_the_order in ('child', 'children'):
+  ${ advocate.email }
+  % else:
+  ${ users[0].email }
+  % endif
+  % endif
+
+
+  ## Respondent
+  * Respondent name: ${ other_parties[0].name }
+  * Respondent's birthdate:  
+  % if knows_respondents_birthdate:
+  { other_parties[0].birthdate }
+  % else:
+  ${ other_parties[0].age } years
+  % endif
+  * Is ${ other_parties[0].name.familiar() } a child? ${ "Yes" if other_parties[0].age_in_years() < 18 else "No" }
+  % if other_parties[0].age_in_years() < 18 and knows_adult_for_respondent:
+  * Respondent's parent or guardian: ${ adult_for_respondent }
+  % endif
+  * Respondent's address: 
+  % if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent and not adult_for_respondent_address_unknown:
+      * Adult responsible for ${ other_parties[0].name.familiar() }'s address: 
+  ${ adult_for_respondent.address.block() } (parent or guardian)
+  % else:
+  % if not respondent_address_unknown:
+  ${ other_parties[0].address.block() }
+  % endif
+  % endif
+
+
+  ## Type of Protective Order petition
+
+  The ${"petitioner" if who_needs_the_order in ('myself', 'child') else "petitioners"} should get a **${ protective_order_petition_type }** petition. 
+
+  The Cause of Action Code for this petition is: ${ cause_of_action_code }
+
+  The ${"petitioner plans" if who_needs_the_order in ('myself', 'child') else "petitioners plan"} to file in ${ court_location } whose court code is ${ court_code }. 
+
+continue button field: penultimate_screen
+---
+comment: |
+  Delete until we have review screens set up:
+    ${ action_button_html(url_action('review_protective_order_petition'), label=word('Edit answers'), color='info') }
+id: download protective_order_petition
+event: protective_order_petition_download
+question: |
+  All done
+subquestion: |
+  Thank you ${users}. Your form is ready to download and deliver.
+
+  Use the options on this page to view, download and send your form.
+
+  % if can_check_efile and not (defined('efile') and efile):
+  ${ action_button_html(url_ask([{'recompute': ['efile_and_email']}]), label='E-File', id_tag='efile-button', icon='file-export', size='md')}
+  % endif
+
+  ${ al_user_bundle.download_list_html() }
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+
+progress: 100
+buttons:
+  - Start over: restart
+---
+# ALDocument objects specify the metadata for each template
+objects:
+  - protective_order_petition_post_interview_instructions: ALDocument.using(title="Instructions Next Steps - Do not file", filename="protective_order_petition_next_steps", enabled=True)
+
+ ###### add addenda to these petitions then change has_addendum=False to True
+  - domestic_violence_protective_order_petition: ALDocument.using(title="Domestic Violence Protective Order Petition", filename="domestic_violence_protective_order_petition", has_addendum=False)
+  - sexual_assault_protective_order_petition: ALDocument.using(title="Sexual Assault Protective Order Petition", filename="sexual_assault_protective_order_petition", has_addendum=False)
+  - stalking_protective_order_petition: ALDocument.using(title="Stalking Protective Order Petition", filename="stalking_protective_order_petition", has_addendum=False)
+  - domestic_violence_protective_order_petition_multi: ALDocument.using(title="Domestic Violence Protective Order Petition for Multiple Petitioners", filename="domestic_violence_protective_order_petition_multi", has_addendum=False)
+
+  - dv_127_confidential_law_enforcement_information_sheet: ALDocument.using(title="DV-127 Confidential Law Enforcement Information Sheet", filename="dv_127_confidential_law_enforcement_information_sheet", enabled=True, has_addendum=False)
+
+  - dv_128_confidential_contact_information_sheet: ALDocument.using(title="DV-128 Confidential Contact Information Sheet", filename="dv_128_confidential_contact_information_sheet", has_addendum=False)
+
+  - tf_835_self_certification_no_notary_available: ALDocument.using(title="TF-835 Self-Certification (No Notary Available)", filename="tf_835_self_certification_no_notary_available", enabled=True, has_addendum=False)
+---
+# Bundles group the ALDocuments into separate downloads, such as for court and for the user
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[protective_order_petition_post_interview_instructions, domestic_violence_protective_order_petition, domestic_violence_protective_order_petition_multi, sexual_assault_protective_order_petition, stalking_protective_order_petition, dv_127_confidential_law_enforcement_information_sheet,dv_128_confidential_contact_information_sheet, tf_835_self_certification_no_notary_available], title="Your Petition for a Protective Order", filename="protective_order_petition_bundle", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[domestic_violence_protective_order_petition, domestic_violence_protective_order_petition_multi, sexual_assault_protective_order_petition, stalking_protective_order_petition, dv_127_confidential_law_enforcement_information_sheet,dv_128_confidential_contact_information_sheet, tf_835_self_certification_no_notary_available], title="Petition for a Protective Order", filename="protective_order_petition_bundle", enabled=True)
+---
+code: |
+
+
+  dv_127_confidential_law_enforcement_information_sheet.enabled = True
+  protective_order_petition_post_interview_instructions.enabled = True
+---
+template: protective_order_petition_post_interview_instructions.title
+content: |
+  Instructions
+---
+template: protective_order_petition_attachment.title
+content: |
+  Protective Order petition
+---
+template: al_user_bundle.title
+content: |
+  All forms to download for your records
+---
+template: al_court_bundle.title
+content: |
+  All forms to deliver to court
+---
+# Each attachment defines a key in an ALDocument. We use `i` as the placeholder here so the
+# same template is used for "preview" and "final" keys, and logic in the template checks
+# the value of `i` to show or hide the user's signature
+attachment:
+  name: Post-interview-Instructions
+  filename: protective_order_petition_next_steps
+  variable name: protective_order_petition_post_interview_instructions[i]
+  docx template file: protective_order_petition_next_steps.docx
+  skip undefined: True
+  tagged pdf: True
+---
+attachment:
+  name: DV-127 Confidential Law Enforcement Information Sheet
+  filename: DV-127-Confidential-Law-Enforcement-Information-Sheet
+  pdf template file: dv_127_confidential_law_enforcement_information_sheet.pdf
+  variable name: dv_127_confidential_law_enforcement_information_sheet[i]
+  skip undefined: True
+  tagged pdf: True
+  fields:
+      - "petitioners_name": ${ users[0] }
+      - "petitioners_birthdate": ${ users[0].birthdate }
+      - "petitioners_is_child": ${ users[0].age_in_years() < 18 }
+      - "petitioners_address": ${ users[0].address.on_one_line() }
+      - "petitioners_stay_away_address_yes": ${ users[0].stay_away_from_address }
+      - "petitioners1_stay_away_address_no": ${ not users[0].stay_away_from_address }
+      - "notify_petitioner_when_defendant_is_served_yes": ${ users[0].notify_when_served }
+      - "notify_petitioner_when_defendant_is_served_no": ${ not users[0].notify_when_served }
+      - "petitioners_mobile_number": |
+          % if who_needs_the_order in ('child', 'children'):
+          ${ phone_number_formatted(advocate.mobile_number) }
+          % else:
+          ${ phone_number_formatted(users[0].mobile_number) }
+          % endif
+      - "petitioners_other_number": |
+          % if who_needs_the_order in ('child', 'children'):
+          ${ phone_number_formatted(advocate.other_number) }
+          % else:
+          ${ phone_number_formatted(users[0].other_number) }
+          % endif
+      - "petitioners_email": |
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.email }
+          % else:
+          ${ users[0].email }
+          % endif
+      - "petitioners_cell_messages_safe_yes": ${ users[0].cell_messages_safe }
+      - "petitioners_cell_messages_safe_no": ${ not users[0].cell_messages_safe }
+      - "petitioners_other_phone_messages_safe_yes": ${ users[0].other_phone_messages_safe }
+      - "petitioners_other_phone_messages_safe_no": ${ not users[0].other_phone_messages_safe }
+      - "petitioners_email_safe_yes": ${ users[0].email_safe }
+      - "petitioners_email_safe_no": ${ not users[0].email_safe }
+      - "petitioners_unavailable_times": ${ users[0].unavailable_times }
+      - "respondents_name": ${ other_parties[0] }
+      - "respondents_aliases": ${ other_parties[0].alias_text_list }
+      - "respondents_is_child": ${ other_parties[0].age_in_years() < 18 }
+      - "respondents_address": |
+          % if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent and not adult_for_respondent_address_unknown:
+          ${ adult_for_respondent.address.block() } (parent or guardian)
+          % else:
+          % if not respondent_address_unknown:
+          ${ other_parties[0].address.block() }
+          % endif
+          % endif          
+      - "respondents_ssn_last_four": ${ other_parties[0].ssn_last_four }
+      - "stay_away_from_respondents_residence_yes": ${ other_parties[0].stay_away_from_residence }
+      - "stay_away_from_respondents_residence_no": ${ not other_parties[0].stay_away_from_residence }
+      - "respondents_other_addresses": ${ other_parties[0].other_addresses }
+      - "respondents_mobile_number": |
+          % if defined('other_parties[0].mobile_number'):
+          ${ phone_number_formatted(other_parties[0].mobile_number) }
+          % endif
+          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.mobile_number'):
+          ${ phone_number_formatted(adult_for_respondent.mobile_number) } (parent/guardian)
+          % endif
+      - "respondents_other_number": |
+          % if defined('other_parties[0].other_number'):
+          ${ phone_number_formatted(other_parties[0].other_number) }
+          % if defined('other_parties[0].other_number_other'):
+          ${ phone_number_formatted(other_parties[0].other_number_other) }
+          % endif
+          % endif
+          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.other_number'):
+          ${ phone_number_formatted(adult_for_respondent.other_number) } (parent/guardian)
+          % endif
+      - "respondents_email": |
+          % if defined('other_parties[0].email'):
+          ${ other_parties[0].email }
+          % endif
+          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.email'):
+          ${ adult_for_respondent.email } (petitioner/guardian)
+          % endif
+      - "respondents_current_location_address": ${ other_parties[0].current_location_address }
+      - "respondents_sex": ${ other_parties[0].gender }
+      - "respondents_race": ${ other_parties[0].race }
+      - "respondents_birthdate": |
+          % if knows_respondents_birthdate:
+          ${ other_parties[0].birthdate }
+          % else:
+          ${ other_parties[0].age } years
+          % endif
+      - "respondents_height": ${ other_parties[0].height }
+      - "respondents_weight": ${ other_parties[0].weight }
+      - "respondents_hair_color": ${ other_parties[0].hair_color }
+      - "respondents_eye_color": ${ other_parties[0].eye_color }
+      - "respondents_state_id_drivers_license": ${ other_parties[0].drivers_license }
+      - "respondents_id_state": ${ other_parties[0].drivers_license_state }
+      - "respondents_friends_contacts": ${ other_parties[0].friends_contacts }
+      - "respondents_home_hazards": ${ other_parties[0].home_hazards }
+      - "respondents_other_physical_identifiers": ${ other_parties[0].other_physical_identifiers }
+      - "respondents_house_log": ${ other_parties[0].house_type == 'log' }
+      - "respondents_house_frame": ${ other_parties[0].house_type == 'frame' }
+      - "respondents_house_apartment": ${ other_parties[0].house_type == 'apartment' }
+      - "respondents_house_single_family": ${ other_parties[0].house_type == 'single_family' }
+      - "respondents_house_duplex": ${ other_parties[0].house_type == 'duplex' }
+      - "respondents_house_main_color": ${ other_parties[0].house_main_color }
+      - "respondents_house_trim_color": ${ other_parties[0].house_trim_color }
+      - "respondents_house_1_story": ${ other_parties[0].house_stories == '1' }
+      - "respondents_house_2_story": ${ other_parties[0].house_stories == '2' }
+      - "respondents_house_3_plus_story": ${ other_parties[0].house_stories == '3_plus' }
+      - "respondents_house_main_color_checked": ${ other_parties[0].house_main_color }
+      - "respondents_house_trim_color_checked": ${ other_parties[0].house_trim_color }
+      - "respondents_garage_separate": ${ other_parties[0].garage_type == 'separate' }
+      - "respondents_garage_attached": ${ other_parties[0].garage_type == 'attached' }
+      - "respondents_garage_none": ${ other_parties[0].garage_type == 'none' }
+      - "respondents_access_need_4x4_yes": ${ other_parties[0].access_need_4x4 }
+      - "respondents_access_need_4x4_no": ${ not other_parties[0].access_need_4x4 }
+      - "respondents_employer_name": |
+          ${ other_parties[0].employer }
+          % if other_parties[0].age_in_years() < 18:
+          ${ adult_for_respondent.employer }
+          % endif
+      - "respondents_employer_address": |
+          % if other_parties[0].age_in_years() < 18:
+          ${ adult_for_respondent.employer_address }
+          % else:
+          ${ other_parties[0].employer_address }
+          % endif
+      - "respondents_work_phone": |
+          % if defined('other_parties[0].work_phone'):
+          ${ phone_number_formatted(other_parties[0].work_phone) }
+          % endif
+          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.work_phone'):
+          ${ phone_number_formatted(adult_for_respondent.work_phone) } (parent/guardian)
+          % endif
+      - "respondents_work_hours": ${ other_parties[0].work_hours }
+      - "respondents_work_supervisor": ${ other_parties[0].work_supervisor }
+      - "respondents_vehicle_make": ${ other_parties[0].vehicle_make }
+      - "respondents_vehicle_model": ${ other_parties[0].vehicle_model }
+      - "respondents_vehicle_plate_state": ${ other_parties[0].vehicle_plate_state }
+      - "respondents_vehicle_plate": ${ other_parties[0].vehicle_plate }
+      - "respondents_vehicle_year": ${ other_parties[0].vehicle_year }
+      - "respondents_vehicle_va": ${ 'van' in other_parties[0].vehicle_types }
+      - "respondents_vehicle_pickup": ${ 'pickup' in other_parties[0].vehicle_types }
+      - "respondents_vehicle_canopy": ${ 'canopy' in other_parties[0].vehicle_types }
+      - "respondents_vehicle_camper": ${ 'camper' in other_parties[0].vehicle_types }
+      - "respondents_vehicle_toolbox": ${ 'toolbox' in other_parties[0].vehicle_types }
+      - "respondents_vehicle_car": ${ 'car' in other_parties[0].vehicle_types }
+      - "respondents_vehicle_2_door": ${ '2_door' in other_parties[0].vehicle_types }
+      - "respondents_vehicle_4_door": ${ '4_door' in other_parties[0].vehicle_types }
+      - "respondents_vehicle_other": ${ other_parties[0].vehicle_other }
+      - "respondents_vehicle_suv": ${ 'suv' in other_parties[0].vehicle_types }
+      - "respondents_vehicle_other_checked": ${ other_parties[0].vehicle_other }
+      - "respondents_work": ${ other_parties[0].occupation }
+      - "respondents_other_vehicles": ${ other_parties[0].other_vehicles }
+      - "respondents_previous_police_contact_explanation1": ${ other_parties[0].previous_police_contact_explanation }
+      - "respondents_previous_police_contact_no": ${ not other_parties[0].previous_police_contact }
+      - "respondents_previous_police_contact_yes": ${ other_parties[0].previous_police_contact }
+      - "respondents_previous_police_contact_explanation2": ${""}
+      - "respondents_threats_description1": ${ other_parties[0].threats_description }
+      - "respondents_threats_description2": ${""}
+      - "respondents_weapons_accessible1": ${ other_parties[0].weapons_accessible }
+      - "respondents_weapons_accessible2": ${""}
+      - "respondents_mental_health_substance_history1": ${ other_parties[0].mental_health_substance_history }
+      - "respondents_mental_health_substance_history2": ${""}
+      - "respondents_legal_action_pending_description": ${ other_parties[0].legal_action_pending_description }
+---
+attachment:
+  name: TF 835 Self Certification No Notary Available
+  filename: tf_835_self_certification_no_notary_available
+  variable name: tf_835_self_certification_no_notary_available[i]
+  pdf template file: tf_835_self_certification_no_notary_available.pdf
+  skip undefined: True
+  tagged pdf: True
+  fields:
+      - "court_location": court_location
+      - "cina_case": False
+      - "in_the_matter_of": False
+      - "family_protective_orders_guardianship_case": True
+      - "plaintiffs_petitioners": ${ users.comma_and_list() }
+      - "defendant_respondents": ${ other_parties[0] }
+      - "other_named_case": ${""}
+      - "other_case": False
+      - "docket_number": ${docket_number}
+      - "users": ${users[0]}
+      - "documents_filed": ${documents_filed}
+      - "no_available_notary": No
+      - "illness_disability_transportation_hours_expense": No
+      - "truefiling": True
+      - "other_no_notary_reason_checked": False
+      - "other_no_notary_reason": ${""}
+      - "signature_date": ${ today() }
+      - "Signature_0": /s/ ${ users[0] }
+      - "signature_location": E-signed on the court's portal at ${ court_location } Alaska
+      - "users_safe_mailing_address": |
+         % if petitioners_using_dv128:
+         Confidential - See form DV-128
+         % else:
+         % if who_needs_the_order in ('child', 'children'):
+         ${ advocate.address.on_one_line() }
+         % else:
+         ${ users[0].address.on_one_line() }
+         % endif
+         % endif
+      - "users_safe_email": |
+          % if petitioners_using_dv128:
+          Confidential - See form DV-128
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.email }
+          % else:
+          ${ users[0].email }
+          % endif
+          % endif
+      - "users_safe_phone":  |
+          % if petitioners_using_dv128:
+          Confidential - See form DV-128
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.phone_numbers() }
+          % else:
+          ${ users[0].phone_numbers() }
+          % endif
+          % endif
+---
+attachment:
+  name: DV-128 Confidential Contact Information Sheet
+  filename: DV-128 Confidential Contact Information Sheet
+  variable name: dv_128_confidential_contact_information_sheet[i]
+  pdf template file: dv_128_confidential_contact_information_sheet.pdf
+  skip undefined: True
+  tagged pdf: True
+  fields:
+      - "docket_number": ${ docket_number }
+      - "petitioners_name": ${ users[0] }
+      - "respondents_name": ${ other_parties[0] }
+      - "users_is_petitioner": ${ who_needs_the_order in ('myself','self and child','self and children') }
+      - "users_is_respondent": False
+      - "users_is_other": ${ who_needs_the_order in ('child','children') }
+      - "users_other_role": |
+          % if who_needs_the_order in ('child', 'children'):
+          ${ users[0].relationship_to_advocate } of ${ users[0] }
+          % else:
+          ${ "" }
+          % endif   
+      - "users_name_and_aliases": ${users_with_aliases }
+      - "users_phone_numbers": |
+          % if who_needs_the_order in ('child', 'children'):
+          ${ users[0].relationship_to_advocate } 
+          ${ advocate.phone_numbers() }
+          % else:
+          ${ users[0].phone_numbers() }
+          % endif
+          ${ users[0].phone_numbers() }
+      - "users_email": |
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.email }
+          % else:
+          ${ users[0].email }
+          % endif
+      - "users_address_block": |
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.address.on_one_line() }
+          % else:
+          ${ users[0].mailing_address.on_one_line() }
+          % endif
+      - "users_signature_date": ${ today() }
+      - "users_name": |
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.name }
+          % else:
+          ${ users[0] }
+          % endif
+      - "users_signature": |
+          ${ user.signature }
+---
+---
+attachment:
+  name: Domestic Violence Protective Order Petition for Multiple Petitioners
+  filename: protective_order_petition_multi
+  variable name: domestic_violence_protective_order_petition_multi[i]
+  skip undefined: True
+  pdf template file: dv_100m_petition_for_domestic_violence_protective_order.pdf
+  fields:
+      - "court_location": ${ court_location }
+      - "petitioners_name": ${ users[0] }
+      - "docket_number__1": ""
+      - "petitioners_birthdate": ${ users[0].birthdate }
+      - "petitioners_is_child_yes": ${ users[0].age_in_years() < 18 }
+      - "advocate_name__1": ${ advocate.name }
+      - "advocate_birthdate__1":  ${ advocate.birthdate }
+      - "petitioners_advocate_relationship": ${ users[0].relationship_to_advocate }
+      - "petitioners2_name": ${ users[1] }
+      - "docket_number__2": ""
+      - "petitioners2_birthdate": ${ users[1].birthdate }
+      - "petitioners2_is_child_yes": ${ users[0].age_in_years() < 18 }
+      - "advocate_name__2": ${ advocate.name }
+      - "advocate_birthdate__2": ${ advocate.birthdate }
+      - "petitioners2_advocate_relationship": ${ users[1].relationship_to_advocate }
+      - "petitioners3_name": ${ users[2] }
+      - "docket_number__3": ""
+      - "petitioners3_birthdate": ${ users[2].birthdate }
+      - "petitioners3_is_child_yes": ${ users[0].age_in_years() < 18 }
+      - "advocate_name__3": ${ advocate.name }
+      - "advocate_birthdate__3": ${ advocate.birthdate }
+      - "petitioners3_advocate_relationship": ${ users[2].relationship_to_advocate }
+      - "petitioners4_name": ${ users[3] }
+      - "docket_number__4": ""
+      - "petitioners4_birthdate": ${ users[3].birthdate }
+      - "petitioners4_is_child_yes": ${ users[3].age_in_years() < 18 }
+      - "advocate_name__4": ${ advocate.name }
+      - "advocate_birthdate__4": ${ advocate.birthdate }
+      - "petitioners4_advocate_relationship": ${ users[3].relationship_to_advocate }
+      - "petitioners5_name": ${ users[4] }
+      - "docket_number__5": ""
+      - "petitioners5_birthdate": ${ users[4].birthdate }
+      - "petitioners5_is_child_yes": ${ users[4].age_in_years() < 18 }
+      - "advocate_name__5": ${ advocate.name }
+      - "advocate_birthdate__5": ${ advocate.birthdate }
+      - "petitioners5_advocate_relationship": ${ users[4].relationship_to_advocate }
+      - "order_no_abuse_yes": Yes
+      - "petitioners_address1_on_one_line": |
+          % if (respondent_live_with_petitioners or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live) and respondent_stay_away_from_petitioners_home) or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live is not True and stay_away_home_address_or_keep_confidential == 'stay away'):
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.address.on_one_line() }
+          % else:
+          ${ users[0].address.on_one_line() }
+          % endif
+          % endif
+      - "respondents_name": ${ other_parties[0] }
+      - "respondents_birthdate": |
+          % if knows_respondents_birthdate:
+          ${ other_parties[0].birthdate }
+          % else:
+          ${ other_parties[0].age } years
+          % endif
+      - "respondents_is_child_yes": ${ other_parties[0].age_in_years() < 18 }
+      - "respondents_parent_or_guardian_name__1": ""
+      - "respondents_parent_or_guardian_name__2": ${ adult_for_respondent }   
+      - "short_term_yes": ${ term in  ('20 days', 'both') }
+      - "long_term_yes": ${ term in  ( '1 year', 'both') }      
+      - "respondents_name_and_aliases": ${ other_parties[0] }
+      - "respondents_address_block": |
+          % if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent and not adult_for_respondent_address_unknown:
+          ${ adult_for_respondent.address.block() } (parent or guardian)
+          % else:
+          % if not respondent_address_unknown:
+          ${ other_parties[0].address.block() }
+          % endif
+          % endif
+      - "respondents_phone_number": |
+          % if defined('other_parties[0].mobile_number'):
+          ${ phone_number_formatted(other_parties[0].mobile_number) } (cell)
+          % endif
+          % if defined('other_parties[0].other_number'):
+          ${ phone_number_formatted(other_parties[0].other_number) }
+          % if defined('other_parties[0].other_number_other'):
+          (${ other_parties[0].other_number_other })
+          % endif
+          % endif
+          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.mobile_number'):
+          ${ phone_number_formatted(adult_for_respondent.mobile_number) } (parent/guardian cell)
+          % endif
+          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.other_number'):
+          ${ phone_number_formatted(adult_for_respondent.other_number) } (parent/guardian other)
+          % endif
+      - "respondents_email": |
+          % if defined('other_parties[0].email'):
+          ${ other_parties[0].email }
+          % endif
+          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.email'):
+          ${ adult_for_respondent.email } (petitioner/guardian)
+          % endif
+      - "respondents_employer": |
+          % if other_parties[0].age_in_years < 18:
+          adult_for_respondent.employer
+          % else:
+          other_parties[0].employer
+          % endif
+      - "petitioners_using_dv128": ${ petitioners_using_dv128 }
+      - "petitioners_safe_mailing_address_block": |
+          % if petitioners_using_dv128:
+          Confidential - See form DV-128
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.address.on_one_line() }
+          % else:
+          ${ users[0].mailing_address.on_one_line() }
+          % endif
+          % endif
+      - "petitioners_cell_phone_number": |
+          % if petitioners_using_dv128:
+          Confidential - See form DV-128
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          phone_number_formatted(advocate.mobile_number)
+          % else:
+          phone_number_formatted(users[0].mobile_number) 
+          % endif
+          % endif
+      - "petitioners_other_phone": |
+          % if petitioners_using_dv128:
+          Confidential - See form DV-128
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          phone_number_formatted(advocate.other_number)
+          % else:
+          phone_number_formatted(users[0].other_number)
+          % endif
+          % endif
+      - "petitioners_email": |
+          % if petitioners_using_dv128:
+          Confidential - See form DV-128
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.email }
+          % else:
+          ${ users[0].email }
+          % endif
+          % endif
+      - "petitioners_truefiling_exempt" : False
+      - "petitioners_name__2": ${ users[0] }
+---
+attachment:
+  name: Domestic Violence Protective Order Petition
+  filename: domestic_violence_protective_order_petition
+  variable name: domestic_violence_protective_order_petition[i]
+  skip undefined: True
+  pdf template file: dv_100_petition_for_domestic_violence_protective_order.pdf
+  fields:
+      - "court_location": ${ court_location }
+      - "petitioners_name": ${ users[0] }
+      - "docket_number__1": ""
+      - "petitioners_birthdate": ${ users[0].birthdate }
+      - "petitioners_is_child_yes": ${ users[0].age_in_years() < 18 }
+      - "advocate_name__1": ${ advocate.name }
+      - "advocate_birthdate__1":  ${ advocate.birthdate }
+      - "petitioners_advocate_relationship": ${ users[0].relationship_to_advocate }
+      - "order_no_abuse_yes": Yes
+      - "respondents_name": ${ other_parties[0] }
+      - "respondents_birthdate": |
+          % if knows_respondents_birthdate:
+          ${ other_parties[0].birthdate }
+          % else:
+          ${ other_parties[0].age } years
+          % endif
+      - "respondents_is_child_yes": ${ other_parties[0].age_in_years() < 18 }
+      - "respondents_parent_or_guardian_name__1": ""
+      - "respondents_parent_or_guardian_name__2": ${ adult_for_respondent }   
+      - "short_term_yes": ${ term in  ('20 days', 'both') }
+      - "long_term_yes": ${ term in  ( '1 year', 'both') }
+      - "petitioners_address1_on_one_line": ${ users[0].address.on_one_line()}
+      - "respondents_name_and_aliases": ${ other_parties[0] }
+      - "respondents_address_block": |
+          % if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent and not adult_for_respondent_address_unknown:
+          ${ adult_for_respondent.address.block() } (parent or guardian)
+          % else:
+          % if not respondent_address_unknown:
+          ${ other_parties[0].address.block() }
+          % endif
+          % endif
+      - "respondents_phone_number": |
+          % if defined('other_parties[0].mobile_number'):
+          ${ phone_number_formatted(other_parties[0].mobile_number) } (cell)
+          % endif
+          % if defined('other_parties[0].other_number'):
+          ${ phone_number_formatted(other_parties[0].other_number) }
+          % if defined('other_parties[0].other_number_other'):
+          (${ other_parties[0].other_number_other })
+          % endif
+          % endif
+          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.mobile_number'):
+          ${ phone_number_formatted(adult_for_respondent.mobile_number) } (parent/guardian cell)
+          % endif
+          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.other_number'):
+          ${ phone_number_formatted(adult_for_respondent.other_number) } (parent/guardian other)
+          % endif
+      - "respondents_email": |
+          % if defined('other_parties[0].email'):
+          ${ other_parties[0].email }
+          % endif
+          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.email'):
+          ${ adult_for_respondent.email } (petitioner/guardian)
+          % endif
+      - "respondents_employer": |
+          ${ other_parties[0].employer }
+          % if other_parties[0].age_in_years < 18:
+          ${ adult_for_respondent.employer } (parent/guardian)
+          % endif
+      - "petitioners_using_dv128": ${ petitioners_using_dv128 }
+      - "petitioners_safe_mailing_address_block": |
+          % if petitioners_using_dv128:
+          Confidential - See form DV-128
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.address.on_one_line() }
+          % else:
+          ${ users[0].mailing_address.on_one_line() }
+          % endif
+          % endif
+      - "petitioners_cell_phone_number": |
+          % if petitioners_using_dv128:
+          Confidential - See form DV-128
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          phone_number_formatted(advocate.mobile_number)
+          % else:
+          phone_number_formatted(users[0].mobile_number)
+          % endif
+          % endif
+      - "petitioners_other_phone": |
+          % if petitioners_using_dv128:
+          Confidential - See form DV-128
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          phone_number_formatted(advocate.other_number)
+          % else:
+          phone_number_formatted(users[0].other_number)
+          % endif
+          % endif
+      - "petitioners_email": |
+          % if petitioners_using_dv128:
+          Confidential - See form DV-128
+          % else:
+          % if who_needs_the_order in ('child', 'children'):
+          ${ advocate.email }
+          % else:
+          ${ users[0].email }
+          % endif
+          % endif
+      - "petitioners_truefiling_exempt" : False
+      - "petitioners_name__2": ${ users[0] }
+---
+attachment:
+  name: Sexual Assault Protective Order Petition
+  filename: sexual_assault_protective_order_petition
+  variable name: sexual_assault_protective_order_petition[i]
+  skip undefined: True
+  pdf template file: civ_750_petition_for_sexual_assault_protective_order.pdf
+  fields:
+    - "court_location": ${ court_location }
+    - "petitioners": ${ users[0] }
+    - "petitioners_birthdate": ${ users[0].birthdate }
+    - "petitioners_is_child": ${ users[0].age_in_years() < 18 }
+    - "docket_number": something
+    - "advocate_name__1": ${ advocate.name }
+    - "advocate_birthdate__1": ${ advocate.birthdate }
+    - "petitioners_advocate_relationship": ${ users[0].relationship_to_advocate }
+    - "respondents_name": ${ other_parties[0] }
+    - "respondents_birthdate": |
+        % if knows_respondents_birthdate:
+        ${ other_parties[0].birthdate }
+        % else:
+        ${ other_parties[0].age } years
+        % endif
+    - "respondents_is_child_yes": ${ other_parties[0].age_in_years() < 18 }
+    - "short_term_yes": ${ term in ('20 days', 'both') }
+    - "notify_respondent_no": No
+    - "notify_respondent_yes": No
+    - "notify_respondent_efforts": something
+    - "long_term_yes": ${ term in ('1 year', 'both') }
+    - "respondent_is_former_friend": No
+    - "respondent_is_neighbor": No
+    - "respondent_is_classmate": No
+    - "respondent_is_legal_guardian": No
+    - "respondent_is_client": No
+    - "respondent_is_jail_police_probation_officer": No
+    - "respondent_is_coworker": No
+    - "respondent_is_teacher_coach": No
+    - "respondent_is_other": No
+    - "respondent_is_other_relationship": something
+    - "respondent_is_unknown": No
+    - "incidents_description__1": something
+    - "protective_order_needed_because_explanation": something
+    - "order_no_sexual_contact": No
+    - "order_no_follow_etc": No
+    - "order_no_contact": No
+    - "no_contact_household_members_relationships_list": something
+    - "respondent_stay_away_from_petitioners_home": ${ respondent_stay_away_from_petitioners_home }
+    - "respondent_live_with_petitioners_yes": No
+    - "respondent_live_with_petitioners_no": No
+    - "respondent_knows_where_petitioners_live_yes": No
+    - "respondent_knows_where_petitioners_live_no": No
+    - "respondent_knows_where_petitioners_live_dunno": No
+    - "petitioners_address_confidential_yes": ${ petitioners_using_dv128 }
+    - "petitioners_address_confidential_no": ${ not petitioners_using_dv128 }
+    - "petitioners_address1_on_one_line": something
+    - "respondents_address_is_unknown_to_me": No
+    - "respondents_address_is_in_my_building": No
+    - "respondents_address_is_nearby": No
+    - "respondents_address_is_nearby_distance": something
+    - "respondents_address_is_nearby_feet": No
+    - "respondents_address_is_nearby_miles": No
+    - "respondents_address_on_one_line": something
+    - "stay_away_locations": No
+    - "stay_away_petitioners_school": No
+    - "stay_away_petitioners_school_address": something
+    - "stay_away_petitioners_school_distance": something
+    - "stay_away_petitioners_school_feet": No
+    - "stay_away_petitioner_school_miles": No
+    - "respondents_school_also": No
+    - "stay_away_children_school": No
+    - "stay_away_children_school_address": something
+    - "stay_away_children_school_distance": something
+    - "stay_away_children_school_distance_feet": No
+    - "stay_away_children_school_distance_miles": No
+    - "stay_away_petitioners_job": No
+    - "stay_away_petitioners_job_address": something
+    - "stay_away_petitioners_job_distance": something
+    - "stay_away_petitioners_job_distance_in_feet": No
+    - "stay_away_petitioners_job_distance_in_miles": No
+    - "respondents_childrens_school_also": No
+    - "stay_away_other_location": No
+    - "stay_away_other_location_description": something
+    - "stay_away_other_location_address": something
+    - "stay_away_other_location_distance": something
+    - "stay_away_other_location_distance_in_feet": No
+    - "stay_away_other_location_distance_in_miles": No
+    - "stay_away_another_place": No
+    - "stay_away_another_place_description": something
+    - "stay_away_another_place_address": something
+    - "stay_away_another_place_distance": something
+    - "stay_away_another_place_distance_in_feet": No
+    - "stay_away_another_place_distance_in_miles": No
+    - "respondents_job_also": No
+    - "stay_away_a_third_place": No
+    - "stay_away_a_third_place_description": something
+    - "stay_away_a_third_place_address": something
+    - "stay_away_a_third_place_distance": something
+    - "stay_away_exceptions": something
+    - "other_protections_requested_checked": No
+    - "other_protections_description": something
+    - "stay_away_a_third_place_distance_in_feet": No
+    - "stay_away_a_third_place_distance_in_miles": No
+    - "open_cases1_type": something
+    - "open_cases1_litigants": something
+    - "open_cases1_court_location": something
+    - "open_cases2_type": something
+    - "open_cases2_litigants": something
+    - "open_cases2_court_location": something
+    - "other_respondent_cases1": something
+    - "other_respondent_cases1_court_location": something
+    - "other_respondent_cases2": something
+    - "other_respondent_cases2_court_location": something
+    - "other_respondent_cases3": something
+    - "other_respondent_cases3_court_location": something
+    - "respondents_name_and_aliases": ${ other_parties[0] }
+    - "respondents_mailing_address_on_one_line": something
+    - "respondents_phone_number": |
+        % if defined('other_parties[0].mobile_number'):
+        ${ phone_number_formatted(other_parties[0].mobile_number) } (cell)
+        % endif
+        % if defined('other_parties[0].other_number'):
+        ${ phone_number_formatted(other_parties[0].other_number) }
+        % if defined('other_parties[0].other_number_other'):
+        (${ other_parties[0].other_number_other })
+        % endif
+        % endif
+        % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.mobile_number'):
+        ${ phone_number_formatted(adult_for_respondent.mobile_number) } (parent/guardian cell)
+        % endif
+        % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.other_number'):
+        ${ phone_number_formatted(adult_for_respondent.other_number) } (parent/guardian other)
+        % endif
+    - "respondents_work_phone": something
+    - "respondents_email": |
+        % if defined('other_parties[0].email'):
+        ${ other_parties[0].email }
+        % endif
+        % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.email'):
+        ${ adult_for_respondent.email } (petitioner/guardian)
+        % endif
+    - "petitioners_using_dv128": ${ petitioners_using_dv128 }
+    - "petitioners_names_and_aliases": something
+    - "petitioners_safe_mailing_address_on_one_line": |
+        % if petitioners_using_dv128:
+        Confidential - See form DV-128
+        % else:
+        % if who_needs_the_order in ('child', 'children'):
+        ${ advocate.address.on_one_line() }
+        % else:
+        ${ users[0].mailing_address.on_one_line() }
+        % endif
+        % endif
+    - "petitioners_email": |
+        % if petitioners_using_dv128:
+        Confidential - See form DV-128
+        % else:
+        % if who_needs_the_order in ('child', 'children'):
+        ${ advocate.email }
+        % else:
+        ${ users[0].email }
+        % endif
+        % endif
+    - "petitioners_cell_phone_number": |
+        % if petitioners_using_dv128:
+        Confidential - See form DV-128
+        % else:
+        % if who_needs_the_order in ('child', 'children'):
+        ${ phone_number_formatted(advocate.mobile_number) }
+        % else:
+        ${ phone_number_formatted(users[0].mobile_number) }
+        % endif
+        % endif
+    - "petitioners_truefiling_exempt": False
+    - "petitioners_signature": something
+    - "petitioners_name__2": ${ users[0] }
+    - "certificate_of_service_signature_date": something
+    - "certificate_of_service_signature": something
+    - "petitioners_name__3": something
+---
+attachment:
+  name: Stalking Protective Order Petition
+  filename: stalking_protective_order_petition
+  variable name: stalking_protective_order_petition[i]
+  skip undefined: True
+  pdf template file: civ_752_petition_for_stalking_protective_order.pdf
+  fields:
+    - "court_location": ${ court_location }
+    - "petitioners": ${ users[0] }
+    - "petitioners_birthdate": ${ users[0].birthdate }
+    - "petitioners_is_child": ${ users[0].age_in_years() < 18 }
+    - "docket_number": something
+    - "advocate_name__1": ${ advocate.name }
+    - "advocate_birthdate__1": ${ advocate.birthdate }
+    - "petitioners_advocate_relationship": ${ users[0].relationship_to_advocate }
+    - "respondents_name": ${ other_parties[0] }
+    - "respondents_birthdate": |
+        % if knows_respondents_birthdate:
+        ${ other_parties[0].birthdate }
+        % else:
+        ${ other_parties[0].age } years
+        % endif
+    - "respondents_is_child_yes": ${ other_parties[0].age_in_years() < 18 }
+    - "short_term_yes": ${ term in ('20 days', 'both') }
+    - "notify_respondent_no": No
+    - "notify_respondent_yes": No
+    - "notify_respondent_efforts": something
+    - "long_term_yes": ${ term in ('1 year', 'both') }
+    - "respondent_is_former_friend": No
+    - "respondent_is_neighbor": No
+    - "respondent_is_classmate": No
+    - "respondent_is_legal_guardian": No
+    - "respondent_is_client": No
+    - "respondent_is_jail_police_probation_officer": No
+    - "respondent_is_coworker": No
+    - "respondent_is_teacher_coach": No
+    - "respondent_is_other": No
+    - "respondent_is_other_relationship": something
+    - "respondent_is_unknown": No
+    - "petitioner_told_respondent_not_to_contact_yes": No
+    - "petitioner_told_respondent_not_to_contact_date_time_means": something
+    - "petitioner_told_respondent_not_to_contact_no": No
+    - "respondent_should_have_known_no_contact_because": something
+    - "respondent_contacted_petitioner_w_out_consent1": something
+    - "respondent_contacted_petitioner_w_out_consent2": something
+    - "respondent_contacted_petitioner_w_out_consent3": something
+    - "contact_caused_fear_for_me_or_my_family_explanation": something
+    - "order_no_follow_etc": No
+    - "order_no_contact": No
+    - "no_contact_household_members_relationships_list": something
+    - "respondent_stay_away_from_petitioners_home": ${ respondent_stay_away_from_petitioners_home }
+    - "respondent_live_with_petitioners_yes": No
+    - "respondent_live_with_petitioners_no": No
+    - "respondent_knows_where_petitioners_live_yes": No
+    - "respondent_knows_where_petitioners_live_no": No
+    - "respondent_knows_where_petitioners_live_dunno": No
+    - "petitioners_address_confidential_yes": ${ petitioners_using_dv128 }
+    - "petitioners_address_confidential_no": ${ not petitioners_using_dv128 }
+    - "petitioners_address1_on_one_line": something
+    - "respondents_address_is_unknown_to_me": No
+    - "respondents_address_is_in_my_building": No
+    - "respondents_address_is_nearby": No
+    - "respondents_address_is_nearby_distance": something
+    - "respondents_address_is_nearby_feet": No
+    - "respondents_address_is_nearby_miles": No
+    - "respondents_address_on_one_line": something
+    - "stay_away_locations": No
+    - "stay_away_petitioners_school": No
+    - "stay_away_petitioners_school_address": something
+    - "stay_away_petitioners_school_distance": something
+    - "stay_away_petitioners_school_feet": No
+    - "stay_away_petitioner_school_miles": No
+    - "respondents_school_also": No
+    - "stay_away_children_school": No
+    - "stay_away_children_school_address": something
+    - "stay_away_children_school_distance": something
+    - "stay_away_children_school_distance_feet": No
+    - "stay_away_children_school_distance_miles": No
+    - "stay_away_another_place_distance_in_miles": No
+    - "stay_away_petitioners_job": No
+    - "stay_away_petitioners_job_address": something
+    - "stay_away_petitioners_job_distance": something
+    - "stay_away_petitioners_job_distance_in_feet": No
+    - "stay_away_petitioners_job_distance_in_miles": No
+    - "respondents_childrens_school_also": No
+    - "stay_away_other_location": No
+    - "stay_away_other_location_description": something
+    - "stay_away_other_location_address": something
+    - "stay_away_other_location_distance": something
+    - "stay_away_other_location_distance_in_feet": No
+    - "stay_away_other_location_distance_in_miles": No
+    - "stay_away_another_place": No
+    - "stay_away_another_place_description": something
+    - "stay_away_another_place_address": something
+    - "stay_away_another_place_distance": something
+    - "stay_away_another_place_distance_in_feet": No
+    - "protective_order_needed_because_explanation": something
+    - "respondents_job_also": No
+    - "stay_away_a_third_place": No
+    - "stay_away_a_third_place_description": something
+    - "stay_away_a_third_place_address": something
+    - "stay_away_a_third_place_distance": something
+    - "stay_away_exceptions": something
+    - "other_protections_requested_checked": No
+    - "stay_away_a_third_place_distance_in_feet": No
+    - "stay_away_a_third_place_distance_in_miles": No
+    - "other_protections_description": something
+    - "other_respondent_cases1": something
+    - "other_respondent_cases1_court_location": something
+    - "other_respondent_cases2": something
+    - "other_respondent_cases2_court_location": something
+    - "other_respondent_cases3": something
+    - "other_respondent_cases3_court_location": something
+    - "respondents_name_and_aliases": ${ other_parties[0] }
+    - "respondents_mailing_address_on_one_line": something
+    - "respondents_phone_number": |
+        % if defined('other_parties[0].mobile_number'):
+        ${ phone_number_formatted(other_parties[0].mobile_number) } (cell)
+        % endif
+        % if defined('other_parties[0].other_number'):
+        ${ phone_number_formatted(other_parties[0].other_number) }
+        % if defined('other_parties[0].other_number_other'):
+        (${ other_parties[0].other_number_other })
+        % endif
+        % endif
+        % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.mobile_number'):
+        ${ phone_number_formatted(adult_for_respondent.mobile_number) } (parent/guardian cell)
+        % endif
+        % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.other_number'):
+        ${ phone_number_formatted(adult_for_respondent.other_number) } (parent/guardian other)
+        % endif
+    - "respondents_work_phone": something
+    - "respondents_email": |
+        % if defined('other_parties[0].email'):
+        ${ other_parties[0].email }
+        % endif
+        % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.email'):
+        ${ adult_for_respondent.email } (petitioner/guardian)
+        % endif
+    - "petitioners_using_dv128": ${ petitioners_using_dv128 }
+    - "petitioners_names_and_aliases": something
+    - "petitioners_safe_mailing_address_on_one_line": |
+        % if petitioners_using_dv128:
+        Confidential - See form DV-128
+        % else:
+        % if who_needs_the_order in ('child', 'children'):
+        ${ advocate.address.on_one_line() }
+        % else:
+        ${ users[0].mailing_address.on_one_line() }
+        % endif
+        % endif
+    - "petitioners_email": |
+        % if petitioners_using_dv128:
+        Confidential - See form DV-128
+        % else:
+        % if who_needs_the_order in ('child', 'children'):
+        ${ advocate.email }
+        % else:
+        ${ users[0].email }
+        % endif
+        % endif
+    - "petitioners_cell_phone_number": |
+        % if petitioners_using_dv128:
+        Confidential - See form DV-128
+        % else:
+        % if who_needs_the_order in ('child', 'children'):
+        ${ phone_number_formatted(advocate.mobile_number) }
+        % else:
+        ${ phone_number_formatted(users[0].mobile_number) }
+        % endif
+        % endif
+    - "petitioners_truefiling_exempt": False
+    - "petitioners_signature": something
+    - "petitioners_name__2": ${ users[0] }
+    - "open_cases1_type": something
+    - "open_cases2_litigants": something
+    - "open_cases1_litigants": something
+    - "open_cases1_court_location": something
+    - "open_cases2_type": something
+    - "open_cases2_court_location": something
+    - "certificate_of_service_signature_date": something
+    - "certificate_of_service_signature": something
+    - "petitioners_name__3": something
