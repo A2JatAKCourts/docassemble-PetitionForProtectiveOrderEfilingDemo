@@ -503,21 +503,25 @@ fields:
   #  datatype: yesnoradio
   # - code: |
   #    other_parties[0].address_fields(hide_if={"variable": "do_not_know_respondent_address", "is": "False"}) 
-  - Business phone: other_parties[0].work_number
-    datatype: al_international_phone
+  - note: |
+      ---
+  - Primary phone: other_parties[0].phone_number
+    # TODO: bryce make custom US only phone number?
     required: False
-  - Cell phone: other_parties[0].mobile_number
-    datatype: al_international_phone
-    required: False
-  - Home phone: other_parties[0].home_number
-    datatype: al_international_phone
-    required: False
-  - Message phone: other_parties[0].phone_number
-    datatype: al_international_phone
+  - Other phone: other_parties[0].other_number
     required: False
   - Email: other_parties[0].email
     datatype: email
     required: False
+validation code: |
+  if defined("other_parties[0].phone_number") and len(other_parties[0].phone_number):
+    if not phone_number_is_valid(other_parties[0].phone_number):
+      validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="other_parties[0].phone_number")
+    other_parties[0].phone_number = phone_number_formatted(other_parties[0].phone_number)
+  if defined("other_parties[0].other_number") and len(other_parties[0].other_number):
+    if not phone_number_is_valid(other_parties[0].other_number):
+      validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="other_parties[0].other_number")
+    other_parties[0].other_number = phone_number_formatted(other_parties[0].other_number)
 ---
 id: Respdondent's adult contact info
 sets:
@@ -527,9 +531,6 @@ sets:
   - adult_for_respondent.address.zip
   - adult_for_respondent.address.unit
   - adult_for_respondent.address.state
-  - adult_for_respondent.mobile_number
-  - adult_for_respondent.home_number
-  - adult_for_respondent.work_number
   - adult_for_respondent.phone_number
   - adult_for_respondent.other_number
 question: |
@@ -540,21 +541,25 @@ fields:
     disable others: True
   - code: |
       adult_for_respondent.address_fields(required={'city': False, 'state': False, 'zip': False, 'address': False},country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
-  - Cell phone: adult_for_respondent.mobile_number
-    datatype: al_international_phone
-    required: False
-  - Home phone: adult_for_respondent.home_number
-    datatype: al_international_phone
-    required: False
-  - Work phone: adult_for_respondent.work_number
-    datatype: al_international_phone
+  - note: |
+      ---
+  - Primary phone: adult_for_respondent.phone_number
+    # TODO: bryce make custom US only phone number?
     required: False
   - Other phone: adult_for_respondent.other_number
-    datatype: al_international_phone
     required: False
   - Email: adult_for_respondent.email
     datatype: email
     required: False
+validation code: |
+  if defined("adult_for_respondent.phone_number") and len(adult_for_respondent.phone_number):
+    if not phone_number_is_valid(adult_for_respondent.phone_number):
+      validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="adult_for_respondent.phone_number")
+    adult_for_respondent.phone_number = phone_number_formatted(adult_for_respondent.phone_number)
+  if defined("adult_for_respondent.other_number") and len(adult_for_respondent.other_number):
+    if not phone_number_is_valid(adult_for_respondent.other_number):
+      validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="adult_for_respondent.other_number")
+    adult_for_respondent.other_number = phone_number_formatted(adult_for_respondent.other_number)
 ---
 question: |
   Does ${ other_parties } go by any other names?
@@ -629,17 +634,11 @@ fields:
   - code: |
       users[0].mailing_address.address_fields(
         country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
-  - Cell phone: users[0].mobile_number
-    datatype: al_international_phone
-    required: False
-  - Home phone: users[0].home_number
-    datatype: al_international_phone
-    required: False
-  - Work phone: users[0].work_number
-    datatype: al_international_phone
+  - note: |
+      ---
+  - Primary phone: users[0].phone_number
     required: False
   - Other phone: users[0].other_number
-    datatype: al_international_phone
     required: False
   - note: |
       In order to e-file, you need to provide your email.
@@ -658,12 +657,18 @@ sets:
   - "users[0].mailing_address.state"
   - "users[0].mailing_ address.country"
 validation code: |
-  if (not showifdef('users[0].mobile_number') and \
-      not showifdef('users[0].home_number') and \
-      not showifdef('users[0].work_number') and \
+  if (not showifdef('users[0].phone_number') and \
       not showifdef('users[0].other_number') and \
       not showifdef('users[0].email')):
     validation_error(word("You need to give the court at least one way, besides your mailing address to get in touch with you."), field="users[0].other_contact_method")
+  if defined("users[0].phone_number") and len(users[0].phone_number):
+    if not phone_number_is_valid(users[0].phone_number):
+      validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].phone_number")
+    users[0].phone_number = phone_number_formatted(users[0].phone_number)
+  if defined("users[0].other_number") and len(users[0].other_number):
+    if not phone_number_is_valid(users[0].other_number):
+      validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].other_number")
+    users[0].other_number = phone_number_formatted(users[0].other_number)
 continue button field: petitioner_contact_info
 ---
 Comment: |
@@ -691,7 +696,7 @@ sets:
   - advocate.address.zip
   - advocate.address.unit
   - advocate.address.state
-  - advocate.mobile_number
+  - advocate.phone_number
   - advocate.other_number
 question: |
   How can the court get in touch with you?
@@ -710,17 +715,11 @@ fields:
   - code: |
       advocate.address_fields(
         country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
-  - Cell phone: advocate.mobile_number
-    datatype: al_international_phone
+  - note: |
+      ---
+  - Primary phone: advocate.phone_number
     required: False
-  - Home phone: advocate.home_number
-    datatype: al_international_phone
-    required: False
-  - Work phone: advocate.work_number
-    datatype: al_international_phone
-    required: False
-  - Other phone: advocate.other_number
-    datatype: al_international_phone
+  - Other phone: advocate.home_number
     required: False
   - note: |
       In order to e-file, you need to provide your email.
@@ -730,6 +729,15 @@ fields:
   - Email: advocate.email
     datatype: email
     required: defined("can_check_efile") and can_check_efile
+validation code: |
+  if defined("advocate.phone_number") and len(users[0].phone_number):
+    if not phone_number_is_valid(advocate.phone_number):
+      validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="advocate.phone_number")
+    advocate.phone_number = phone_number_formatted(users[0].phone_number)
+  if defined("advocate.other_number") and len(users[0].other_number):
+    if not phone_number_is_valid(advocate.other_number):
+      validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="advocate.other_number")
+    advocate.other_number = phone_number_formatted(users[0].other_number)
 ---
 id: For demo - which form do you want to complete?
 question: |
@@ -1187,9 +1195,9 @@ attachment:
       - "notify_petitioner_when_defendant_is_served_no": ${ not users[0].notify_when_served }
       - "petitioners_mobile_number": |
           % if who_needs_the_order in ('child', 'children'):
-          ${ phone_number_formatted(advocate.mobile_number) }
+          ${ phone_number_formatted(advocate.phone_number) }
           % else:
-          ${ phone_number_formatted(users[0].mobile_number) }
+          ${ phone_number_formatted(users[0].phone_number) }
           % endif
       - "petitioners_other_number": |
           % if who_needs_the_order in ('child', 'children'):
@@ -1226,11 +1234,11 @@ attachment:
       - "stay_away_from_respondents_residence_no": ${ not other_parties[0].stay_away_from_residence }
       - "respondents_other_addresses": ${ other_parties[0].other_addresses }
       - "respondents_mobile_number": |
-          % if defined('other_parties[0].mobile_number'):
-          ${ phone_number_formatted(other_parties[0].mobile_number) }
+          % if defined('other_parties[0].phone_number'):
+          ${ phone_number_formatted(other_parties[0].phone_number) }
           % endif
-          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.mobile_number'):
-          ${ phone_number_formatted(adult_for_respondent.mobile_number) } (parent/guardian)
+          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.phone_number'):
+          ${ phone_number_formatted(adult_for_respondent.phone_number) } (parent/guardian)
           % endif
       - "respondents_other_number": |
           % if defined('other_parties[0].other_number'):
@@ -1294,13 +1302,6 @@ attachment:
           ${ adult_for_respondent.employer_address }
           % else:
           ${ other_parties[0].employer_address }
-          % endif
-      - "respondents_work_phone": |
-          % if defined('other_parties[0].work_phone'):
-          ${ phone_number_formatted(other_parties[0].work_phone) }
-          % endif
-          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.work_phone'):
-          ${ phone_number_formatted(adult_for_respondent.work_phone) } (parent/guardian)
           % endif
       - "respondents_work_hours": ${ other_parties[0].work_hours }
       - "respondents_work_supervisor": ${ other_parties[0].work_supervisor }
@@ -1518,8 +1519,8 @@ attachment:
           % endif
           % endif
       - "respondents_phone_number": |
-          % if defined('other_parties[0].mobile_number'):
-          ${ phone_number_formatted(other_parties[0].mobile_number) } (cell)
+          % if defined('other_parties[0].phone_number'):
+          ${ phone_number_formatted(other_parties[0].phone_number) } (cell)
           % endif
           % if defined('other_parties[0].other_number'):
           ${ phone_number_formatted(other_parties[0].other_number) }
@@ -1527,8 +1528,8 @@ attachment:
           (${ other_parties[0].other_number_other })
           % endif
           % endif
-          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.mobile_number'):
-          ${ phone_number_formatted(adult_for_respondent.mobile_number) } (parent/guardian cell)
+          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.phone_number'):
+          ${ phone_number_formatted(adult_for_respondent.phone_number) } (parent/guardian cell)
           % endif
           % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.other_number'):
           ${ phone_number_formatted(adult_for_respondent.other_number) } (parent/guardian other)
@@ -1562,9 +1563,9 @@ attachment:
           Confidential - See form DV-128
           % else:
           % if who_needs_the_order in ('child', 'children'):
-          phone_number_formatted(advocate.mobile_number)
+          phone_number_formatted(advocate.phone_number)
           % else:
-          phone_number_formatted(users[0].mobile_number) 
+          phone_number_formatted(users[0].phone_number) 
           % endif
           % endif
       - "petitioners_other_phone": |
@@ -1629,8 +1630,8 @@ attachment:
           % endif
           % endif
       - "respondents_phone_number": |
-          % if defined('other_parties[0].mobile_number'):
-          ${ phone_number_formatted(other_parties[0].mobile_number) } (cell)
+          % if defined('other_parties[0].phone_number'):
+          ${ phone_number_formatted(other_parties[0].phone_number) } (cell)
           % endif
           % if defined('other_parties[0].other_number'):
           ${ phone_number_formatted(other_parties[0].other_number) }
@@ -1638,8 +1639,8 @@ attachment:
           (${ other_parties[0].other_number_other })
           % endif
           % endif
-          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.mobile_number'):
-          ${ phone_number_formatted(adult_for_respondent.mobile_number) } (parent/guardian cell)
+          % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.phone_number'):
+          ${ phone_number_formatted(adult_for_respondent.phone_number) } (parent/guardian cell)
           % endif
           % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.other_number'):
           ${ phone_number_formatted(adult_for_respondent.other_number) } (parent/guardian other)
@@ -1672,9 +1673,9 @@ attachment:
           Confidential - See form DV-128
           % else:
           % if who_needs_the_order in ('child', 'children'):
-          phone_number_formatted(advocate.mobile_number)
+          phone_number_formatted(advocate.phone_number)
           % else:
-          phone_number_formatted(users[0].mobile_number)
+          phone_number_formatted(users[0].phone_number)
           % endif
           % endif
       - "petitioners_other_phone": |
@@ -1816,8 +1817,8 @@ attachment:
     - "respondents_name_and_aliases": ${ other_parties[0] }
     - "respondents_mailing_address_on_one_line": something
     - "respondents_phone_number": |
-        % if defined('other_parties[0].mobile_number'):
-        ${ phone_number_formatted(other_parties[0].mobile_number) } (cell)
+        % if defined('other_parties[0].phone_number'):
+        ${ phone_number_formatted(other_parties[0].phone_number) } (cell)
         % endif
         % if defined('other_parties[0].other_number'):
         ${ phone_number_formatted(other_parties[0].other_number) }
@@ -1825,8 +1826,8 @@ attachment:
         (${ other_parties[0].other_number_other })
         % endif
         % endif
-        % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.mobile_number'):
-        ${ phone_number_formatted(adult_for_respondent.mobile_number) } (parent/guardian cell)
+        % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.phone_number'):
+        ${ phone_number_formatted(adult_for_respondent.phone_number) } (parent/guardian cell)
         % endif
         % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.other_number'):
         ${ phone_number_formatted(adult_for_respondent.other_number) } (parent/guardian other)
@@ -1866,9 +1867,9 @@ attachment:
         Confidential - See form DV-128
         % else:
         % if who_needs_the_order in ('child', 'children'):
-        ${ phone_number_formatted(advocate.mobile_number) }
+        ${ phone_number_formatted(advocate.phone_number) }
         % else:
-        ${ phone_number_formatted(users[0].mobile_number) }
+        ${ phone_number_formatted(users[0].phone_number) }
         % endif
         % endif
     - "petitioners_truefiling_exempt": False
@@ -1994,8 +1995,8 @@ attachment:
     - "respondents_name_and_aliases": ${ other_parties[0] }
     - "respondents_mailing_address_on_one_line": something
     - "respondents_phone_number": |
-        % if defined('other_parties[0].mobile_number'):
-        ${ phone_number_formatted(other_parties[0].mobile_number) } (cell)
+        % if defined('other_parties[0].phone_number'):
+        ${ phone_number_formatted(other_parties[0].phone_number) } (cell)
         % endif
         % if defined('other_parties[0].other_number'):
         ${ phone_number_formatted(other_parties[0].other_number) }
@@ -2003,8 +2004,8 @@ attachment:
         (${ other_parties[0].other_number_other })
         % endif
         % endif
-        % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.mobile_number'):
-        ${ phone_number_formatted(adult_for_respondent.mobile_number) } (parent/guardian cell)
+        % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.phone_number'):
+        ${ phone_number_formatted(adult_for_respondent.phone_number) } (parent/guardian cell)
         % endif
         % if other_parties[0].age_in_years() < 18 and defined('adult_for_respondent.other_number'):
         ${ phone_number_formatted(adult_for_respondent.other_number) } (parent/guardian other)
@@ -2044,9 +2045,9 @@ attachment:
         Confidential - See form DV-128
         % else:
         % if who_needs_the_order in ('child', 'children'):
-        ${ phone_number_formatted(advocate.mobile_number) }
+        ${ phone_number_formatted(advocate.phone_number) }
         % else:
-        ${ phone_number_formatted(users[0].mobile_number) }
+        ${ phone_number_formatted(users[0].phone_number) }
         % endif
         % endif
     - "petitioners_truefiling_exempt": False
