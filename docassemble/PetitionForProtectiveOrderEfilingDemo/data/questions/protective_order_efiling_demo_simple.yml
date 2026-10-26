@@ -1,4 +1,6 @@
 comment: |
+  2026-10-23 update with address yml addresses
+  2026-10-22 find and replace syntax for other_parties[0].name.familiar() with other_parties[0].familiar() Q on Teams
   2026-10-02 commented out the code blocks we may use for the dv-127 asking about showing physical address to police
   2026-09-29 ordered sexual assault and stalking attachment fields in PDF tab order
   2026-09-25 - after meeting w Bryce and Bonnie
@@ -11,8 +13,9 @@ include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.ALAnyState:any_state.yml
   - docassemble.AKA2JBranding:custom_organization.yml
+  - save_and_resume.yml
   - efiling.yml
-  - protective_order_interview_order.yml
+  # - protective_order_interview_order.yml
   - docassemble.ALToolbox:phone-number-validation.yml
 ---
 metadata:
@@ -120,17 +123,100 @@ objects:
   - other_parties: ALPeopleList.using(there_are_any=True, there_is_another=False, target_number=1)
   - adult_for_respondent: ALIndividual
 ---
-objects: 
+objects:
   - users[i].stay_away_home_address: ALAddress
+  - users[i].confidential_address: ALAddress
+
 ---
+code: |
+  # Copy attributes. Assigning one ALAddress to the other would make both names
+  # the same object, so a later edit to either address would change both.
+  users[0].mailing_address.address = users[0].stay_away_home_address.address
+  users[0].mailing_address.unit = users[0].stay_away_home_address.unit if defined('users[0].stay_away_home_address.unit') else ''
+  users[0].mailing_address.city = users[0].stay_away_home_address.city
+  users[0].mailing_address.state = users[0].stay_away_home_address.state
+  users[0].mailing_address.zip = users[0].stay_away_home_address.zip if defined('users[0].stay_away_home_address.zip') else ''
+  if defined('users[0].stay_away_home_address.country'):
+    users[0].mailing_address.country = users[0].stay_away_home_address.country
+  petitioners_using_dv128 = False
+  copy_stay_away_home_address_to_mailing_address = True
+---
+id: main interview order
 mandatory: True
 code: |
   who_needs_the_order
+  set_parts(
+    title="",
+    short_title="",
+    tab_title="CIPO")
+  dynamic_navbar_title = ""
+  ####### from interview_order.yml #################
+  if who_needs_the_order == 'myself':
+    users.target_number = 1
+  elif who_needs_the_order == 'child':
+    users.target_number = 1
+  elif who_needs_the_order == 'self and child':
+    users.target_number = 2
+  elif who_needs_the_order in ('children', 'self and children'):
+    users.target_number
+  for i in range(users.number()):
+    users[i].name.first
+  if who_needs_the_order in ('child', 'children'):
+    advocate.name.first
+    if advocate.is_attorney:
+      for i in range(users.number()):
+        users[i].relationship_to_advocate = 'Petitioners advocate'
+    else:
+      advocate.birthdate
 
-  interview_order_finished
+      if advocate.age_in_years() < 18:
+        kickout_advocate_is_too_young
+      else:
+        for i in range(users.number()):
+          users[i].relationship_to_advocate
+
+  other_parties[0].name.first
+  knows_respondents_birthdate
+  if other_parties[0].age_in_years() < 18:
+    knows_adult_for_respondent
+
+  if who_needs_the_order in ('myself', 'child'):
+    protective_order_petition_type
+  else:
+    protective_order_petition_type = 'DV-100m'
+  term
+
+  if stay_away_address_collected:
+    get_users_stay_away_home_address
+
+  if who_needs_the_order in ('child', 'children'):
+    advocate.address.address
+  else:
+    petitioner_contact_info
+    if stay_away_address_collected and stay_away_is_same_as_mailing_address:
+      copy_stay_away_home_address_to_mailing_address
+  address_test_results  # TEMPORARY - delete with the "address test results" screen
+
+  if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent:
+  # if do_not_know_respondent_address:
+    # if knows_adult_for_respondent:
+    # adult_for_respondent_address_unknown
+    adult_for_respondent.address.address
+  else:
+    respondent_address_unknown
+    # other_parties[0].address.address
+
+  court_location
+
+  penultimate_screen
+  if can_check_efile:
+    set_efile_variables
+  # interview_order_finished = True
+  ################## end interview order yml ##########
   protective_order_petition_download
 ---
 features:
+  address autocomplete: True
   css: |
     .alert, .alert p {
       font-size: 1rem !important;
@@ -305,18 +391,18 @@ fields:
 ---
 id: respondent birthdate
 question: |
-  How old is ${ other_parties[0].name.familiar() }?  
+  How old is ${ other_parties[0].familiar() }?
 fields:
-  - Do you know ${ other_parties[0].name.familiar() }'s birthdate?: knows_respondents_birthdate
+  - Do you know ${ other_parties[0].familiar() }'s birthdate?: knows_respondents_birthdate
     datatype: yesnoradio
     label above field: True
-  - What is ${ other_parties[0].name.familiar() }'s birthdate?: other_parties[0].birthdate
+  - What is ${ other_parties[0].familiar() }'s birthdate?: other_parties[0].birthdate
     datatype: BirthDate
     show if:
       variable: knows_respondents_birthdate
       is: True
     label above field: True
-  - How old do you think ${ other_parties[0].name.familiar() } is, in years?: other_parties[0].age
+  - How old do you think ${ other_parties[0].familiar() } is, in years?: other_parties[0].age
     datatype: integer
     show if:
       variable: knows_respondents_birthdate
@@ -330,9 +416,9 @@ sets:
   - adult_for_respondent.name.last
   - adult_for_respondent.name.suffix
 question: |
-  Who is responsible for ${ other_parties[0].name.familiar() }?
+  Who is responsible for ${ other_parties[0].familiar() }?
 fields:
-  - Do you know ${ other_parties[0].name.familiar() }'s parent's or guardian's name?: knows_adult_for_respondent
+  - Do you know ${ other_parties[0].familiar() }'s parent's or guardian's name?: knows_adult_for_respondent
     datatype: yesnoradio
     label above field: True
   - code: |
@@ -360,17 +446,17 @@ question: |
 subquestion: |
      If the judge orders ${ other_parties[0].familiar() } to stay away from a place, the address for that place goes into the order.
 
-     If ${ other_parties[0].name[0].familiar() } does not already know it, ${ other_parties[0].name.familiar() } will learn the address of the place because the address will be in the order.
+     If ${ other_parties[0].familiar() } does not already know it, ${ other_parties[0].familiar() } will learn the address of the place because the address will be in the order.
 fields:
-  - Does ${ other_parties[0].name.familiar() } live with ${petitioner_personal_pronoun}?: respondent_live_with_petitioners
+  - Does ${ other_parties[0].familiar() } live with ${ petitioner_personal_pronoun }?: respondent_live_with_petitioners
     datatype: yesnoradio
-  - Does ${ other_parties[0].name.familiar() } know where ${ petitioner_personal_pronoun } ${ "lives" if who_needs_the_order == 'child' else "live" }?: respondent_knows_where_petitioners_live
+  - Does ${ other_parties[0].familiar() } know where ${ petitioner_personal_pronoun } ${ "lives" if who_needs_the_order == 'child' else "live" }?: respondent_knows_where_petitioners_live
     datatype: yesnomaybe
     show if:
       variable: respondent_live_with_petitioners
       is: False
   - label: |
-      Do you need the judge to order ${other_parties[0].name.familiar()} to stay away from ${ petitioner_possesive_pronoun } place? **or** Do you need to keep that address confidential so it does **not** go onto the order where ${ other_parties[0].name.familiar() } can see it?
+      Do you need the judge to order ${other_parties[0].familiar()} to stay away from ${ petitioner_possesive_pronoun } place? **or** Do you need to keep that address confidential so it does **not** go onto the order where ${ other_parties[0].familiar() } can see it?
     field: stay_away_home_address_or_keep_confidential
     datatype: radio
     choices:
@@ -378,11 +464,13 @@ fields:
         stay_away_home_address_or_keep_confidential_choices
     js show if: |
       val("respondent_live_with_petitioners") === false &&
-      val("respondent_knows_where_petitioners_live") !== null &&
-      val("respondent_knows_where_petitioners_live") !== true
+      (
+        val("respondent_knows_where_petitioners_live") === false ||
+        val("respondent_knows_where_petitioners_live") === "None"
+      )
     label above field: True
 
-  - "Do you need the judge to order ${other_parties[0].name.familiar()} to stay away from ${ petitioner_possesive_pronoun } place?": respondent_stay_away_from_petitioners_home
+  - "Do you need the judge to order ${other_parties[0].familiar()} to stay away from ${ petitioner_possesive_pronoun } place?": respondent_stay_away_from_petitioners_home
     datatype: yesnoradio
     js show if: |
       val("respondent_live_with_petitioners") === true ||
@@ -394,38 +482,54 @@ fields:
 code: |
   if who_needs_the_order == 'myself':
     stay_away_home_address_or_keep_confidential_choices = [
-      {'stay away': f"I want the judge to order { other_parties[0].name.familiar() } to stay away from the place I live." },
-      {'keep confidential': f"It is more important to me that { other_parties[0].name.familiar() } does not see the address of the place I live on the order." },
+      {'stay away': f"I want the judge to order { other_parties[0].familiar() } to stay away from the place I live." },
+      {'keep confidential': f"It is more important to me that { other_parties[0].familiar() } does not see the address of the place I live on the order." },
     ]
   elif who_needs_the_order == 'child':
     stay_away_home_address_or_keep_confidential_choices = [
-      { 'stay away': f"I want the judge to order { other_parties[0].name.familiar() } to stay away from the place { users[0].familiar() } lives." },
-      { 'keep confidential': f"It is more important to me that { other_parties[0].name.familiar() } does not see the address of the place { users[0].familiar() } lives on the order." }
+      { 'stay away': f"I want the judge to order { other_parties[0].familiar() } to stay away from the place { users[0].familiar() } lives." },
+      { 'keep confidential': f" Note - edit 2026-10-14 It is more important to me that { other_parties[0].familiar() } does not see the address of the place { users[0].familiar() } lives on the order." }
     ]
   elif who_needs_the_order == 'children':
     stay_away_home_address_or_keep_confidential_choices = [
-      { 'stay away': f"I want the judge to order { other_parties[0].name.familiar() } to stay away from the place the children live." },
-      { 'keep confidential': f"It is more important to me that { other_parties[0].name.familiar() } does not see the address of the place the children live on the order." },
+      { 'stay away': f"I want the judge to order { other_parties[0].familiar() } to stay away from the place the children live." },
+      { 'keep confidential': f"It is more important to me that { other_parties[0].familiar() } does not see the address of the place the children live on the order." },
     ]
   else:
     stay_away_home_address_or_keep_confidential_choices = [
-      { 'stay away': f"I want the judge to order { other_parties[0].name.familiar() } to stay away from the place we live." },
-      { 'keep confidential': f"It is more important to me that { other_parties[0].name.familiar() } does not see the address of the place we live on the order." }
+      { 'stay away': f"I want the judge to order { other_parties[0].familiar() } to stay away from the place we live." },
+      { 'keep confidential': f"It is more important to me that { other_parties[0].familiar() } does not see the address of the place we live on the order." }
     ]
 ---
 code: |
+  stay_away_address_collected = (
+    (
+      (
+        respondent_live_with_petitioners
+        or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live)
+      )
+      and respondent_stay_away_from_petitioners_home
+    )
+    or (
+      not respondent_live_with_petitioners
+      and respondent_knows_where_petitioners_live is not True
+      and stay_away_home_address_or_keep_confidential == 'stay away'
+    )
+  )
+---
+code: |
     if (respondent_live_with_petitioners or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live)) and respondent_stay_away_from_petitioners_home is False:
-      show_address_to_police == 'fine'      
+      show_address_to_police == 'fine'
 ---
 id: petitioners stay away from home address
-sets: 
+sets:
  - "users[0].stay_away_home_address.address"
  - "users[0].stay_away_home_address.unit"
  - "users[0].stay_away_home_address.city"
  - "users[0].stay_away_home_address.state"
  - "users[0].stay_away_home_address.zip"
 question: |
-  What is the address you need the judge to order ${ other_parties[0].name.familiar() } to stay away from?
+  What is the address you need the judge to order ${ other_parties[0].familiar() } to stay away from?
 subquestion: |
   % if respondent_live_with_petitioners is False and not respondent_knows_where_petitioners_live:
   <div class="alert alert-warning" role="alert">
@@ -440,7 +544,7 @@ fields:
   - code: |
       users[0].stay_away_home_address.address_fields(
         country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
- # - street address: users[0].address.address  
+ # - street address: users[0].address.address
  #   address autocomplete:
  #     locationBias:
  #       rectangle:
@@ -448,31 +552,31 @@ fields:
  #           latitude: 51.3,
  #           longitude: -130
  #         high:
- #           latitude: 71.83,            
+ #           latitude: 71.83,
  #           longitude: 172
- #      
+ #
  # - Apartment: users[0].address.unit
  #   required: False
  # - City: users[0].address.city
  # - State: users[0].address.state
  # - ZIP code: users[0].address.zip
  #   required: False
-  - note: How far away in feet or miles do you need the judge to order ${ other_parties[0].name.familiar() } to stay away?
+  - note: How far away in feet or miles do you need the judge to order ${ other_parties[0].familiar() } to stay away?
   - Distance: stay_away_home_distance
     required: False
 continue button field: get_users_stay_away_home_address
 ---
 comment: |
-  For data points demo, take out subquestion If the judge agrees to give you a Protective Order, a law enforcment officer must give ${ other_parties[0].name.familiar() } a copy of the order. 
-  
-  <div class="alert alert-warning">The order <strong>only</strong> goes into effect once ${ other_parties[0].name.familiar() } gets a copy.</div>
+  For data points demo, take out subquestion If the judge agrees to give you a Protective Order, a law enforcment officer must give ${ other_parties[0].familiar() } a copy of the order. 
+
+  <div class="alert alert-warning">The order <strong>only</strong> goes into effect once ${ other_parties[0].familiar() } gets a copy.</div>
   % if respondent_live_with_petitioners:
-  You said ${ other_parties[0].name.familiar() } lives with you.
+  You said ${ other_parties[0].familiar() } lives with you.
   % endif
   % if not respondent_live_with_petitioners:
-   
+
   % endif
-  The officer will start at the address you give as ${ other_parties[0].name.familiar() }'s residence.  
+  The officer will start at the address you give as ${ other_parties[0].familiar() }'s residence.
 id: Respondents address
 sets:
   - other_parties[0].address.has_no_address
@@ -488,11 +592,11 @@ sets:
  # - other_parties[0].mailing_address.unit
  # - other_parties[0].mailing_address.state
 question: |
-  How can the court and law enforcement get in touch w ${ other_parties[0].name.familiar() }? 
+  How can the court and law enforcement get in touch w ${ other_parties[0].familiar() }?
 subquestion: |
-  If the judge grants your petition it does not take effect until law enforcement serves ${ other_parties[0].name.familiar() } with the order.
+  If the judge grants your petition it does not take effect until law enforcement serves ${ other_parties[0].familiar() } with the order.
 
-  And the court needs to be able to send notices to ${ other_parties[0].name.familiar() }. 
+  And the court needs to be able to send notices to ${ other_parties[0].familiar() }.
 fields:
   - I do not have any contact information for ${other_parties[0].familiar()}: respondent_address_unknown
     datatype: yesno
@@ -577,7 +681,7 @@ code: |
 # question: |
 #   Do you need the court to keep your contact information confidential?
 # subquestion: |
-#   The court needs your mailing address so they can send court papers and notices about your hearing dates to you. If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties[0].name.familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties[0].name.familiar() }.
+#   The court needs your mailing address so they can send court papers and notices about your hearing dates to you. If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties[0].familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties[0].familiar() }.
 # fields:
 #   - "Do you need to use DV-128?": petitioners_using_dv128_back
 #     datatype: yesnoradio
@@ -616,19 +720,36 @@ id: "Petitioner's contact info"
 question: |
   How can the court get in touch with you?
 subquestion: |
-  The court needs your mailing address so they can send court papers and notices about your hearing dates to you. 
-  
-  If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties[0].name.familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties[0].name.familiar() }.  
+  The court needs your mailing address so they can send court papers and notices about hearing dates to you. 
+
+  If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties[0].familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties[0].familiar() }.  
 fields:
   - note: |
-      The court needs to be able to reach you.
-
-      You can ask the to keep your address, phone, and email confidential, so that only court staff can see this information.
-  - "Do you the court to keep your information confidential?": petitioners_using_dv128
+      You are asking the court to order ${ other_parties[0].familiar() } to stay away from <br>
+      ${ users[0].stay_away_home_address.block() }.
+    show if:
+      code: |
+        defined('stay_away_address_collected') and stay_away_address_collected
+  - "Can the court use that address to contact you?": stay_away_is_same_as_mailing_address
     datatype: yesnoradio
+    show if:
+      code: |
+        defined('stay_away_address_collected') and stay_away_address_collected
+    label above field: True
+  - code: |
+      [dict(
+        {'label': "Do you need the court to keep your contact address confidential?",
+         'field': 'petitioners_using_dv128',
+         'datatype': 'yesnoradio'},
+        **({'js show if': 'val("stay_away_is_same_as_mailing_address") === false'} if stay_away_address_collected else {}))]
   - code: |
       users[0].mailing_address.address_fields(
-        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
+        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False,
+        show_if={"variable": "petitioners_using_dv128", "is": False})
+  - code: |
+      users[0].confidential_address.address_fields(
+        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False,
+        show_if={"variable": "petitioners_using_dv128", "is": True})
   - Cell phone: users[0].mobile_number
     datatype: al_international_phone
     required: False
@@ -656,8 +777,14 @@ sets:
   - "users[0].mailing_address.zip"
   - "users[0].mailing_address.unit"
   - "users[0].mailing_address.state"
-  - "users[0].mailing_ address.country"
+  - "users[0].confidential_address.address"
+  - "users[0].confidential_address.unit"
+  - "users[0].confidential_address.city"
+  - "users[0].confidential_address.state"
+  - "users[0].confidential_address.zip"
 validation code: |
+  if defined('stay_away_is_same_as_mailing_address') and stay_away_is_same_as_mailing_address:
+    petitioners_using_dv128 = False
   if (not showifdef('users[0].mobile_number') and \
       not showifdef('users[0].home_number') and \
       not showifdef('users[0].work_number') and \
@@ -665,6 +792,60 @@ validation code: |
       not showifdef('users[0].email')):
     validation_error(word("You need to give the court at least one way, besides your mailing address to get in touch with you."), field="users[0].other_contact_method")
 continue button field: petitioner_contact_info
+---
+id: address test results
+comment: |
+  TEMPORARY test screen. Delete this block and the address_test_results line in the interview order when testing is done.
+question: |
+  Address test results
+subquestion: |
+  ## Answers on the stay-away screen
+
+  * respondent_live_with_petitioners: **${ showifdef('respondent_live_with_petitioners', 'not asked') }**
+  * respondent_knows_where_petitioners_live: **${ 'not asked' if not defined('respondent_knows_where_petitioners_live') else ("I don't know" if respondent_knows_where_petitioners_live is None else respondent_knows_where_petitioners_live) }**
+  * respondent_stay_away_from_petitioners_home (yes/no): **${ showifdef('respondent_stay_away_from_petitioners_home', 'not asked') }**
+  * stay_away_home_address_or_keep_confidential (choice): **${ showifdef('stay_away_home_address_or_keep_confidential', 'not asked') }**
+  * stay_away_address_collected: **${ stay_away_address_collected }**
+
+  ## Answers on the contact screen
+
+  * stay_away_is_same_as_mailing_address: **${ showifdef('stay_away_is_same_as_mailing_address', 'not asked') }**
+  * petitioners_using_dv128 (confidential): **${ showifdef('petitioners_using_dv128', 'not asked') }**
+
+  ## Stay-away address (users[0].stay_away_home_address)
+
+  % for part in ['address', 'unit', 'city', 'state', 'zip', 'country']:
+  * ${ part }: ${ showifdef('users[0].stay_away_home_address.' + part, 'not collected') }
+  % endfor
+
+  ## Mailing address (users[0].mailing_address)
+
+  % for part in ['address', 'unit', 'city', 'state', 'zip', 'country']:
+  * ${ part }: ${ showifdef('users[0].mailing_address.' + part, 'not collected') }
+  % endfor
+
+  ## Confidential address (users[0].confidential_address)
+
+  % for part in ['address', 'unit', 'city', 'state', 'zip', 'country']:
+  * ${ part }: ${ showifdef('users[0].confidential_address.' + part, 'not collected') }
+  % endfor
+
+  ## Check
+
+  % if stay_away_address_collected and showifdef('stay_away_is_same_as_mailing_address'):
+  * Expected: mailing address copied from the stay-away address, confidential address not collected
+  * Mailing matches stay-away: **${ 'PASS' if all(showifdef('users[0].mailing_address.' + p, '') == showifdef('users[0].stay_away_home_address.' + p, '') for p in ['address', 'unit', 'city', 'state', 'zip']) else 'FAIL' }**
+  * Confidential address not collected: **${ 'PASS' if not defined('users[0].confidential_address.address') else 'FAIL' }**
+  % elif showifdef('petitioners_using_dv128'):
+  * Expected: confidential address entered, mailing address not collected
+  * Confidential address entered: **${ 'PASS' if defined('users[0].confidential_address.address') else 'FAIL' }**
+  * Mailing address not collected: **${ 'PASS' if not defined('users[0].mailing_address.address') else 'FAIL' }**
+  % else:
+  * Expected: mailing address entered, confidential address not collected
+  * Mailing address entered: **${ 'PASS' if defined('users[0].mailing_address.address') else 'FAIL' }**
+  * Confidential address not collected: **${ 'PASS' if not defined('users[0].confidential_address.address') else 'FAIL' }**
+  % endif
+continue button field: address_test_results
 ---
 Comment: |
   2026-09-29, we ask this question of advocates i.e. parents or guardians of a child or children also, this condition limits - parent/guardians also need to be able to keep their information confidential. So do not want this condition. Id is in quotes because of apostrophe? See line 611
@@ -674,7 +855,7 @@ Comment: |
 #   Do you want to keep your child's address, phone, and email confidential?
 # subquestion: |
 #   The court needs to be able to reach you.
-# 
+#
 #   You can ask the to keep your address, phone, and email confidential, so that only court staff can see this information.
 # fields:
 #   - "Do you need to use DV-128?": petitioners_using_dv128
@@ -698,8 +879,8 @@ question: |
 
 subquestion: |
   The court needs your mailing address so they can send court papers and notices about hearing dates to you. 
-  
-  If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties[0].name.familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties[0].name.familiar() }.  
+
+  If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties[0].familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties[0].familiar() }.  
 fields:
   - note: |
       The court needs to be able to reach you.
@@ -806,11 +987,11 @@ sets:
   - users[0].address.state
   - users[0].address.zip
 question: |
-  What is the address of the place you are living now? 
+  What is the address of the place you are living now?
 
 subquestion: |
-  The police want the address of the place you are living now because.... 
-  They only use this address to ... and it does not go to ${ other_parties[0].name.familiar() }
+  The police want the address of the place you are living now because....
+  They only use this address to ... and it does not go to ${ other_parties[0].familiar() }
 
 fields:
   - "You have a choice": show_address_to_police
@@ -838,16 +1019,16 @@ subquestion: |
   <div class="alert alert-info" role="alert">
   Ultimately, we will put in the name and address of ${users[0].name.familiar()}'s local court here, possibly with a map showing where the court is.
   </div>
-  * at ${ other_parties[0].name.familiar() }'s local court, or
+  * at ${ other_parties[0].familiar() }'s local court, or
   <div class="alert alert-info" role="alert">
-  Ultimately, we will put in the name and address of ${other_parties[0].name.familiar()}'s local court here, possibly with a map showing where the court is.
+  Ultimately, we will put in the name and address of ${other_parties[0].familiar()}'s local court here, possibly with a map showing where the court is.
   </div>
   * the court where the abuse, assault or stalking ocurred.
   <div class="alert alert-info" role="alert">
    Ultimately, we will put in the name and address of the court local to where the ${ "abuse" if protective_order_petition_type in ('DV-100', 'DV-100m') else "" }${ "assault" if protective_order_petition_type == 'DIV-752' else "" }${ "stalking" if protective_order_petition_type == 'DIV-750' else "" } ocurred, if we have this information, possibly with a map showing where the court is.
   </div>
 
-  Where do you want to file? 
+  Where do you want to file?
 
 field: court_location
 dropdown:
@@ -981,7 +1162,7 @@ comment: |
   took out:
     * their birthdate: ${ adult_for_respondent.birthdate }
     * their relationship to respondent: ${ other_parties[0].relationship_to_person_signing_for_them }
-id: data points screen 
+id: data points screen
 event: penultimate_screen
 question: |
   Final screen
@@ -993,21 +1174,21 @@ subquestion: |
   ## Petitioner
 
   -  **users_is_petitioner** checkbox =  (who_needs_the_order in ('myself','self and child','self and children')): ${ who_needs_the_order in ('myself','self and child','self and children') }
-  
+
   - **users_is_respondent** : False
-  
+
   - **users_is_other** checkbox = (who_needs_the_order in ('child','children')): ${ who_needs_the_order in ('child','children') }
-  
+
   - **users_other_role** code to give either nothing or users[0].relationship_to_advocate:
       % if who_needs_the_order in ('child', 'children'):
       ${ users[0].relationship_to_advocate } of ${ users[0] }
       % else:
       ${ "" }
-      % endif   
+      % endif
 
 
 
-  
+
   * Who needs the order: ${ who_needs_the_order }
   * Petitioner's name: ${ users }
   * Parent or Guardian or petitioner filling out for themself: ${ al_person_answering }
@@ -1034,8 +1215,8 @@ subquestion: |
   ${ users[0].mailing_address.on_one_line() }
   % endif
   % endif
-  
-  phone number(s): 
+
+  phone number(s):
   % if petitioners_using_dv128:
   Confidential - See form DV-128
   % else:
@@ -1046,7 +1227,7 @@ subquestion: |
   % endif
   % endif
 
-  email: 
+  email:
    % if petitioners_using_dv128:
   Confidential - See form DV-128
   % else:
@@ -1060,19 +1241,19 @@ subquestion: |
 
   ## Respondent
   * Respondent name: ${ other_parties[0].name }
-  * Respondent's birthdate:  
+  * Respondent's birthdate:
   % if knows_respondents_birthdate:
   { other_parties[0].birthdate }
   % else:
   ${ other_parties[0].age } years
   % endif
-  * Is ${ other_parties[0].name.familiar() } a child? ${ "Yes" if other_parties[0].age_in_years() < 18 else "No" }
+  * Is ${ other_parties[0].familiar() } a child? ${ "Yes" if other_parties[0].age_in_years() < 18 else "No" }
   % if other_parties[0].age_in_years() < 18 and knows_adult_for_respondent:
   * Respondent's parent or guardian: ${ adult_for_respondent }
   % endif
-  * Respondent's address: 
+  * Respondent's address:
   % if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent and not adult_for_respondent_address_unknown:
-      * Adult responsible for ${ other_parties[0].name.familiar() }'s address: 
+      * Adult responsible for ${ other_parties[0].familiar() }'s address:
   ${ adult_for_respondent.address.block() } (parent or guardian)
   % else:
   % if not respondent_address_unknown:
@@ -1220,7 +1401,7 @@ attachment:
           % if not respondent_address_unknown:
           ${ other_parties[0].address.block() }
           % endif
-          % endif          
+          % endif
       - "respondents_ssn_last_four": ${ other_parties[0].ssn_last_four }
       - "stay_away_from_respondents_residence_yes": ${ other_parties[0].stay_away_from_residence }
       - "stay_away_from_respondents_residence_no": ${ not other_parties[0].stay_away_from_residence }
@@ -1411,11 +1592,11 @@ attachment:
           ${ users[0].relationship_to_advocate } of ${ users[0] }
           % else:
           ${ "" }
-          % endif   
+          % endif
       - "users_name_and_aliases": ${users_with_aliases }
       - "users_phone_numbers": |
           % if who_needs_the_order in ('child', 'children'):
-          ${ users[0].relationship_to_advocate } 
+          ${ users[0].relationship_to_advocate }
           ${ advocate.phone_numbers() }
           % else:
           ${ users[0].phone_numbers() }
@@ -1505,9 +1686,9 @@ attachment:
           % endif
       - "respondents_is_child_yes": ${ other_parties[0].age_in_years() < 18 }
       - "respondents_parent_or_guardian_name__1": ""
-      - "respondents_parent_or_guardian_name__2": ${ adult_for_respondent }   
+      - "respondents_parent_or_guardian_name__2": ${ adult_for_respondent }
       - "short_term_yes": ${ term in  ('20 days', 'both') }
-      - "long_term_yes": ${ term in  ( '1 year', 'both') }      
+      - "long_term_yes": ${ term in  ( '1 year', 'both') }
       - "respondents_name_and_aliases": ${ other_parties[0] }
       - "respondents_address_block": |
           % if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent and not adult_for_respondent_address_unknown:
@@ -1564,7 +1745,7 @@ attachment:
           % if who_needs_the_order in ('child', 'children'):
           phone_number_formatted(advocate.mobile_number)
           % else:
-          phone_number_formatted(users[0].mobile_number) 
+          phone_number_formatted(users[0].mobile_number)
           % endif
           % endif
       - "petitioners_other_phone": |
@@ -1615,7 +1796,7 @@ attachment:
           % endif
       - "respondents_is_child_yes": ${ other_parties[0].age_in_years() < 18 }
       - "respondents_parent_or_guardian_name__1": ""
-      - "respondents_parent_or_guardian_name__2": ${ adult_for_respondent }   
+      - "respondents_parent_or_guardian_name__2": ${ adult_for_respondent }
       - "short_term_yes": ${ term in  ('20 days', 'both') }
       - "long_term_yes": ${ term in  ( '1 year', 'both') }
       - "petitioners_address1_on_one_line": ${ users[0].address.on_one_line()}
