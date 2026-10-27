@@ -1,4 +1,5 @@
 comment: |
+  2026-10-27 (phone numbers only yml) fixed validation on advocate phone number, edited al_name_suffixes
   2026-10-02 commented out the code blocks we may use for the dv-127 asking about showing physical address to police
   2026-09-29 ordered sexual assault and stalking attachment fields in PDF tab order
   2026-09-25 - after meeting w Bryce and Bonnie
@@ -113,6 +114,18 @@ code: |
   al_next_steps_what_can_decision_maker_do = 'The judge can issue temporary protective orders or schedule a hearing for long-term orders. They can also deny the request if there is insufficient evidence.'
   al_next_steps_what_happens_if_i_win = 'If you win the protective order, you will receive legal protection against the respondent for the duration specified. This may include restrictions on contact and requirements for the respondent to stay away from you and your children.'
 ---
+code: |
+  al_name_suffixes = [
+    "Jr.",
+    "Sr.",
+    "II",
+    "III",
+    "IV",
+    "MD",
+    "PhD",
+    "Esq."
+  ]
+---
 objects:
   - users: ALPeopleList.using(ask_number=True)
   - advocate: ALIndividual
@@ -131,6 +144,7 @@ code: |
   protective_order_petition_download
 ---
 features:
+  # address autocomplete: True
   css: |
     .alert, .alert p {
       font-size: 1rem !important;
@@ -505,7 +519,7 @@ fields:
   #    other_parties[0].address_fields(hide_if={"variable": "do_not_know_respondent_address", "is": "False"}) 
   - note: |
       ---
-  - Primary phone: other_parties[0].phone_number
+  - Main phone: other_parties[0].phone_number
     # TODO: bryce make custom US only phone number?
     required: False
   - Other phone: other_parties[0].other_number
@@ -658,9 +672,8 @@ sets:
   - "users[0].mailing_ address.country"
 validation code: |
   if (not showifdef('users[0].phone_number') and \
-      not showifdef('users[0].other_number') and \
-      not showifdef('users[0].email')):
-    validation_error(word("You need to give the court at least one way, besides your mailing address to get in touch with you."), field="users[0].other_contact_method")
+      not showifdef('users[0].other_number')):
+    validation_error(word("Yhe court needs at least one phone number to be able to reach you."), field="users[0].other_contact_method")
   if defined("users[0].phone_number") and len(users[0].phone_number):
     if not phone_number_is_valid(users[0].phone_number):
       validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].phone_number")
@@ -717,9 +730,9 @@ fields:
         country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
   - note: |
       ---
-  - Primary phone: advocate.phone_number
+  - Main phone: advocate.phone_number
     required: False
-  - Other phone: advocate.home_number
+  - Other phone: advocate.other_number
     required: False
   - note: |
       In order to e-file, you need to provide your email.
@@ -730,14 +743,17 @@ fields:
     datatype: email
     required: defined("can_check_efile") and can_check_efile
 validation code: |
-  if defined("advocate.phone_number") and len(users[0].phone_number):
+  if (not showifdef('advocate.phone_number') and \
+      not showifdef('advocate.other_number')):
+    validation_error(word("The court needs at least one phone number to be able to reach you."), field="advocate.other_contact_method")
+  if defined("advocate.phone_number") and len(advocate.phone_number):
     if not phone_number_is_valid(advocate.phone_number):
       validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="advocate.phone_number")
-    advocate.phone_number = phone_number_formatted(users[0].phone_number)
-  if defined("advocate.other_number") and len(users[0].other_number):
+    advocate.phone_number = phone_number_formatted(advocate.phone_number)
+  if defined("advocate.other_number") and len(advocate.other_number):
     if not phone_number_is_valid(advocate.other_number):
       validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="advocate.other_number")
-    advocate.other_number = phone_number_formatted(users[0].other_number)
+    advocate.other_number = phone_number_formatted(advocate.other_number)
 ---
 id: For demo - which form do you want to complete?
 question: |
