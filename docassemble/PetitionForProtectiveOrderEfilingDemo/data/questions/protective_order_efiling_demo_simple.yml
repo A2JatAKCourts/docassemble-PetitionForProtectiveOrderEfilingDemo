@@ -259,7 +259,7 @@ fields:
   - Attorney bar number: advocate.bar_number
     show if:
       variable: advocate.is_attorney
-      is: true
+      is: True
   - Your birthdate: advocate.birthdate
     datatype: date
     max: ${ today() }
@@ -453,7 +453,7 @@ fields:
  # - Street address: users[0].address.address
   - code: |
       users[0].stay_away_home_address.address_fields(
-        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
+        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": True})
  # - street address: users[0].address.address  
  #   address autocomplete:
  #     locationBias:
@@ -647,7 +647,7 @@ fields:
     datatype: yesnoradio
   - code: |
       users[0].mailing_address.address_fields(
-        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": true})
+        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": True})
   - note: |
       ---
   - Primary phone: users[0].phone_number
@@ -727,7 +727,7 @@ fields:
     datatype: yesnoradio
   - code: |
       advocate.address_fields(
-        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": true})
+        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": True})
   - note: |
       ---
   - Main phone: advocate.phone_number
