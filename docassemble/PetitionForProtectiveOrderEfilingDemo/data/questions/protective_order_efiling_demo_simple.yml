@@ -803,6 +803,7 @@ fields:
   # Email
   - "Do you need to keep your email confidential?": court_email_confidential
     datatype: yesnoradio
+    required: False
   - note: |
       To file your petition electronically, at the end of this program, you need to give us an email address.
     show if:
