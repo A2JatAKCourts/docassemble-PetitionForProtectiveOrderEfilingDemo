@@ -316,6 +316,29 @@ fields:
       users[i].name_fields()
   - Birthdate: users[i].birthdate
     datatype: date
+validation code: |
+  # 1. Determine if the person at the current index 'i' is an adult or child
+  is_adult = False
+  is_child = False
+
+  if who_needs_the_order in ('myself', 'self and child', 'self and children') and i == 0:
+      is_adult = True
+  elif who_needs_the_order in ('child', 'children'):
+      is_child = True
+  elif who_needs_the_order in ('self and child', 'self and children') and i >= 1:
+      is_child = True
+
+  # 2. Calculate the exact age threshold date
+  eighteen_years_ago = today().minus(years=18)
+
+  # 3. Apply the specific validation rules explicitly targeting this user index
+  if is_adult and users[i].birthdate > eighteen_years_ago:
+      validation_error("You must be 18 years or older to file for yourself.")
+      
+  if is_child and users[i].birthdate <= eighteen_years_ago:
+      validation_error("The child must be under 18 years old.")
+---
+
 ---
 code: |
   if who_needs_the_order in ('myself', 'self and child', 'self and children'):
@@ -605,7 +628,6 @@ fields:
   - note: |
       ---
   - Main phone: other_parties[0].phone_number
-    # TODO: bryce make custom US only phone number?
     required: False
   - Other phone: other_parties[0].other_number
     required: False
@@ -630,8 +652,6 @@ sets:
   - adult_for_respondent.address.zip
   - adult_for_respondent.address.unit
   - adult_for_respondent.address.state
-  - adult_for_respondent.phone_number
-  - adult_for_respondent.other_number
 question: |
   How can the court get in touch with ${ adult_for_respondent }?
 fields:
@@ -658,6 +678,11 @@ validation code: |
     if not phone_number_is_valid(adult_for_respondent.other_number):
       validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="adult_for_respondent.other_number")
     adult_for_respondent.other_number = phone_number_formatted(adult_for_respondent.other_number)
+  # 2. Email suffix validation
+  import re
+  if defined("adult_for_respondent.email") and adult_for_respondent.email:
+    if not re.match(r"^[^@]+@[^@]+\.[a-zA-Z]{2,}$", adult_for_respondent.email):
+      validation_error("Please enter a valid email address.", field="adult_for_respondent.email")
 ---
 question: |
   Does ${ other_parties } go by any other names?
@@ -711,7 +736,12 @@ question: |
 subquestion: |
   The court needs your mailing address so they can send court papers and notices about your hearing dates to you.
 
-  If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties[0].familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties[0].familiar() }.  
+  If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties[0].familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties[0].familiar() }.
+
+  The court needs to be able to reach you.
+  
+  You can ask to keep your address, phone, and email confidential, so that only court staff can see this information.
+  
 fields:
   - note: |
       You are asking the court to order ${ other_parties[0].familiar() } to stay away from <br>
@@ -764,11 +794,15 @@ fields:
   - code: |
       [
         dict(label="Other phone", field="users[0].other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === false'}),
-        dict(label="Confidential other phone", field="users[0].confindential_other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === true'}),
+        dict(label="Confidential other phone", field="users[0].confidential_other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === true'}),
       ] if who_needs_the_order not in ('child', 'children') else [
         dict(label="Other phone", field="advocate.other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === false'}),
         dict(label="Confidential other phone", field="advocate.confidential_other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === true'}),
       ]
+  
+  # Email
+  - "Do you need to keep your email confidential?": court_email_confidential
+    datatype: yesnoradio
   - note: |
       To file your petition electronically, at the end of this program, you need to give us an email address.
     show if:
@@ -877,26 +911,55 @@ subquestion: |
   * ${ part }: ${ showifdef('users[0].mailing_address.' + part, 'not collected') }
   % endfor
 
-  ## Confidential address (users[0].confidential_address)
+  ## Mailing address (advocate.mailing_address)
 
+  % for part in ['address', 'unit', 'city', 'state', 'zip', 'country']:
+  * ${ part }: ${ showifdef('advocate.address.' + part, 'not collected') }
+  % endfor
+  
+  ## Confidential address (users[0].confidential_address or advocate.confidential_address)
+  % if who_needs_the_order in ('child', 'children'):
+  % for part in ['address', 'unit', 'city', 'state', 'zip', 'country']:
+  * ${ part }: ${ showifdef('advocate.confidential_address.' + part, 'not collected') }
+  % endfor
+  % else:
   % for part in ['address', 'unit', 'city', 'state', 'zip', 'country']:
   * ${ part }: ${ showifdef('users[0].confidential_address.' + part, 'not collected') }
   % endfor
+  % endif
+
+
+  ## Confidential phone (users[0].confidential_address or advocate.confidential_address)
+  % if who_needs_the_order in ('child', 'children'):
+  % if court_main_phone_confidential:
+  ${ advocate.confidential_phone_number }
+  % endif
+  % if court_other_phone_confidential:
+  ${ advocate.confidential_other_number }
+  % endif
+  % else:
+  % if court_main_phone_confidential:
+  ${ users[0].confidential_phone_number }
+  % endif
+  % if court_other_phone_confidential:
+  ${ users[0].confidential_other_number }
+  % endif
+  % endif
 
   ## Check
 
   % if stay_away_address_collected and showifdef('stay_away_is_same_as_mailing_address'):
-  * Expected: mailing address copied from the stay-away address, confidential address not collected
-  * Mailing matches stay-away: **${ 'PASS' if all(showifdef('users[0].mailing_address.' + p, '') == showifdef('users[0].stay_away_home_address.' + p, '') for p in ['address', 'unit', 'city', 'state', 'zip']) else 'FAIL' }**
-  * Confidential address not collected: **${ 'PASS' if not defined('users[0].confidential_address.address') else 'FAIL' }**
+    * Expected: mailing address or advocate address copied from the stay-away address, confidential address not collected
+    * Mailing matches stay-away: **${ 'PASS' if all(showifdef('users[0].mailing_address.' + p, '') == showifdef('users[0].stay_away_home_address.' + p, '') for p in ['address', 'unit', 'city', 'state', 'zip']) or all(showifdef('advocate.address.' + p, '') == showifdef('users[0].stay_away_home_address.' + p, '') for p in ['address', 'unit', 'city', 'state', 'zip']) else 'FAIL' }**
+    * Confidential address not collected: **${ 'PASS' if not defined('users[0].confidential_address.address') and not defined('advocate.confidential_address.address') else 'FAIL' }**
   % elif showifdef('petitioners_using_dv128'):
   * Expected: confidential address entered, mailing address not collected
-  * Confidential address entered: **${ 'PASS' if defined('users[0].confidential_address.address') else 'FAIL' }**
-  * Mailing address not collected: **${ 'PASS' if not defined('users[0].mailing_address.address') else 'FAIL' }**
+  * Confidential address entered: 
+  % if defined('users[0].confidential_address.address') or defined('advocate.confidential_address.address'):
+  **PASS**
   % else:
-  * Expected: mailing address entered, confidential address not collected
-  * Mailing address entered: **${ 'PASS' if defined('users[0].mailing_address.address') else 'FAIL' }**
-  * Confidential address not collected: **${ 'PASS' if not defined('users[0].confidential_address.address') else 'FAIL' }**
+  **FAIL**
+  % endif
   % endif
 continue button field: address_test_results
 ---
@@ -1575,24 +1638,23 @@ attachment:
       - "users_name_and_aliases": ${users_with_aliases }
       - "users_phone_numbers": |
           % if who_needs_the_order in ('child', 'children'):
-          ${ users[0].relationship_to_advocate }
-          ${ advocate.phone_number }
-          ${ advocate.other_number }
+          ${ advocate.confidential_phone_number }
+          ${ advocate.confidential_other_number }
           % else:
-          ${ users[0].phone_number }
-          ${ users[0].other_number }
+          ${ users[0].confidential_phone_number }
+          ${ users[0].confidential_other_number }
           % endif
       - "users_email": |
           % if who_needs_the_order in ('child', 'children'):
-          ${ advocate.email }
+          ${ advocate.confidential_email }
           % else:
-          ${ users[0].email }
+          ${ users[0].confidential_email }
           % endif
       - "users_address_block": |
           % if who_needs_the_order in ('child', 'children'):
-          ${ advocate.address.on_one_line() }
+          ${ advocate.confidential_address.on_one_line() }
           % else:
-          ${ users[0].mailing_address.on_one_line() }
+          ${ users[0].confidential_address.on_one_line() }
           % endif
       - "users_signature_date": ${ today() }
       - "users_name": |
