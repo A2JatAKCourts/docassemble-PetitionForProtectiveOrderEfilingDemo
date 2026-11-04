@@ -1,4 +1,5 @@
 comment: |
+  2026-11-03 commented out docx attachment from user_bundle because it's breaking interview after upgrade to 1.10.15
   2026-10-30 more address fixes, some outline updates getting ready to test in CourtView
   2026-10-27 fixed validation on advocate phone number, edited al_name_suffixes
   2026-10-23 update with address yml addresses
@@ -196,12 +197,11 @@ code: |
     for i in range(users.number()):
       users[i].relationship_to_advocate = 'Petitioners advocate'
 
-    
-
   other_parties[0].name.first
   knows_respondents_birthdate
   if other_parties[0].age_in_years() < 18:
-    knows_adult_for_respondent
+    if knows_adult_for_respondent:
+      adult_for_respondent.name.first
 
   if who_needs_the_order in ('myself', 'child'):
     protective_order_petition_type
@@ -293,10 +293,10 @@ fields:
 ---
 id: protected person name
 sets:
-  - users[i].name.first
-  - users[i].name.middle
-  - users[i].name.last
-  - users[i].name.suffix
+  - "users[i].name.first"
+  - "users[i].name.middle"
+  - "users[i].name.last"
+  - "users[i].name.suffix"
 question: |
   % if i == 0 and who_needs_the_order in ('myself', 'self and child', 'self and children'):
   What is your name and birthdate?
@@ -353,10 +353,10 @@ code: |
 ---
 id: Advocate info
 sets:
-  - advocate.name.first
-  - advocate.name.middle
-  - advocate.name.last
-  - advocate.name.suffix
+  - "advocate.name.first"
+  - "advocate.name.middle"
+  - "advocate.name.last"
+  - "advocate.name.suffix"
 question: |
   What is your name?
 
@@ -397,10 +397,10 @@ fields:
 ---
 id: Respondent's name and birthdate
 sets:
-  - other_parties[0].name.first
-  - other_parties[0].name.middle
-  - other_parties[0].name.last
-  - other_parties[0].name.suffix
+  - "other_parties[0].name.first"
+  - "other_parties[0].name.middle"
+  - "other_parties[0].name.last"
+  - "other_parties[0].name.suffix"
 question: |
   What is the name of the person
   % if who_needs_the_order == 'myself':
@@ -414,8 +414,15 @@ question: |
   % endif
   protection from?
 fields:
+  - Do you know their name?: respondent_name_known
+    datatype: yesnoradio
   - code: |
-      other_parties[0].name_fields()
+      other_parties[0].name_fields(
+        show_if={
+          "variable": "respondent_name_known",
+          "is": True,
+        }
+      )
 ---
 id: respondent birthdate
 question: |
@@ -437,18 +444,35 @@ fields:
       is: False
     label above field: True
 ---
-id: adult for under-age respondent
-sets:
-  - adult_for_respondent.name.first
-  - adult_for_respondent.name.middle
-  - adult_for_respondent.name.last
-  - adult_for_respondent.name.suffix
+id: Do you know respondent's parent or guardian?
 question: |
-  Who is responsible for ${ other_parties[0].familiar() }?
+  % if respondent_name_known:  
+  Do you know ${ other_parties[0].familiar() }'s parent or guardian?
+  % else:
+  Do you know the respondent's parent or guardian?
+  % endif
+subquestion: |
+  Because 
+  % if respondent_name_known:  
+  ${ other_parties[0].familiar() }
+  % else:
+  the respondent
+  % endif
+  is under 18, the court may need to contact an adult responsible for them.
 fields:
   - Do you know ${ other_parties[0].familiar() }'s parent's or guardian's name?: knows_adult_for_respondent
     datatype: yesnoradio
     label above field: True
+---
+id: adult for under-age respondent
+sets:
+  - "adult_for_respondent.name.first"
+  - "adult_for_respondent.name.middle"
+  - "adult_for_respondent.name.last"
+  - "adult_for_respondent.name.suffix"
+question: |
+  Who is responsible for ${ other_parties[0].familiar() }?
+fields:
   - code: |
       adult_for_respondent.name_fields(
         show_if={
@@ -607,12 +631,12 @@ comment: |
   The officer will start at the address you give as ${ other_parties[0].familiar() }'s residence.
 id: Respondents address
 sets:
-  - other_parties[0].address.has_no_address
-  - other_parties[0].address.address
-  - other_parties[0].address.city
-  - other_parties[0].address.zip
-  - other_parties[0].address.unit
-  - other_parties[0].address.state
+  - "other_parties[0].address.has_no_address"
+  - "other_parties[0].address.address"
+  - "other_parties[0].address.city"
+  - "other_parties[0].address.zip"
+  - "other_parties[0].address.unit"
+  - "other_parties[0].address.state"
 question: |
   How can the court and law enforcement get in touch w ${ other_parties[0].familiar() }?
 subquestion: |
@@ -646,12 +670,12 @@ validation code: |
 ---
 id: Respdondent's adult contact info
 sets:
-  - adult_for_respondent.address.has_no_address
-  - adult_for_respondent.address.address
-  - adult_for_respondent.address.city
-  - adult_for_respondent.address.zip
-  - adult_for_respondent.address.unit
-  - adult_for_respondent.address.state
+  - "adult_for_respondent.address.has_no_address"
+  - "adult_for_respondent.address.address"
+  - "adult_for_respondent.address.city"
+  - "adult_for_respondent.address.zip"
+  - "adult_for_respondent.address.unit"
+  - "adult_for_respondent.address.state"
 question: |
   How can the court get in touch with ${ adult_for_respondent }?
 fields:
@@ -678,11 +702,7 @@ validation code: |
     if not phone_number_is_valid(adult_for_respondent.other_number):
       validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="adult_for_respondent.other_number")
     adult_for_respondent.other_number = phone_number_formatted(adult_for_respondent.other_number)
-  # 2. Email suffix validation
-  import re
-  if defined("adult_for_respondent.email") and adult_for_respondent.email:
-    if not re.match(r"^[^@]+@[^@]+\.[a-zA-Z]{2,}$", adult_for_respondent.email):
-      validation_error("Please enter a valid email address.", field="adult_for_respondent.email")
+  
 ---
 question: |
   Does ${ other_parties } go by any other names?
@@ -791,6 +811,7 @@ fields:
   # Other phone number
   - "Do you need to keep your other phone number confidential?": court_other_phone_confidential
     datatype: yesnoradio
+    required: False
   - code: |
       [
         dict(label="Other phone", field="users[0].other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === false'}),
@@ -799,22 +820,37 @@ fields:
         dict(label="Other phone", field="advocate.other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === false'}),
         dict(label="Confidential other phone", field="advocate.confidential_other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === true'}),
       ]
-  
+
+      
   # Email
   - "Do you need to keep your email confidential?": court_email_confidential
     datatype: yesnoradio
+    required: False
   - note: |
       To file your petition electronically, at the end of this program, you need to give us an email address.
     show if:
       code: |
         defined("can_check_efile") and can_check_efile
-  - code: |
-      [dict(
-        label="Email",
-        field="users[0].email" if who_needs_the_order not in ('child', 'children') else "advocate.email",
-        datatype="email",
-        required=defined("can_check_efile") and can_check_efile,
-      )]
+  - code: |  
+      [
+        dict(label="Email", field="users[0].email", required=(defined("can_check_efile") and can_check_efile), datatype="email", **{"js show if": 'val("court_email_confidential") === false'}),
+        dict(label="Confidential email", field="users[0].confidential_email", required=(defined("can_check_efile") and can_check_efile), datatype="email", **{"js show if": 'val("court_email_confidential") === true'}),
+      ] if who_needs_the_order not in ('child', 'children') else [
+        dict(label="Email", field="advocate.email", required=(defined("can_check_efile") and can_check_efile), datatype="email", **{"js show if": 'val("court_email_confidential") === false'}),
+        dict(label="Confidential email", field="advocate.confidential_email", required=(defined("can_check_efile") and can_check_efile), datatype="email", **{"js show if": 'val("court_email_confidential") === true'}),
+      ]
+  
+  
+  
+  
+  
+  #- code: |
+  #    [dict(
+  #      label="Email",
+  #      field="users[0].email" if who_needs_the_order not in ('child', 'children') else "advocate.email",
+  #      datatype="email",
+  #      required=defined("can_check_efile") and can_check_efile,
+  #    )]
 sets:
   - "users[0].mailing_address.address"
   - "users[0].mailing_address.city"
@@ -826,16 +862,16 @@ sets:
   - "users[0].confidential_address.city"
   - "users[0].confidential_address.state"
   - "users[0].confidential_address.zip"
-  - advocate.address.address
-  - advocate.address.city
-  - advocate.address.zip
-  - advocate.address.unit
-  - advocate.address.state
-  - advocate.confidential_address.address
-  - advocate.confidential_address.city
-  - advocate.confidential_address.zip
-  - advocate.confidential_address.unit
-  - advocate.confidential_address.state
+  - "advocate.address.address"
+  - "advocate.address.city"
+  - "advocate.address.zip"
+  - "advocate.address.unit"
+  - "advocate.address.state"
+  - "advocate.confidential_address.address"
+  - "advocate.confidential_address.city"
+  - "advocate.confidential_address.zip"
+  - "advocate.confidential_address.unit"
+  - "advocate.confidential_address.state"
 validation code: |
   if defined('stay_away_is_same_as_mailing_address') and stay_away_is_same_as_mailing_address:
     petitioners_using_dv128 = False
@@ -879,6 +915,44 @@ validation code: |
         validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].confidential_other_number")
       users[0].confidential_other_number = phone_number_formatted(users[0].confidential_other_number)
 continue button field: petitioner_contact_info
+---
+id: efile user email address
+question: |
+  What is your email address?
+subquestion: |
+  To efile, the court needs your email address.
+fields:
+  - "Do you need to keep your email confidential?": efile_users_email_confidential
+    datatype: yesnoradio
+  - Email: users[0].email
+    datatype: email
+    show if: 
+      code: |
+        efile_users_email_confidential is False
+  - Confidential email: users[0].confidential_email
+    datatype: email
+    show if: 
+      code: |
+        efile_users_email_confidential is True
+---
+id: efile advocate email address
+question: |
+  What is your email address?
+subquestion: |
+  To efile, the court needs your email address.
+fields:
+  - "Do you need to keep your email confidential?": efile_advocate_email_confidential
+    datatype: yesnoradio
+  - Email: advocate.email
+    datatype: email
+    show if: 
+      code: |
+        efile_advocate_email_confidential is False
+  - Confidential email: advocate.confidential_email
+    datatype: email
+    show if: 
+      code: |
+        efile_advocate_email_confidential is True
 ---
 id: address test results
 comment: |
@@ -1032,11 +1106,11 @@ code: |
 ---
 id: users physical address
 sets:
-  - users[0].address.address
-  - users[0].address.unit
-  - users[0].address.city
-  - users[0].address.state
-  - users[0].address.zip
+  - "users[0].address.address"
+  - "users[0].address.unit"
+  - "users[0].address.city"
+  - "users[0].address.state"
+  - "users[0].address.zip"
 question: |
   What is the address of the place you are living now?
 
@@ -1365,12 +1439,11 @@ objects:
 ---
 # Bundles group the ALDocuments into separate downloads, such as for court and for the user
 objects:
+  #  - al_user_bundle: ALDocumentBundle.using(elements=[domestic_violence_protective_order_petition, domestic_violence_protective_order_petition_multi, sexual_assault_protective_order_petition, stalking_protective_order_petition, dv_127_confidential_law_enforcement_information_sheet,dv_128_confidential_contact_information_sheet, tf_835_self_certification_no_notary_available], title="Your Petition for a Protective Order", filename="protective_order_petition_bundle", enabled=True)
   - al_user_bundle: ALDocumentBundle.using(elements=[protective_order_petition_post_interview_instructions, domestic_violence_protective_order_petition, domestic_violence_protective_order_petition_multi, sexual_assault_protective_order_petition, stalking_protective_order_petition, dv_127_confidential_law_enforcement_information_sheet,dv_128_confidential_contact_information_sheet, tf_835_self_certification_no_notary_available], title="Your Petition for a Protective Order", filename="protective_order_petition_bundle", enabled=True)
   - al_court_bundle: ALDocumentBundle.using(elements=[domestic_violence_protective_order_petition, domestic_violence_protective_order_petition_multi, sexual_assault_protective_order_petition, stalking_protective_order_petition, dv_127_confidential_law_enforcement_information_sheet,dv_128_confidential_contact_information_sheet, tf_835_self_certification_no_notary_available], title="Petition for a Protective Order", filename="protective_order_petition_bundle", enabled=True)
 ---
 code: |
-
-
   dv_127_confidential_law_enforcement_information_sheet.enabled = True
   protective_order_petition_post_interview_instructions.enabled = True
 ---
@@ -1398,6 +1471,7 @@ attachment:
   filename: protective_order_petition_next_steps
   variable name: protective_order_petition_post_interview_instructions[i]
   docx template file: protective_order_petition_next_steps.docx
+  # docx template file: dummy.docx
   skip undefined: True
   tagged pdf: True
 ---
