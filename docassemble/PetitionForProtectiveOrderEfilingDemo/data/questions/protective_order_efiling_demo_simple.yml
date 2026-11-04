@@ -142,7 +142,10 @@ objects:
   - users[i].stay_away_home_address: ALAddress
   - users[i].confidential_address: ALAddress
   - advocate.confidential_address: ALAddress
-
+---
+auto terms:
+  respondent: |
+    The person you or your children need protection from.
 ---
 code: |
   # Copy attributes. Assigning one ALAddress to the other would make both names
@@ -197,7 +200,12 @@ code: |
     for i in range(users.number()):
       users[i].relationship_to_advocate = 'Petitioners advocate'
 
-  other_parties[0].name.first
+  
+  if respondent_name_known and not other_parties[0].name.full() == "":
+    respondent_name = other_parties[0].familiar()
+  else:
+    other_parties[0].name.first = 'unknown'
+    respondent_name = 'the respondent'
   knows_respondents_birthdate
   if other_parties[0].age_in_years() < 18:
     if knows_adult_for_respondent:
@@ -220,8 +228,8 @@ code: |
   if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent:
   # if do_not_know_respondent_address:
     # if knows_adult_for_respondent:
-    # adult_for_respondent_address_unknown
-    adult_for_respondent.address.address
+    adult_for_respondent_address_unknown
+    # adult_for_respondent.address.address
   else:
     respondent_address_unknown
     # other_parties[0].address.address
@@ -416,28 +424,38 @@ question: |
 fields:
   - Do you know their name?: respondent_name_known
     datatype: yesnoradio
-  - code: |
-      other_parties[0].name_fields(
-        show_if={
-          "variable": "respondent_name_known",
-          "is": True,
-        }
-      )
+  - First name: other_parties[0].name.first
+    show if: respondent_name_known
+    required: False
+  - Middle name: other_parties[0].name.middle
+    show if: respondent_name_known
+    required: False
+  - Last name: other_parties[0].name.last
+    show if: respondent_name_known
+    required: False
+  - Suffix: other_parties[0].name.suffix
+    code: |
+      al_name_suffixes
+    show if: respondent_name_known
+    required: False
+validation code: |
+  if respondent_name_known and not showifdef('other_parties[0].name.first') and (not showifdef('other_parties[0].name.middle') and not showifdef('other_parties[0].name.last')):
+    validation_error(word("You say you know the other person's name, please enter at least one name or say you do not know their name."))
 ---
 id: respondent birthdate
 question: |
-  How old is ${ other_parties[0].familiar() }?
+  How old is ${ respondent_name }?
 fields:
-  - Do you know ${ other_parties[0].familiar() }'s birthdate?: knows_respondents_birthdate
+  - Do you know ${ respondent_name }'s birthdate?: knows_respondents_birthdate
     datatype: yesnoradio
     label above field: True
-  - What is ${ other_parties[0].familiar() }'s birthdate?: other_parties[0].birthdate
+  - What is ${ respondent_name }'s birthdate?: other_parties[0].birthdate
     datatype: BirthDate
     show if:
       variable: knows_respondents_birthdate
       is: True
     label above field: True
-  - How old do you think ${ other_parties[0].familiar() } is, in years?: other_parties[0].age
+  - How old do you think ${ respondent_name } is, in years?: other_parties[0].age
     datatype: integer
     show if:
       variable: knows_respondents_birthdate
@@ -447,20 +465,20 @@ fields:
 id: Do you know respondent's parent or guardian?
 question: |
   % if respondent_name_known:  
-  Do you know ${ other_parties[0].familiar() }'s parent or guardian?
+  Do you know ${ respondent_name }'s parent or guardian?
   % else:
   Do you know the respondent's parent or guardian?
   % endif
 subquestion: |
   Because 
   % if respondent_name_known:  
-  ${ other_parties[0].familiar() }
+  ${ respondent_name }
   % else:
   the respondent
   % endif
   is under 18, the court may need to contact an adult responsible for them.
 fields:
-  - Do you know ${ other_parties[0].familiar() }'s parent's or guardian's name?: knows_adult_for_respondent
+  - Do you know ${ respondent_name }'s parent's or guardian's name?: knows_adult_for_respondent
     datatype: yesnoradio
     label above field: True
 ---
@@ -471,44 +489,41 @@ sets:
   - "adult_for_respondent.name.last"
   - "adult_for_respondent.name.suffix"
 question: |
-  Who is responsible for ${ other_parties[0].familiar() }?
+  Who is responsible for ${ respondent_name }?
 fields:
   - code: |
-      adult_for_respondent.name_fields(
-        show_if={
-          "variable": "knows_adult_for_respondent",
-          "is": True,
-        }
-      )
-
+      adult_for_respondent.name_fields(required={'first': False, 'middle': False, 'last': False, 'suffix': False})
+validation code: |
+  if knows_adult_for_respondent and not showifdef('adult_for_respondent.name.first') and (not showifdef('adult_for_respondent.name.middle') and not showifdef('adult_for_respondent.name.last')):
+    validation_error(word("You say you know the respondent's parent or guardian's name, please enter at least one name or go back and say you do not know their name."))
 ---
 id: Stay away from petitioner's home
 question: |
   % if who_needs_the_order == 'myself':
-  The judge can order ${ other_parties[0].familiar() } to stay away from the place you live
+  The judge can order ${ respondent_name } to stay away from the place you live
   % elif who_needs_the_order == 'child':
-  The judge can order ${ other_parties[0].familiar() } to stay away from the place ${ users[0].familiar() } lives
+  The judge can order ${ respondent_name } to stay away from the place ${ users[0].familiar() } lives
   % elif who_needs_the_order == 'self and child':
-  The judge can order ${ other_parties[0].familiar() } to stay away from the place you and ${ users[1].familiar() } live
+  The judge can order ${ respondent_name } to stay away from the place you and ${ users[1].familiar() } live
   % elif who_needs_the_order == 'children':
-  The judge can order ${ other_parties[0].familiar() } to stay away from the place your children live
+  The judge can order ${ respondent_name } to stay away from the place your children live
   % elif who_needs_the_order == 'self and children':
-  The judge can order ${ other_parties[0].familiar() } to stay away from the place you and your children live
+  The judge can order ${ respondent_name } to stay away from the place you and your children live
   % endif
 subquestion: |
-     If the judge orders ${ other_parties[0].familiar() } to stay away from a place, the address for that place goes into the order.
+     If the judge orders ${ respondent_name } to stay away from a place, the address for that place goes into the order.
 
-     If ${ other_parties[0].familiar() } does not already know it, ${ other_parties[0].familiar() } will learn the address of the place because the address will be in the order.
+     If ${ respondent_name } does not already know it, ${ respondent_name } will learn the address of the place because the address will be in the order.
 fields:
-  - Does ${ other_parties[0].familiar() } live with ${ petitioner_personal_pronoun }?: respondent_live_with_petitioners
+  - Does ${ respondent_name } live with ${ petitioner_personal_pronoun }?: respondent_live_with_petitioners
     datatype: yesnoradio
-  - Does ${ other_parties[0].familiar() } know where ${ petitioner_personal_pronoun } ${ "lives" if who_needs_the_order == 'child' else "live" }?: respondent_knows_where_petitioners_live
+  - Does ${ respondent_name } know where ${ petitioner_personal_pronoun } ${ "lives" if who_needs_the_order == 'child' else "live" }?: respondent_knows_where_petitioners_live
     datatype: yesnomaybe
     show if:
       variable: respondent_live_with_petitioners
       is: False
   - label: |
-      Do you need the judge to order ${other_parties[0].familiar()} to stay away from ${ petitioner_possesive_pronoun } place? **or** Do you need to keep that address confidential so it does **not** go onto the order where ${ other_parties[0].familiar() } can see it?
+      Do you need the judge to order ${other_parties[0].familiar()} to stay away from ${ petitioner_possesive_pronoun } place? **or** Do you need to keep that address confidential so it does **not** go onto the order where ${ respondent_name } can see it?
     field: stay_away_home_address_or_keep_confidential
     datatype: radio
     choices:
@@ -581,7 +596,7 @@ sets:
  - "users[0].stay_away_home_address.state"
  - "users[0].stay_away_home_address.zip"
 question: |
-  What is the address you need the judge to order ${ other_parties[0].familiar() } to stay away from?
+  What is the address you need the judge to order ${ respondent_name } to stay away from?
 subquestion: |
   % if respondent_live_with_petitioners is False and not respondent_knows_where_petitioners_live:
   <div class="alert alert-warning" role="alert">
@@ -613,22 +628,22 @@ fields:
  # - State: users[0].address.state
  # - ZIP code: users[0].address.zip
  #   required: False
-  - note: How far away in feet or miles do you need the judge to order ${ other_parties[0].familiar() } to stay away?
+  - note: How far away in feet or miles do you need the judge to order ${ respondent_name } to stay away?
   - Distance: stay_away_home_distance
     required: False
 continue button field: get_users_stay_away_home_address
 ---
 comment: |
-  For data points demo, take out subquestion If the judge agrees to give you a Protective Order, a law enforcment officer must give ${ other_parties[0].familiar() } a copy of the order. 
+  For data points demo, take out subquestion If the judge agrees to give you a Protective Order, a law enforcment officer must give ${ respondent_name } a copy of the order. 
 
-  <div class="alert alert-warning">The order <strong>only</strong> goes into effect once ${ other_parties[0].familiar() } gets a copy.</div>
+  <div class="alert alert-warning">The order <strong>only</strong> goes into effect once ${ respondent_name } gets a copy.</div>
   % if respondent_live_with_petitioners:
-  You said ${ other_parties[0].familiar() } lives with you.
+  You said ${ respondent_name } lives with you.
   % endif
   % if not respondent_live_with_petitioners:
 
   % endif
-  The officer will start at the address you give as ${ other_parties[0].familiar() }'s residence.
+  The officer will start at the address you give as ${ respondent_name }'s residence.
 id: Respondents address
 sets:
   - "other_parties[0].address.has_no_address"
@@ -638,11 +653,11 @@ sets:
   - "other_parties[0].address.unit"
   - "other_parties[0].address.state"
 question: |
-  How can the court and law enforcement get in touch w ${ other_parties[0].familiar() }?
+  How can the court and law enforcement get in touch w ${ respondent_name }?
 subquestion: |
-  If the judge grants your petition it does not take effect until law enforcement serves ${ other_parties[0].familiar() } with the order.
+  If the judge grants your petition it does not take effect until law enforcement serves ${ respondent_name } with the order.
 
-  And the court needs to be able to send notices to ${ other_parties[0].familiar() }.
+  And the court needs to be able to send notices to ${ respondent_name }.
 fields:
   - I do not have any contact information for ${other_parties[0].familiar()}: respondent_address_unknown
     datatype: yesno
@@ -756,7 +771,7 @@ question: |
 subquestion: |
   The court needs your mailing address so they can send court papers and notices about your hearing dates to you.
 
-  If you do not have an address, email, or telephone number that can safely be shown to ${ other_parties[0].familiar() }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ other_parties[0].familiar() }.
+  If you do not have an address, email, or telephone number that can safely be shown to ${ respondent_name }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ respondent_name }.
 
   The court needs to be able to reach you.
   
@@ -764,7 +779,7 @@ subquestion: |
   
 fields:
   - note: |
-      You are asking the court to order ${ other_parties[0].familiar() } to stay away from <br>
+      You are asking the court to order ${ respondent_name } to stay away from <br>
       ${ users[0].stay_away_home_address.block() }.
     show if:
       code: |
@@ -922,18 +937,18 @@ question: |
 subquestion: |
   To efile, the court needs your email address.
 fields:
-  - "Do you need to keep your email confidential?": efile_users_email_confidential
-    datatype: yesnoradio
-  - Email: users[0].email
-    datatype: email
-    show if: 
-      code: |
-        efile_users_email_confidential is False
-  - Confidential email: users[0].confidential_email
-    datatype: email
-    show if: 
-      code: |
-        efile_users_email_confidential is True
+ #- "Do you need to keep your email confidential?": efile_users_email_confidential
+ #  datatype: yesnoradio
+ - Email: users[0].email
+   datatype: email
+ #  show if: 
+ #    code: |
+ #      efile_users_email_confidential is False
+ #- Confidential email: users[0].confidential_email
+ #  datatype: email
+ #  show if: 
+ #    code: |
+ #      efile_users_email_confidential is True
 ---
 id: efile advocate email address
 question: |
@@ -941,18 +956,18 @@ question: |
 subquestion: |
   To efile, the court needs your email address.
 fields:
-  - "Do you need to keep your email confidential?": efile_advocate_email_confidential
-    datatype: yesnoradio
+  #- "Do you need to keep your email confidential?": efile_advocate_email_confidential
+  #  datatype: yesnoradio
   - Email: advocate.email
     datatype: email
-    show if: 
-      code: |
-        efile_advocate_email_confidential is False
-  - Confidential email: advocate.confidential_email
-    datatype: email
-    show if: 
-      code: |
-        efile_advocate_email_confidential is True
+  #  show if: 
+  #    code: |
+  #      efile_advocate_email_confidential is False
+  #- Confidential email: advocate.confidential_email
+  #  datatype: email
+  #  show if: 
+  #    code: |
+  #      efile_advocate_email_confidential is True
 ---
 id: address test results
 comment: |
@@ -1073,13 +1088,13 @@ fields:
     choices:
       - "20 days": 20 days
         help: |
-          A **Short-Term Protective Order** (also called an “ex parte” order) gives you immediate protection.  It lasts for 20 days unless the judge extends it. The judge is able to grant or deny the petition based only on what you write in the petition and what you testify about at the hearing, if there is a hearing. The judge can grant this protective order without telling ${ other_parties[0].familiar() } that you filed a petition, and without hearing from ${ other_parties[0].familiar() }. You do not have to tell the ${ other_parties[0].familiar() } that you are asking for a protective order, but if you did, tell the judge how you tried to tell ${ other_parties[0].familiar() } you were asking for the protective order.
+          A **Short-Term Protective Order** (also called an “ex parte” order) gives you immediate protection.  It lasts for 20 days unless the judge extends it. The judge is able to grant or deny the petition based only on what you write in the petition and what you testify about at the hearing, if there is a hearing. The judge can grant this protective order without telling ${ respondent_name } that you filed a petition, and without hearing from ${ respondent_name }. You do not have to tell the ${ respondent_name } that you are asking for a protective order, but if you did, tell the judge how you tried to tell ${ respondent_name } you were asking for the protective order.
       - "up to one year": 1 year
         help: |
-          A **Long-Term Order** can last up to one year. A judge can only grant a long-term order after a hearing. ${ other_parties[0].familiar() } must get at least 10 days’ notice of the court hearing and have a chance to speak at the hearing. If ${ other_parties[0].familiar() } had notice, but chose not to come to the hearing, the judge can still grant the order. Police officers or troopers are responsible for notifying ${ other_parties[0].familiar() } about the hearing.
+          A **Long-Term Order** can last up to one year. A judge can only grant a long-term order after a hearing. ${ respondent_name } must get at least 10 days’ notice of the court hearing and have a chance to speak at the hearing. If ${ respondent_name } had notice, but chose not to come to the hearing, the judge can still grant the order. Police officers or troopers are responsible for notifying ${ respondent_name } about the hearing.
       - "I need **both** a 20 day order and an order that lasts up to a year": both
         help: |
-           Both a Short-Term and a Long-Term Order. If you request both orders, and your short-term order is granted, the court will schedule a hearing when the judge will decide on the long-term protective order. ${ other_parties[0].familiar() } has an opportunity to attend the hearing and contest the order. If the short-term order is not granted, the court may or may not schedule a long-term hearing.
+           Both a Short-Term and a Long-Term Order. If you request both orders, and your short-term order is granted, the court will schedule a hearing when the judge will decide on the long-term protective order. ${ respondent_name } has an opportunity to attend the hearing and contest the order. If the short-term order is not granted, the court may or may not schedule a long-term hearing.
 ---
 code: |
   if protective_order_petition_type in ('DV-100', 'DV-100m'):
@@ -1116,7 +1131,7 @@ question: |
 
 subquestion: |
   The police want the address of the place you are living now because....
-  They only use this address to ... and it does not go to ${ other_parties[0].familiar() }
+  They only use this address to ... and it does not go to ${ respondent_name }
 
 fields:
   - "You have a choice": show_address_to_police
@@ -1144,7 +1159,7 @@ subquestion: |
   <div class="alert alert-info" role="alert">
   Ultimately, we will put in the name and address of ${users[0].name.familiar()}'s local court here, possibly with a map showing where the court is.
   </div>
-  * at ${ other_parties[0].familiar() }'s local court, or
+  * at ${ respondent_name }'s local court, or
   <div class="alert alert-info" role="alert">
   Ultimately, we will put in the name and address of ${other_parties[0].familiar()}'s local court here, possibly with a map showing where the court is.
   </div>
@@ -1372,13 +1387,13 @@ subquestion: |
   % else:
   ${ other_parties[0].age } years
   % endif
-  * Is ${ other_parties[0].familiar() } a child? ${ "Yes" if other_parties[0].age_in_years() < 18 else "No" }
+  * Is ${ respondent_name } a child? ${ "Yes" if other_parties[0].age_in_years() < 18 else "No" }
   % if other_parties[0].age_in_years() < 18 and knows_adult_for_respondent:
   * Respondent's parent or guardian: ${ adult_for_respondent }
   % endif
   * Respondent's address:
   % if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent and not adult_for_respondent_address_unknown:
-      * Adult responsible for ${ other_parties[0].familiar() }'s address:
+      * Adult responsible for ${ respondent_name }'s address:
   ${ adult_for_respondent.address.block() } (parent or guardian)
   % else:
   % if not respondent_address_unknown:
