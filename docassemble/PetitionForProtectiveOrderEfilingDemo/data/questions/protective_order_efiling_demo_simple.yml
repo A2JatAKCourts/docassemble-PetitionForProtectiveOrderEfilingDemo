@@ -33,13 +33,13 @@ metadata:
   before_you_start: |
     ### Before you get started
     - Gather information about the incidents of domestic violence.
-    - Ensure you have the details of the respondent and any witnesses.
+    - Ensure you have the details of the {respondent} and any witnesses.
 
     ### When you are finished
     - Submit the completed petition to the court.
     - Prepare to attend a hearing if required.
   when_you_are_finished: |
-    After you submit your petition, the court will review your request. If granted, the protective order will help keep you and your children safe from the respondent. You may need to attend a hearing for long-term orders.
+    After you submit your petition, the court will review your request. If granted, the protective order will help keep you and your children safe from the {respondent}. You may need to attend a hearing for long-term orders.
   efiling_enabled: True
   integrated_efiling: True
   integrated_email_filing: False
@@ -143,7 +143,7 @@ objects:
   - users[i].confidential_address: ALAddress
   - advocate.confidential_address: ALAddress
 ---
-auto terms:
+terms:
   respondent: |
     The person you or your children need protection from.
 ---
@@ -467,14 +467,14 @@ question: |
   % if respondent_name_known:  
   Do you know ${ respondent_name }'s parent or guardian?
   % else:
-  Do you know the respondent's parent or guardian?
+  Do you know the {respondent}'s parent or guardian?
   % endif
 subquestion: |
   Because 
   % if respondent_name_known:  
   ${ respondent_name }
   % else:
-  the respondent
+  the {respondent}
   % endif
   is under 18, the court may need to contact an adult responsible for them.
 fields:
@@ -1380,7 +1380,7 @@ subquestion: |
 
 
   ## Respondent
-  * Respondent name: ${ other_parties[0].name }
+  * {Respondent} name: ${ other_parties[0].name }
   * Respondent's birthdate:
   % if knows_respondents_birthdate:
   { other_parties[0].birthdate }
