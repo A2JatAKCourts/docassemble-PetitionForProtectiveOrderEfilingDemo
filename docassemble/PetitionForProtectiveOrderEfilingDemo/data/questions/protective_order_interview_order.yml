@@ -61,6 +61,7 @@ code: |
     advocate.address.address
   else: 
     users[0].mailing_address.address
+  efile_users_email_confidential
 
   if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent:
   # if do_not_know_respondent_address:

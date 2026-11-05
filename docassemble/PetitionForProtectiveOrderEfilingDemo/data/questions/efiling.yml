@@ -140,13 +140,20 @@ code: |
   if tf_835_self_certification_no_notary_available.enabled:
     tf_835_self_certification_no_notary_available.completed
 
+  # Is required when user is efiling, not otherwise
+  if who_needs_the_order in ('child', 'children'):
+    efile_advocate_email_confidential
+  else:
+    efile_users_email_confidential
+
   # Slight hack: email is required if efiling, but we ask for it before we know if the users is efiling
-  if users[0].is_form_filler and (not defined("users[0].email") or users[0].email is None or len(users[0].email) == 0):
-    undefine("users[0].email")
-    users[0].email
-  if defined("advocate.is_form_filler") and advocate.is_form_filler and (not defined("advocate.email") or advocate.email is None or len(advocate.email) == 0):
-    undefine("advocate.email")
-    advocate.email
+  if users[0].is_form_filler:
+    if not efile_users_email_confidential: 
+      users[0].email
+
+  if defined("advocate.is_form_filler") and advocate.is_form_filler:
+    if not efile_advocate_email_confidential: 
+      advocate.email
 
   # Don't need to show fees, it will always be $0.
   tyler_payment_id = None
@@ -156,10 +163,26 @@ code: |
   efile_user_reviewed = True
 
   all_required_screens_shown
-
   set_efile_variables = True
 ---
 code: |
+  # Slight hack: email is required if efiling, but we ask for it before we know if the users is efiling
+  if users[0].is_form_filler:
+    if efile_users_email_confidential: 
+      # Use the predetermined confidential email
+      users[0].email = "SeeCaseNotes@akcourts.gov"
+    else:
+      users[0].email
+
+  if defined("advocate.is_form_filler") and advocate.is_form_filler:
+    if efile_advocate_email_confidential: 
+      # Use the predetermined confidential email
+      advocate.email = "SeeCaseNotes@akcourts.gov"
+    else:
+      advocate.email
+
+  # Putting all info in the final screen, not the intermediate screen
+  show_efile_resp = True
   efile
   efile_and_email = True
 ---
@@ -174,6 +197,7 @@ subquestion: |
 fields:
   - Do you want to e-file?: user_wants_efile
     datatype: yesnoradio
+continue button label: Submit document to court
 ---
 id: you-will-not-be-able-to-efile
 question: |
