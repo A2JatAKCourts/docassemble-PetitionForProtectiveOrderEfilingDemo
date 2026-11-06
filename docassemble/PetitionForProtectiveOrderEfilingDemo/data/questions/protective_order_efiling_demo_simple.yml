@@ -33,13 +33,13 @@ metadata:
   before_you_start: |
     ### Before you get started
     - Gather information about the incidents of domestic violence.
-    - Ensure you have the details of the respondent and any witnesses.
+    - Ensure you have the details of the {respondent} and any witnesses.
 
     ### When you are finished
     - Submit the completed petition to the court.
     - Prepare to attend a hearing if required.
   when_you_are_finished: |
-    After you submit your petition, the court will review your request. If granted, the protective order will help keep you and your children safe from the respondent. You may need to attend a hearing for long-term orders.
+    After you submit your petition, the court will review your request. If granted, the protective order will help keep you and your children safe from the {respondent}. You may need to attend a hearing for long-term orders.
   efiling_enabled: True
   integrated_efiling: True
   integrated_email_filing: False
@@ -143,7 +143,7 @@ objects:
   - users[i].confidential_address: ALAddress
   - advocate.confidential_address: ALAddress
 ---
-auto terms:
+terms:
   respondent: |
     The person you or your children need protection from.
 ---
@@ -239,6 +239,7 @@ code: |
   penultimate_screen
   if can_check_efile:
     set_efile_variables
+    efile_and_email
   # interview_order_finished = True
   ################## end interview order yml ##########
   protective_order_petition_download
@@ -467,14 +468,14 @@ question: |
   % if respondent_name_known:  
   Do you know ${ respondent_name }'s parent or guardian?
   % else:
-  Do you know the respondent's parent or guardian?
+  Do you know the {respondent}'s parent or guardian?
   % endif
 subquestion: |
   Because 
   % if respondent_name_known:  
   ${ respondent_name }
   % else:
-  the respondent
+  the {respondent}
   % endif
   is under 18, the court may need to contact an adult responsible for them.
 fields:
@@ -763,6 +764,7 @@ code: |
   else:
     users_with_aliases = str(users[0])
 ---
+if: who_needs_the_order not in ('child', 'children')
 Comment: |
   2026-09-29, we ask this question of advocates i.e. parents or guardians of a child or children also, this condition limits - parent/guardians also need to be able to keep their information confidential. So do not want this condition. Id is in quotes because of apostrophe?
 id: Petitioner's contact info
@@ -802,6 +804,108 @@ fields:
   - code: |
       users[0].confidential_address.address_fields(
         country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": True}, show_if={"variable": "petitioners_using_dv128", "is": True}) if who_needs_the_order not in ('child', 'children') else []
+  - note: |
+      ---
+  - note: |
+      The court can only call numbers within the United States. Please make sure you give us at least one US phone number.
+  # Main phone number
+  - "Do you need to keep your main phone number confidential?": court_main_phone_confidential
+    datatype: yesnoradio
+  - code: |
+      [
+        dict(label="Main phone", field="users[0].phone_number", required=False, **{"js show if": 'val("court_main_phone_confidential") === false'}),
+        dict(label="Confidential main phone number", field="users[0].confidential_phone_number", required=False, **{"js show if": 'val("court_main_phone_confidential") === true'}),
+      ]
+  # Other phone number
+  - "Do you need to keep your other phone number confidential?": court_other_phone_confidential
+    datatype: yesnoradio
+    required: False
+  - code: |
+      [
+        dict(label="Other phone", field="users[0].other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === false'}),
+        dict(label="Confidential other phone", field="users[0].confidential_other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === true'}),
+      ] 
+  - "Do you need to keep your email confidential?": efile_users_email_confidential
+    datatype: yesnoradio
+    required: False
+  - Email: users[0].email
+    datatype: email
+    js show if: val("efile_users_email_confidential") === false
+    required: False
+  - Confidential email: users[0].confidential_email
+    datatype: email
+    js show if: val("efile_users_email_confidential") === true
+    required: False
+sets:
+  - "users[0].mailing_address.address"
+  - "users[0].mailing_address.city"
+  - "users[0].mailing_address.zip"
+  - "users[0].mailing_address.unit"
+  - "users[0].mailing_address.state"
+  - "users[0].confidential_address.address"
+  - "users[0].confidential_address.unit"
+  - "users[0].confidential_address.city"
+  - "users[0].confidential_address.state"
+  - "users[0].confidential_address.zip"
+validation code: |
+  if defined('stay_away_is_same_as_mailing_address') and stay_away_is_same_as_mailing_address:
+    petitioners_using_dv128 = False
+
+  if not who_needs_the_order in ('child', 'children'):
+    if (not showifdef('users[0].phone_number') and not showifdef('users[0].other_number')) and (not showifdef('users[0].confidential_phone_number') and not showifdef('users[0].confidential_other_number')):
+      validation_error(word("The court needs at least one phone number to be able to reach you."), field="users[0].other_contact_method")
+    if defined("users[0].phone_number") and len(users[0].phone_number):
+      if not phone_number_is_valid(users[0].phone_number):
+        validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].phone_number")
+      users[0].phone_number = phone_number_formatted(users[0].phone_number)
+    if defined("users[0].confidential_phone_number") and len(users[0].confidential_phone_number):
+      if not phone_number_is_valid(users[0].confidential_phone_number):
+        validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].confidential_phone_number")
+      users[0].confidential_phone_number = phone_number_formatted(users[0].confidential_phone_number)
+    if defined("users[0].other_number") and len(users[0].other_number):
+      if not phone_number_is_valid(users[0].other_number):
+        validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].other_number")
+      users[0].other_number = phone_number_formatted(users[0].other_number)
+    if defined("users[0].confidential_other_number") and len(users[0].confidential_other_number):
+      if not phone_number_is_valid(users[0].confidential_other_number):
+        validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].confidential_other_number")
+      users[0].confidential_other_number = phone_number_formatted(users[0].confidential_other_number)
+continue button field: petitioner_contact_info
+---
+if: who_needs_the_order in ('child', 'children')
+Comment: |
+  2026-09-29, we ask this question of advocates i.e. parents or guardians of a child or children also, this condition limits - parent/guardians also need to be able to keep their information confidential. So do not want this condition. Id is in quotes because of apostrophe?
+id: Petitioner's contact info
+question: |
+  How can the court get in touch with you?
+subquestion: |
+  The court needs your mailing address so they can send court papers and notices about your hearing dates to you.
+
+  If you do not have an address, email, or telephone number that can safely be shown to ${ respondent_name }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ respondent_name }.
+
+  The court needs to be able to reach you.
+  
+  You can ask to keep your address, phone, and email confidential, so that only court staff can see this information.
+  
+fields:
+  - note: |
+      You are asking the court to order ${ respondent_name } to stay away from <br>
+      ${ users[0].stay_away_home_address.block() }.
+    show if:
+      code: |
+        defined('stay_away_address_collected') and stay_away_address_collected
+  - "Can the court use that address to contact you?": stay_away_is_same_as_mailing_address
+    datatype: yesnoradio
+    show if:
+      code: |
+        defined('stay_away_address_collected') and stay_away_address_collected
+    label above field: True
+  - code: |
+      [dict(
+        {'label': "Do you need the court to keep your contact address confidential?",
+         'field': 'petitioners_using_dv128',
+         'datatype': 'yesnoradio'},
+        **({'js show if': 'val("stay_away_is_same_as_mailing_address") === false'} if stay_away_address_collected else {}))]
   - code: |
       advocate.address_fields(
         country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": True}, show_if={"variable": "petitioners_using_dv128", "is": False}) if who_needs_the_order in ('child', 'children') else []
@@ -817,9 +921,6 @@ fields:
     datatype: yesnoradio
   - code: |
       [
-        dict(label="Main phone", field="users[0].phone_number", required=False, **{"js show if": 'val("court_main_phone_confidential") === false'}),
-        dict(label="Confidential main phone number", field="users[0].confidential_phone_number", required=False, **{"js show if": 'val("court_main_phone_confidential") === true'}),
-      ] if who_needs_the_order not in ('child', 'children') else [
         dict(label="Main phone", field="advocate.phone_number", required=False, **{"js show if": 'val("court_main_phone_confidential") === false'}),
         dict(label="Confidential main phone number", field="advocate.confidential_phone_number", required=False, **{"js show if": 'val("court_main_phone_confidential") === true'}),
       ]
@@ -829,54 +930,21 @@ fields:
     required: False
   - code: |
       [
-        dict(label="Other phone", field="users[0].other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === false'}),
-        dict(label="Confidential other phone", field="users[0].confidential_other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === true'}),
-      ] if who_needs_the_order not in ('child', 'children') else [
         dict(label="Other phone", field="advocate.other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === false'}),
         dict(label="Confidential other phone", field="advocate.confidential_other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === true'}),
       ]
-
-      
-  # Email
-  - "Do you need to keep your email confidential?": court_email_confidential
+  - "Do you need to keep your email confidential?": efile_advocate_email_confidential 
     datatype: yesnoradio
     required: False
-  - note: |
-      To file your petition electronically, at the end of this program, you need to give us an email address.
-    show if:
-      code: |
-        defined("can_check_efile") and can_check_efile
-  - code: |  
-      [
-        dict(label="Email", field="users[0].email", required=(defined("can_check_efile") and can_check_efile), datatype="email", **{"js show if": 'val("court_email_confidential") === false'}),
-        dict(label="Confidential email", field="users[0].confidential_email", required=(defined("can_check_efile") and can_check_efile), datatype="email", **{"js show if": 'val("court_email_confidential") === true'}),
-      ] if who_needs_the_order not in ('child', 'children') else [
-        dict(label="Email", field="advocate.email", required=(defined("can_check_efile") and can_check_efile), datatype="email", **{"js show if": 'val("court_email_confidential") === false'}),
-        dict(label="Confidential email", field="advocate.confidential_email", required=(defined("can_check_efile") and can_check_efile), datatype="email", **{"js show if": 'val("court_email_confidential") === true'}),
-      ]
-  
-  
-  
-  
-  
-  #- code: |
-  #    [dict(
-  #      label="Email",
-  #      field="users[0].email" if who_needs_the_order not in ('child', 'children') else "advocate.email",
-  #      datatype="email",
-  #      required=defined("can_check_efile") and can_check_efile,
-  #    )]
+  - Email: advocate.email
+    datatype: email
+    js show if: val("efile_advocate_email_confidential") === false
+    required: False
+  - Confidential email: advocate.confidential_email
+    datatype: email
+    js show if: val("efile_advocate_email_confidential") === true
+    required: False
 sets:
-  - "users[0].mailing_address.address"
-  - "users[0].mailing_address.city"
-  - "users[0].mailing_address.zip"
-  - "users[0].mailing_address.unit"
-  - "users[0].mailing_address.state"
-  - "users[0].confidential_address.address"
-  - "users[0].confidential_address.unit"
-  - "users[0].confidential_address.city"
-  - "users[0].confidential_address.state"
-  - "users[0].confidential_address.zip"
   - "advocate.address.address"
   - "advocate.address.city"
   - "advocate.address.zip"
@@ -910,25 +978,6 @@ validation code: |
       if not phone_number_is_valid(advocate.confidential_other_number):
         validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="advocate.confidential_other_number")
       advocate.confidential_other_number = phone_number_formatted(advocate.confidential_other_number)
-  else:
-    if (not showifdef('users[0].phone_number') and not showifdef('users[0].other_number')) and (not showifdef('users[0].confidential_phone_number') and not showifdef('users[0].confidential_other_number')):
-      validation_error(word("The court needs at least one phone number to be able to reach you."), field="users[0].other_contact_method")
-    if defined("users[0].phone_number") and len(users[0].phone_number):
-      if not phone_number_is_valid(users[0].phone_number):
-        validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].phone_number")
-      users[0].phone_number = phone_number_formatted(users[0].phone_number)
-    if defined("users[0].confidential_phone_number") and len(users[0].confidential_phone_number):
-      if not phone_number_is_valid(users[0].confidential_phone_number):
-        validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].phone_number")
-      users[0].confidential_phone_number = phone_number_formatted(users[0].confidential_phone_number)
-    if defined("users[0].other_number") and len(users[0].other_number):
-      if not phone_number_is_valid(users[0].other_number):
-        validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].other_number")
-      users[0].other_number = phone_number_formatted(users[0].other_number)
-    if defined("users[0].confidential_other_number") and len(users[0].confidential_other_number):
-      if not phone_number_is_valid(users[0].confidential_other_number):
-        validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].confidential_other_number")
-      users[0].confidential_other_number = phone_number_formatted(users[0].confidential_other_number)
 continue button field: petitioner_contact_info
 ---
 id: efile user email address
@@ -937,18 +986,14 @@ question: |
 subquestion: |
   To efile, the court needs your email address.
 fields:
- #- "Do you need to keep your email confidential?": efile_users_email_confidential
- #  datatype: yesnoradio
+ - "Do you need to keep your email confidential?": efile_users_email_confidential
+   datatype: yesnoradio
  - Email: users[0].email
    datatype: email
- #  show if: 
- #    code: |
- #      efile_users_email_confidential is False
- #- Confidential email: users[0].confidential_email
- #  datatype: email
- #  show if: 
- #    code: |
- #      efile_users_email_confidential is True
+   js show if: val("efile_users_email_confidential") === false
+ - Confidential email: users[0].confidential_email
+   datatype: email
+   js show if: val("efile_users_email_confidential") === true
 ---
 id: efile advocate email address
 question: |
@@ -956,18 +1001,14 @@ question: |
 subquestion: |
   To efile, the court needs your email address.
 fields:
-  #- "Do you need to keep your email confidential?": efile_advocate_email_confidential
-  #  datatype: yesnoradio
+  - "Do you need to keep your email confidential?": efile_advocate_email_confidential
+    datatype: yesnoradio
   - Email: advocate.email
     datatype: email
-  #  show if: 
-  #    code: |
-  #      efile_advocate_email_confidential is False
-  #- Confidential email: advocate.confidential_email
-  #  datatype: email
-  #  show if: 
-  #    code: |
-  #      efile_advocate_email_confidential is True
+    js show if: val("efile_advocate_email_confidential") === false
+  - Confidential email: advocate.confidential_email
+    datatype: email
+    js show if: val("efile_advocate_email_confidential") === true
 ---
 id: address test results
 comment: |
@@ -1372,15 +1413,19 @@ subquestion: |
   Confidential - See form DV-128
   % else:
   % if who_needs_the_order in ('child', 'children'):
-  ${ advocate.email }
+  email: ${ showifdef("advocate.email") }
+
+  confidential email: ${ showifdef("advocate.confidential_email") }
   % else:
-  ${ users[0].email }
+  email: ${ showifdef("users[0].email") }
+
+  confidential: ${ showifdef("users[0].confidential_email") }
   % endif
   % endif
 
 
   ## Respondent
-  * Respondent name: ${ other_parties[0].name }
+  * {Respondent} name: ${ other_parties[0].name }
   * Respondent's birthdate:
   % if knows_respondents_birthdate:
   { other_parties[0].birthdate }
@@ -1418,15 +1463,28 @@ comment: |
 id: download protective_order_petition
 event: protective_order_petition_download
 question: |
+  % if can_check_efile and efile_resp.response_code == 200:
   All done
+  % else:
+  Something went wrong delivering your form
+  % endif
 subquestion: |
+  % if can_check_efile and efile_resp.response_code == 200:
+  Thank you ${users}. Your form has been sent to the court.
+
+  Your envelope number is ${ efile_resp.data['envelopeId'] }.
+  Write this number down and use it when asking the court about this filing.
+  % else:
+  % if can_check_efile and efile_resp.response_code != 200:
+  Something went wrong delivering your form to the court. You will have to send
+  them to the court manually.
+  % else:
   Thank you ${users}. Your form is ready to download and deliver.
+  % endif
+  % endif
 
   Use the options on this page to view, download and send your form.
 
-  % if can_check_efile and not (defined('efile') and efile):
-  ${ action_button_html(url_ask([{'recompute': ['efile_and_email']}]), label='E-File', id_tag='efile-button', icon='file-export', size='md')}
-  % endif
 
   ${ al_user_bundle.download_list_html() }
 
@@ -1435,6 +1493,57 @@ subquestion: |
 progress: 100
 buttons:
   - Start over: restart
+---
+template: email_confirmation
+subject: |
+  The Alaska Court has received your submission
+content: |
+  Hello ${ users[0].name },
+
+  The Alaska Court has received your submission. Your forms were given an Envelope Number, {{ envelope_id }}. The court might ask
+  for this number if you ask them about it.
+---
+template: acceptance_email
+subject: |
+  The Alaska Court has accepted your submission
+content: |
+  Hello ${ users[0].name },
+
+  The Alaska Court accepted your filing in {{ case_title }}, envelope {{ envelope_id }}.
+
+  Status: {{ status }}
+
+  Message: {{ message_text }}
+
+  Contact the clerk if you have questions about this response.
+---
+template: rejection_email
+subject: |
+  The Alaska Court has rejected your submission
+content: |
+  Hello ${ users[0].name },
+
+  The Alaska Court has rejected your filing in {{ case_title }}, envelope {{ envelope_id }}.
+
+  Status: {{ status }}
+
+  Message: {{ message_text }}
+
+  Contact the clerk if you have questions about this response.
+---
+template: neutral_email
+subject: |
+  The Alaska Court has received your submission
+content: |
+  Hello ${ users[0].name },
+
+  The Alaska Court has sent a response to your filing in {{ case_title }}, envelope {{ envelope_id }}.
+
+  Status: {{ status }}
+
+  Message: {{ message_text }}
+
+  Contact the clerk if you have questions about this response.
 ---
 # ALDocument objects specify the metadata for each template
 objects:
