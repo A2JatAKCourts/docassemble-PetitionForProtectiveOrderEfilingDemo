@@ -1494,6 +1494,57 @@ progress: 100
 buttons:
   - Start over: restart
 ---
+template: email_confirmation
+subject: |
+  The Alaska Court has received your submission
+content: |
+  Hello ${ users[0].name },
+
+  The Alaska Court has received your submission. Your forms were given an Envelope Number, {{ envelope_id }}. The court might ask
+  for this number if you ask them about it.
+---
+template: acceptance_email
+subject: |
+  The Alaska Court has accepted your submission
+content: |
+  Hello ${ users[0].name },
+
+  The Alaska Court accepted your filing in {{ case_title }}, envelope {{ envelope_id }}.
+
+  Status: {{ status }}
+
+  Message: {{ message_text }}
+
+  Contact the clerk if you have questions about this response.
+---
+template: rejection_email
+subject: |
+  The Alaska Court has rejected your submission
+content: |
+  Hello ${ users[0].name },
+
+  The Alaska Court has rejected your filing in {{ case_title }}, envelope {{ envelope_id }}.
+
+  Status: {{ status }}
+
+  Message: {{ message_text }}
+
+  Contact the clerk if you have questions about this response.
+---
+template: neutral_email
+subject: |
+  The Alaska Court has received your submission
+content: |
+  Hello ${ users[0].name },
+
+  The Alaska Court has sent a response to your filing in {{ case_title }}, envelope {{ envelope_id }}.
+
+  Status: {{ status }}
+
+  Message: {{ message_text }}
+
+  Contact the clerk if you have questions about this response.
+---
 # ALDocument objects specify the metadata for each template
 objects:
   - protective_order_petition_post_interview_instructions: ALDocument.using(title="Instructions Next Steps - Do not file", filename="protective_order_petition_next_steps", enabled=True)

@@ -179,8 +179,6 @@ code: |
     if efile_users_email_confidential: 
       # Use the predetermined confidential email
       users[0].email = "SeeCaseNotes@akcourts.gov"
-    else:
-      users[0].email
     if defined("court_main_phone_confidential") and court_main_phone_confidential:
       users[0].phone_number = "0000000000"
     if defined("court_other_phone_confidential") and court_other_phone_confidential:
@@ -195,8 +193,6 @@ code: |
     if efile_advocate_email_confidential: 
       # Use the predetermined confidential email
       advocate.email = "SeeCaseNotes@akcourts.gov"
-    else:
-      advocate.email
     if defined("court_main_phone_confidential") and court_main_phone_confidential:
       advocate.phone_number = "0000000000"
     if defined("court_other_phone_confidential") and court_other_phone_confidential:
