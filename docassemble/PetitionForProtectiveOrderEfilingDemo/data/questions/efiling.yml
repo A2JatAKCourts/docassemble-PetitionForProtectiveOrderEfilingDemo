@@ -162,6 +162,14 @@ code: |
   # Don't show redundant screen confirming things
   efile_user_reviewed = True
 
+  email_confirmation_subject = email_confirmation.subject
+  email_confirmation_contents = email_confirmation.content
+  acceptance_subject = acceptance_email.subject
+  acceptance_contents = acceptance_email.content
+  rejected_subject = rejection_email.subject
+  rejected_contents = rejection_email.content
+  neutral_subject = neutral_email.subject
+  neutral_contents = neutral_email.content
   all_required_screens_shown
   set_efile_variables = True
 ---
@@ -173,6 +181,15 @@ code: |
       users[0].email = "SeeCaseNotes@akcourts.gov"
     else:
       users[0].email
+    if defined("court_main_phone_confidential") and court_main_phone_confidential:
+      users[0].phone_number = "0000000000"
+    if defined("court_other_phone_confidential") and court_other_phone_confidential:
+      users[0].other_number = "0000000000"
+    if defined("petitioners_using_dv128") and petitioners_using_dv128:
+      users[0].address.address = "See Case Notes"
+      users[0].address.unit = ""
+      users[0].address.zip = ""
+      users[0].address.city = ""
 
   if defined("advocate.is_form_filler") and advocate.is_form_filler:
     if efile_advocate_email_confidential: 
@@ -180,6 +197,15 @@ code: |
       advocate.email = "SeeCaseNotes@akcourts.gov"
     else:
       advocate.email
+    if defined("court_main_phone_confidential") and court_main_phone_confidential:
+      advocate.phone_number = "0000000000"
+    if defined("court_other_phone_confidential") and court_other_phone_confidential:
+      advocate.other_number = "0000000000"
+    if defined("petitioners_using_dv128") and petitioners_using_dv128:
+      advocate.address.address = "See Case Notes"
+      advocate.address.unit = ""
+      advocate.address.zip = ""
+      advocate.address.city = ""
 
   # Putting all info in the final screen, not the intermediate screen
   show_efile_resp = True
