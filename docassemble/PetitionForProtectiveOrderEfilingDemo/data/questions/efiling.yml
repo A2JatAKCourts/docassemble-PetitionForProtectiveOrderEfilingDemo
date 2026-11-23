@@ -1,4 +1,9 @@
 ---
+comment: |
+  COPY of ymls/efiling.yml for protective_order_petition_merged.yml (the original is untouched).
+  Changed: the two tests on who_needs_the_order in ('child', 'children') now use advocate_is_contact_person
+  (advocate.is_form_filler, and the advocate part of set_efile_variables). Everything else is as in the original.
+---
 include:
   - docassemble.EFSPIntegration:efiling_integration.yml
 ---
@@ -97,7 +102,10 @@ code: |
   adult_for_respondent.party_type_default = None
 ---
 code: |
-  advocate.is_form_filler = who_needs_the_order in ("child", "children")
+  # advocate_is_contact_person is defined in protective_order_petition_merged.yml.
+  # It covers 'children', 'adult' and a lawyer filing for a child or an adult ward.
+  # (A lawyer is not the advocate, but the lawyer answers as the person they represent.)
+  advocate.is_form_filler = advocate_is_contact_person
 ---
 if: can_check_efile
 code: |
@@ -109,7 +117,7 @@ code: |
     users[i].is_form_filler
     users[i].is_new
   
-  if who_needs_the_order in ('child', 'children'):
+  if advocate_is_contact_person:
     advocate.party_type
     advocate.is_new
     advocate.is_form_filler
@@ -140,20 +148,13 @@ code: |
   if tf_835_self_certification_no_notary_available.enabled:
     tf_835_self_certification_no_notary_available.completed
 
-  # Is required when user is efiling, not otherwise
-  if who_needs_the_order in ('child', 'children'):
-    efile_advocate_email_confidential
-  else:
-    efile_users_email_confidential
-
   # Slight hack: email is required if efiling, but we ask for it before we know if the users is efiling
-  if users[0].is_form_filler:
-    if not efile_users_email_confidential: 
-      users[0].email
-
-  if defined("advocate.is_form_filler") and advocate.is_form_filler:
-    if not efile_advocate_email_confidential: 
-      advocate.email
+  if users[0].is_form_filler and (not defined("users[0].email") or users[0].email is None or len(users[0].email) == 0):
+    undefine("users[0].email")
+    users[0].email
+  if defined("advocate.is_form_filler") and advocate.is_form_filler and (not defined("advocate.email") or advocate.email is None or len(advocate.email) == 0):
+    undefine("advocate.email")
+    advocate.email
 
   # Don't need to show fees, it will always be $0.
   tyler_payment_id = None
@@ -162,49 +163,11 @@ code: |
   # Don't show redundant screen confirming things
   efile_user_reviewed = True
 
-  email_confirmation_subject = email_confirmation.subject
-  email_confirmation_contents = email_confirmation.content
-  acceptance_subject = acceptance_email.subject
-  acceptance_contents = acceptance_email.content
-  rejected_subject = rejection_email.subject
-  rejected_contents = rejection_email.content
-  neutral_subject = neutral_email.subject
-  neutral_contents = neutral_email.content
   all_required_screens_shown
+
   set_efile_variables = True
 ---
 code: |
-  # Slight hack: email is required if efiling, but we ask for it before we know if the users is efiling
-  if users[0].is_form_filler:
-    if efile_users_email_confidential: 
-      # Use the predetermined confidential email
-      users[0].email = "SeeCaseNotes@akcourts.gov"
-    if defined("court_main_phone_confidential") and court_main_phone_confidential:
-      users[0].phone_number = "0000000000"
-    if defined("court_other_phone_confidential") and court_other_phone_confidential:
-      users[0].other_number = "0000000000"
-    if defined("petitioners_using_dv128") and petitioners_using_dv128:
-      users[0].address.address = "See Case Notes"
-      users[0].address.unit = ""
-      users[0].address.zip = ""
-      users[0].address.city = ""
-
-  if defined("advocate.is_form_filler") and advocate.is_form_filler:
-    if efile_advocate_email_confidential: 
-      # Use the predetermined confidential email
-      advocate.email = "SeeCaseNotes@akcourts.gov"
-    if defined("court_main_phone_confidential") and court_main_phone_confidential:
-      advocate.phone_number = "0000000000"
-    if defined("court_other_phone_confidential") and court_other_phone_confidential:
-      advocate.other_number = "0000000000"
-    if defined("petitioners_using_dv128") and petitioners_using_dv128:
-      advocate.address.address = "See Case Notes"
-      advocate.address.unit = ""
-      advocate.address.zip = ""
-      advocate.address.city = ""
-
-  # Putting all info in the final screen, not the intermediate screen
-  show_efile_resp = True
   efile
   efile_and_email = True
 ---
@@ -219,7 +182,6 @@ subquestion: |
 fields:
   - Do you want to e-file?: user_wants_efile
     datatype: yesnoradio
-continue button label: Submit document to court
 ---
 id: you-will-not-be-able-to-efile
 question: |

@@ -1,25 +1,50 @@
 comment: |
-  2026-11-03 commented out docx attachment from user_bundle because it's breaking interview after upgrade to 1.10.15
-  2026-10-30 more address fixes, some outline updates getting ready to test in CourtView
-  2026-10-27 fixed validation on advocate phone number, edited al_name_suffixes
-  2026-10-23 update with address yml addresses
-  2026-10-22 find and replace syntax for other_parties[0].name.familiar() with other_parties[0].familiar() Q on Teams
-  2026-10-02 commented out the code blocks we may use for the dv-127 asking about showing physical address to police
-  2026-09-29 ordered sexual assault and stalking attachment fields in PDF tab order
-  2026-09-25 - after meeting w Bryce and Bonnie
-  Working on conditions for stay away home address and putting on confidential sheets at the same time.
-  This is a simple version of the protective order efiling demo.
-  Building the gathering portion for adults, and children.
-  Testing PDFs, DV-100, DV-100m, and CIV-750 for sexual assault, CIV-752 for stalking.
+  2026-11-16 MERGED interview. Built from protective_order_efiling_demo_simple.yml (demo) and
+  protective_order_petition.yml (comprehensive); both of those files are untouched.
+
+  HOW IT WORKS
+  - Every question/code block that BOTH the demo and the comprehensive interview use lives in this file.
+  - demo_interview_order (below) is the pared-down order and is what runs by default.
+  - To run the comprehensive interview, un-comment the `include: comprehensive_interview_order.yml`
+    block below. That file sets use_comprehensive_order = True, which switches the main order.
+  - Shared steps are code blocks (who_needs_the_order_collected, respondent_basics_collected,
+    stay_away_from_home_collected) so both orders ask exactly the same questions.
+
+  COPIED SO FAR (work in progress, stopped after the petitioner / advocate contact info)
+  - who_needs_the_order (myself, children, self and children, adult, lawyer) and related: parent/guardian screen, names, advocate, relationship
+  - respondent name, birthdate, parent/guardian of an under-age respondent
+  - term (short or long)
+  - stay away from petitioner's home + the address screen
+  - petitioner / advocate contact info, the stay-away -> mailing address copy code, and the efile email screens
+  - respondent contact info (address, phones, email) and the respondent's parent / guardian contact info
+
+  RULES TO KEEP USING
+  - Use advocate_is_contact_person (defined in this file; covers 'children', 'adult' and, for a lawyer,
+    lawyer_filing_for in 'child' and 'adult ward') for EVERY "is the advocate the contact person?" test,
+    including the data points screen and attachments. The old tests only covered 'child'/'children'.
+  - A LAWYER IS NOT THE ADVOCATE. For a lawyer only the bar number is collected (lawyer_bar_number,
+    NOT advocate.bar_number); the lawyer answers as if they were the client. When copying the data
+    points screen and attachments, anything that reads advocate.bar_number must read lawyer_bar_number.
+  - The only "stay away" flag is respondent_stay_away_from_petitioners_home.
+  - Email confidentiality is ONE variable, court_email_confidential (was efile_users_email_confidential /
+    efile_advocate_email_confidential in the demo). Update anything not yet copied that uses the old names.
+
+  - petition type picker (+ cause_of_action_code), court location (+ court_code)
+  - the demo order now ends with court_location, then set_efile_variables / efile_and_email (both defined in efiling_merged.yml)
+
+  - documents (all attachments, bundles, email templates), the download screen, the code that enables each petition
+    (uses only_one_petitioner), the petitioner's aliases question
+
+  NOT COPIED YET
+  - penultimate screen, address test screen (both left out on purpose for now)
+  (efiling_merged.yml, a copy of efiling.yml, is included instead of efiling.yml; it uses advocate_is_contact_person)
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.ALAnyState:any_state.yml
   - docassemble.AKA2JBranding:custom_organization.yml
-  # - save_and_resume.yml
-  - efiling.yml
-  # - protective_order_interview_order.yml
   - docassemble.ALToolbox:phone-number-validation.yml
+  - efiling.yml
 ---
 metadata:
   title: >-
@@ -33,13 +58,13 @@ metadata:
   before_you_start: |
     ### Before you get started
     - Gather information about the incidents of domestic violence.
-    - Ensure you have the details of the {respondent} and any witnesses.
+    - Ensure you have the details of { the respondent } and any witnesses.
 
     ### When you are finished
     - Submit the completed petition to the court.
     - Prepare to attend a hearing if required.
   when_you_are_finished: |
-    After you submit your petition, the court will review your request. If granted, the protective order will help keep you and your children safe from the {respondent}. You may need to attend a hearing for long-term orders.
+    After you submit your petition, the court will review your request. If granted, the protective order will help keep you and your children safe from { respondent_name }. You may need to attend a hearing for long-term orders.
   efiling_enabled: True
   integrated_efiling: True
   integrated_email_filing: False
@@ -115,26 +140,14 @@ code: |
   al_next_steps_help_organization = 'Alaska Legal Services Corporation'
   al_next_steps_help_url = 'https://www.alsc-law.org'
   al_next_steps_generate_qr_code = False
-  al_next_steps_what_happens_next = 'After you submit your petition, the court will review your request. If granted, the protective order will help keep you and your children safe from the respondent. You may need to attend a hearing for long-term orders.'
+  al_next_steps_what_happens_next = 'After you submit your petition, the court will review your request. If granted, the protective order will help keep you and your children safe from ${ respondent_name }. You may need to attend a hearing for long-term orders.'
   al_next_steps_what_can_decision_maker_do = 'The judge can issue temporary protective orders or schedule a hearing for long-term orders. They can also deny the request if there is insufficient evidence.'
-  al_next_steps_what_happens_if_i_win = 'If you win the protective order, you will receive legal protection against the respondent for the duration specified. This may include restrictions on contact and requirements for the respondent to stay away from you and your children.'
----
-code: |
-  al_name_suffixes = [
-    "Jr.",
-    "Sr.",
-    "II",
-    "III",
-    "IV",
-    "MD",
-    "PhD",
-    "Esq."
-  ]
+  al_next_steps_what_happens_if_i_win = 'If you win the protective order, you will receive legal protection against ${ respondent_name } for the duration specified. This may include restrictions on contact and requirements for ${ respondent_name } to stay away from you and your children.'
 ---
 objects:
   - users: ALPeopleList.using(ask_number=True)
   - advocate: ALIndividual
-  - children: ALPeopleList.using(there_are_any=True, complete_attribute='complete')
+  - children: ALPeopleList.using(ask_number=True, there_are_any=True, complete_attribute='complete')
   - other_parties: ALPeopleList.using(there_are_any=True, there_is_another=False, target_number=1)
   - adult_for_respondent: ALIndividual
 ---
@@ -148,110 +161,198 @@ terms:
     The person you or your children need protection from.
 ---
 code: |
-  # Copy attributes. Assigning one ALAddress to the other would make both names
-  # the same object, so a later edit to either address would change both.
-  if who_needs_the_order in ('child', 'children'):
-    advocate.address.address = users[0].stay_away_home_address.address
-    advocate.address.unit = users[0].stay_away_home_address.unit if defined('users[0].stay_away_home_address.unit') else ''
-    advocate.address.city = users[0].stay_away_home_address.city
-    advocate.address.state = users[0].stay_away_home_address.state
-    advocate.address.zip = users[0].stay_away_home_address.zip if defined('users[0].stay_away_home_address.zip') else ''
-    if defined('users[0].stay_away_home_address.country'):
-      advocate.address.country = users[0].stay_away_home_address.country
-  else:
-    users[0].mailing_address.address = users[0].stay_away_home_address.address
-    users[0].mailing_address.unit = users[0].stay_away_home_address.unit if defined('users[0].stay_away_home_address.unit') else ''
-    users[0].mailing_address.city = users[0].stay_away_home_address.city
-    users[0].mailing_address.state = users[0].stay_away_home_address.state
-    users[0].mailing_address.zip = users[0].stay_away_home_address.zip if defined('users[0].stay_away_home_address.zip') else ''
-    if defined('users[0].stay_away_home_address.country'):
-      users[0].mailing_address.country = users[0].stay_away_home_address.country
-  petitioners_using_dv128 = False
-  copy_stay_away_home_address_to_mailing_address = True
----
-id: main interview order
-mandatory: True
-code: |
-  who_needs_the_order
-  set_parts(
-    title="",
-    short_title="",
-    tab_title="CIPO")
-  dynamic_navbar_title = ""
-  ####### from interview_order.yml #################
-  if who_needs_the_order == 'myself':
-    users.target_number = 1
-  elif who_needs_the_order == 'child':
-    users.target_number = 1
-  elif who_needs_the_order == 'self and child':
-    users.target_number = 2
-  elif who_needs_the_order in ('children', 'self and children'):
-    users.target_number
-  for i in range(users.number()):
-    users[i].name.first
-  if who_needs_the_order in ('child', 'children'):
-    advocate.name.first
-    if advocate.age_in_years() < 18:
-        kickout_advocate_is_too_young
-    else:
-      for i in range(users.number()):
-        users[i].relationship_to_advocate
-  if who_needs_the_order == 'lawyer':
-    for i in range(users.number()):
-      users[i].relationship_to_advocate = 'Petitioners advocate'
-
-  
-  if respondent_name_known and not other_parties[0].name.full() == "":
-    respondent_name = other_parties[0].familiar()
-  else:
-    other_parties[0].name.first = 'unknown'
-    respondent_name = 'the respondent'
-  knows_respondents_birthdate
-  if other_parties[0].age_in_years() < 18:
-    if knows_adult_for_respondent:
-      adult_for_respondent.name.first
-
-  if who_needs_the_order in ('myself', 'child'):
-    protective_order_petition_type
-  else:
-    protective_order_petition_type = 'DV-100m'
-  term
-
-  if stay_away_address_collected:
-    get_users_stay_away_home_address
-
-  petitioner_contact_info
-  if stay_away_address_collected and stay_away_is_same_as_mailing_address:
-    copy_stay_away_home_address_to_mailing_address
-  address_test_results  # TEMPORARY - delete with the "address test results" screen
-
-  if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent:
-  # if do_not_know_respondent_address:
-    # if knows_adult_for_respondent:
-    adult_for_respondent_address_unknown
-    # adult_for_respondent.address.address
-  else:
-    respondent_address_unknown
-    # other_parties[0].address.address
-
-  court_location
-
-  penultimate_screen
-  if can_check_efile:
-    set_efile_variables
-    efile_and_email
-  # interview_order_finished = True
-  ################## end interview order yml ##########
-  protective_order_petition_download
+  al_name_suffixes = [
+    "Jr.",
+    "Sr.",
+    "II",
+    "III",
+    "IV",
+    "MD",
+    "PhD",
+    "Esq."
+  ]
 ---
 features:
   address autocomplete: True
+
   css: |
     .alert, .alert p {
       font-size: 1rem !important;
     }
 
 ---
+code: |
+  # Default: run the pared-down demo order.
+  # comprehensive_interview_order.yml (included below, when un-commented) sets this to True.
+  # It MUST stay above the include so the included file's value wins.
+  use_comprehensive_order = False
+---
+code: |
+  # TESTING SWITCH. True = run the interview only: no e-filing screens (no "Do you want to e-file?", no efile
+  # email screen) and nothing is sent to the court. Change to False to test e-filing.
+  test_without_efiling = True
+---
+code: |
+  # Use this instead of can_check_efile everywhere in this interview.
+  efiling_this_run = can_check_efile and not test_without_efiling
+---
+code: |
+  # True only if e-filing was on AND the user answered "Yes" to "Do you want to e-file?" (user_wants_efile, asked
+  # in efiling_merged.yml). Used by the download screen so it does not say "Something went wrong delivering
+  # your form" when the user chose not to e-file.
+  efile_attempted = efiling_this_run and showifdef('user_wants_efile', True)
+---
+# ------------------------------------------------------------------------------------
+# TO RUN THE COMPREHENSIVE INTERVIEW: un-comment the next 2 lines (the include block).
+# ------------------------------------------------------------------------------------
+# include:
+#   - comprehensive_interview_order.yml
+---
+mandatory: True
+id: main interview order
+code: |
+  if use_comprehensive_order:
+    comprehensive_interview_order
+  else:
+    demo_interview_order
+  protective_order_petition_download
+---
+id: demo interview order
+code: |
+  set_parts(
+    title="",
+    short_title="",
+    tab_title="CIPO")
+  dynamic_navbar_title = ""
+
+  who_needs_the_order_collected
+  respondent_basics_collected
+
+  petition_type_collected
+  term
+
+  stay_away_from_home_collected
+
+  petitioner_contact_info_collected
+
+  respondent_contact_info_collected
+
+  court_location
+
+  # TODO (left out for now): address_test_results (TEMPORARY), penultimate_screen
+  if efiling_this_run:
+    set_efile_variables
+    efile_and_email
+  demo_interview_order = True
+---
+########################################################################
+# Shared steps - used by BOTH the demo order and the comprehensive order
+########################################################################
+id: who needs the order collected
+code: |
+  who_needs_the_order
+  if who_needs_the_order == 'lawyer':
+    lawyer_filing_for
+    if lawyer_filing_for in ('adult', 'adult ward'):
+      users.target_number = 1
+    elif lawyer_filing_for == 'child':
+      users.target_number = lawyer_number_of_children
+    elif lawyer_filing_for == 'adult and child':
+      # users[0] is the adult, the rest are the children
+      users.target_number = lawyer_number_of_children + 1
+    # The lawyer is NOT the advocate. Only their bar number is collected (lawyer_bar_number).
+    # The lawyer answers as if they were the client:
+    #   'adult'           -> like 'myself'            (no advocate)
+    #   'adult and child' -> like 'self and children' (no advocate; users[0] is the adult)
+    #   'child'           -> like 'children'          (advocate = the adult filing for the child)
+    #   'adult ward'      -> like 'adult'             (advocate = the guardian)
+    if lawyer_filing_for in ('child', 'adult ward'):
+      advocate.name.first
+  elif who_needs_the_order in ('myself', 'adult'):
+    users.target_number = 1
+  elif who_needs_the_order == 'children':
+    users.target_number = number_of_children
+  elif who_needs_the_order == 'self and children':
+    # users[0] is the parent, the rest are the children
+    users.target_number = number_of_children + 1
+  if who_needs_the_order == 'self and children':
+    parent_or_guardian
+    if choose_petitioners_again == 'change':
+      who_needs_the_order = 'myself'
+      users.target_number = 1
+  for i in range(users.number()):
+    users[i].name.first
+  if who_needs_the_order in ('children', 'adult'):
+    advocate.name.first
+    if who_needs_the_order == 'children' and advocate.age_in_years() < 18:
+      kickout_advocate_is_too_young
+    else:
+      for i in range(users.number()):
+        if who_needs_the_order == 'adult':
+          # a guardian filing for an adult ward: no need to ask
+          users[i].relationship_to_advocate = 'guardian'
+        else:
+          users[i].relationship_to_advocate
+  if who_needs_the_order == 'lawyer':
+    # Only 'child' and 'adult ward' have an advocate. 'adult' and 'adult and child' have none.
+    for i in range(users.number()):
+      if lawyer_filing_for == 'adult ward':
+        users[i].relationship_to_advocate = 'guardian'
+      elif lawyer_filing_for == 'child':
+        users[i].relationship_to_advocate
+  who_needs_the_order_collected = True
+---
+id: petitioner group
+code: |
+  # Groups every who_needs_the_order / lawyer_filing_for combination into one of 4 wordings,
+  # so the question text does not need a long if/elif chain on each screen:
+  #   'you'               the person answering (or, for a lawyer, the petitioner) is the only petitioner
+  #   'one person'        one named person (a child, an adult ward, or a client)
+  #   'children'          more than one child
+  #   'you and children'  the person answering (or the lawyer's adult client) and one or more children
+  if who_needs_the_order == 'myself' or (who_needs_the_order == 'lawyer' and lawyer_filing_for == 'adult'):
+    petitioner_group = 'you'
+  elif who_needs_the_order == 'adult' or (who_needs_the_order == 'children' and users.target_number == 1) or (who_needs_the_order == 'lawyer' and (lawyer_filing_for == 'adult ward' or (lawyer_filing_for == 'child' and users.target_number == 1))):
+    petitioner_group = 'one person'
+  elif who_needs_the_order == 'children' or (who_needs_the_order == 'lawyer' and lawyer_filing_for == 'child'):
+    petitioner_group = 'children'
+  else:
+    petitioner_group = 'you and children'
+---
+id: advocate is contact person
+code: |
+  # True when the advocate (the parent, guardian or lawyer filling out the interview) is the person
+  # the court contacts, so the advocate's contact info is collected instead of users[0]'s.
+  # Use this one variable on every contact screen / address-copy step / order test, so they cannot drift apart.
+  advocate_is_contact_person = (
+    who_needs_the_order in ('children', 'adult')
+    or (who_needs_the_order == 'lawyer' and lawyer_filing_for in ('child', 'adult ward'))
+  )
+---
+id: respondent basics collected
+code: |
+  if respondent_name_known and not other_parties[0].name.full() == "":
+    respondent_name = other_parties[0].familiar()
+  else:
+    other_parties[0].name.first = 'unknown'
+    respondent_name = 'the respondent'
+
+  knows_respondents_birthdate
+  if other_parties[0].age_in_years() < 18:
+    if knows_adult_for_respondent:
+      adult_for_respondent.name.first
+  respondent_basics_collected = True
+---
+id: stay away from home collected
+code: |
+  respondent_stay_away_from_petitioners_home
+  if respondent_stay_away_from_petitioners_home:
+    get_users_stay_away_home_address
+  stay_away_from_home_collected = True
+---
+########################################################################
+# Who needs protection (5 choices: myself, children, self and children, adult, lawyer) and related questions
+########################################################################
 id: who needs a protective order
 question: |
   Who needs protection?
@@ -259,46 +360,80 @@ fields:
   - Who is the order for?: who_needs_the_order
     datatype: radio
     choices:
-    - "me. I need a protective order for myself": myself
-    - "My child": child
-    - "Myself and my minor child": self and child
-    - "More than one of my minor children": children
-    - "Myself and more than one of my minor children": self and children
+    - "Me. I need a protective order for myself.": myself
+    - "A minor child or children.": children
+    - "Myself and a minor child or children.": self and children
+    - "An adult I am a guardian for.": adult
+    - "I am a lawyer, filing for a client.": lawyer
+
+  - note: |
+      Only choose "I am a lawyer, ..." if you are going to enter an appearance in this case.  You will need to upload the EOA before you file your client's petition using this tool.
+    show if:
+      variable: who_needs_the_order
+      is: lawyer
+  - What is your bar number?: lawyer_bar_number
+    show if:
+      variable: who_needs_the_order
+      is: lawyer
+###### Braden's number for testing - remove before production ####
+    default: 22-11105
+  - How many children?: number_of_children
+    datatype: integer
+    min: 1
+    max: 10
+    js show if: |
+      val('who_needs_the_order') == 'self and children' || val('who_needs_the_order') == 'children'
 under: |
-  #### <i class="fa-regular fa-lightbulb"></i> Learn more####
-  If I get a protective order, does it include my child?
-
-  Your child can be included in your protective order or have their own protective order depending on what you ask for.
-
-  Ask for yourself: If you have children with the person you are asking for the protective order against, you can ask the judge to:
-
-    * make some temporary orders about where the child will live;
-    * order child support; and
-    * order the other person to stay away from specific locations, including your child's school.
-
-  You can ask for these things even if the other person did not commit domestic violence against your child.
-
-  Ask for yourself and your child: You can ask for a protective order for yourself and your child, if your child meets all of the protective order requirements. For example, the other person must have committed domestic violence against your child. You can also ask the judge to:
-
-    * make some temporary orders about where the child will live;
-    * order child support; and
-    * order the other person to stay away from specific locations, including your child's school.
-
-  You must decide before you fill out the court forms so you know which form to use. The court has 2 different forms to ask for a protective order. The forms are called a petition. One petition asks for a protective order for 1 person. The other petition asks for a protective order for more than 1 person.
+  #### <i class="fa-regular fa-lightbulb"></i> Learn More ####
+  Under Alaska law you can file for your minor child if you are their parent or legal guardian.
 ---
 code: |
-  if who_needs_the_order in ('child', 'children'):
+  if advocate_is_contact_person:
     al_person_answering = 'advocate'
   else:
     al_person_answering = 'user'
 ---
+id: lawyer's question
 question: |
-  How many people, ${ "including yourself," if who_needs_the_order == 'self and children' else "all together,"} need this order?
+  Who are the petitioners you are filing for?
 fields:
-  - Number of people: users.target_number
+  - no label: lawyer_filing_for
+    input type: radio
+    choices:
+      - An adult.: adult
+      - An adult filing for a child or children.: child
+      - An adult and a minor child or children.: adult and child
+      - An adult guardian filing on behalf of a protected adult.: adult ward
+  - How many children?: lawyer_number_of_children
     datatype: integer
-    min: 2
-    max: 11
+    min: 1
+    max: 10
+    js show if: |
+      val('lawyer_filing_for') == 'adult and child' || val('lawyer_filing_for') == 'child'
+  - note: |
+      Answer the remaining questions as if you were the petitioner.  For example, include the petitioner’s contact information rather than your own.
+---
+id: parent or guardian education
+question: |
+  Parent or Guardian Information
+subquestion: |
+      You asked for a protective order for you and your ${ "child" if number_of_children == 1 else "children" }. For the judge to grant a protective order for your ${ "child" if number_of_children == 1 else "children" }, you will have to show that the other person committed a crime of domestic violence against your ${ "child" if number_of_children == 1 else "children" }.
+
+      If the other person committed a crime of domestic violence against you but not your ${ "child" if number_of_children == 1 else "children" }, the judge can still include these protections in your order:
+
+        * temporary orders about where your ${ "child" if number_of_children == 1 else "children" } will live.
+        * child support. And
+        * the other person to stay away from specific locations, including your ${ "child" if number_of_children == 1 else "children" }'s school.
+
+      You can ask for these things even if the other person did not commit domestic violence against your child.
+fields:
+  - "What do you want to do?": choose_petitioners_again
+    input type: radio
+    choices:
+      - Ask only for myself: change
+      - Ask for me and my ${ "child" if number_of_children == 1 else "children" }: keep
+
+continue button field: parent_or_guardian
 ---
 id: protected person name
 sets:
@@ -307,15 +442,23 @@ sets:
   - "users[i].name.last"
   - "users[i].name.suffix"
 question: |
-  % if i == 0 and who_needs_the_order in ('myself', 'self and child', 'self and children'):
+  % if i == 0 and petitioner_group in ('you', 'you and children'):
   What is your name and birthdate?
-  % elif (i == 0 and who_needs_the_order == 'child') or (i == 1 and who_needs_the_order == 'self and child'):
-  What is your child's name and birthdate?
-  % elif who_needs_the_order in ('self and children','children'):
-  What is the name and birthdate of the
+  % elif petitioner_group == 'one person':
   % if who_needs_the_order == 'children':
+  What is your child's name and birthdate?
+  % elif who_needs_the_order == 'adult' or (who_needs_the_order == 'lawyer' and lawyer_filing_for == 'adult ward'):
+  What is the name and birthdate of the adult you are a guardian for?
+  % else:
+  What is the name and birthdate of the person who needs the protective order?
+  % endif
+  % elif petitioner_group == 'you and children' and users.target_number == 2:
+  What is ${ "the" if who_needs_the_order == 'lawyer' else "your" } child's name and birthdate?
+  % else:
+  What is the name and birthdate of the
+  % if petitioner_group == 'children':
   ${ ordinal(i) }
-  % elif who_needs_the_order == 'self and children':
+  % else:
   ${ ordinal(i - 1) }
   % endif
   child who needs the protective order?
@@ -329,13 +472,16 @@ validation code: |
   # 1. Determine if the person at the current index 'i' is an adult or child
   is_adult = False
   is_child = False
+  is_adult_ward = False
 
-  if who_needs_the_order in ('myself', 'self and child', 'self and children') and i == 0:
+  if who_needs_the_order in ('myself', 'self and children') and i == 0:
       is_adult = True
-  elif who_needs_the_order in ('child', 'children'):
+  elif who_needs_the_order == 'children':
       is_child = True
-  elif who_needs_the_order in ('self and child', 'self and children') and i >= 1:
+  elif who_needs_the_order == 'self and children' and i >= 1:
       is_child = True
+  elif who_needs_the_order == 'adult' or (who_needs_the_order == 'lawyer' and lawyer_filing_for == 'adult ward'):
+      is_adult_ward = True
 
   # 2. Calculate the exact age threshold date
   eighteen_years_ago = today().minus(years=18)
@@ -343,20 +489,21 @@ validation code: |
   # 3. Apply the specific validation rules explicitly targeting this user index
   if is_adult and users[i].birthdate > eighteen_years_ago:
       validation_error("You must be 18 years or older to file for yourself.")
-      
+
+  if is_adult_ward and users[i].birthdate > eighteen_years_ago:
+      validation_error("The adult you are a guardian for must be 18 years or older.")
+
   if is_child and users[i].birthdate <= eighteen_years_ago:
       validation_error("The child must be under 18 years old.")
 ---
-
----
 code: |
-  if who_needs_the_order in ('myself', 'self and child', 'self and children'):
+  if petitioner_group in ('you', 'you and children'):
     petitioner_personal_pronoun = 'you'
     petitioner_possesive_pronoun = 'your'
-  elif who_needs_the_order == 'child':
+  elif petitioner_group == 'one person':
     petitioner_personal_pronoun = users[0].familiar()
     petitioner_possesive_pronoun = f"{users[0].familiar()}'s"
-  elif who_needs_the_order == 'children':
+  else:
     petitioner_personal_pronoun = 'the children'
     petitioner_possesive_pronoun = "the children's"
 ---
@@ -367,9 +514,9 @@ sets:
   - "advocate.name.last"
   - "advocate.name.suffix"
 question: |
-  What is your name?
-
+  What is your name and birthdate?
 fields:
+  - note: What is your name?
   - code: |
       advocate.name_fields()
   - Your birthdate: advocate.birthdate
@@ -393,7 +540,7 @@ id: relationship to advocate
 question: |
   How are you related to ${ users[i].familiar() }?
 subquestion: |
-  Alaska only allows a child's parent or guardian to file a petition for a protective order for the child.  
+  Alaska only allows a child's parent or guardian to file a petition for a protective order for the child.
 
   But in certain circumstances, a judge **may** give you a **temporary guardianship** so you can ask for a protective order for the child.
 fields:
@@ -404,22 +551,20 @@ fields:
       - guardian
       - other
 ---
+########################################################################
+# Respondent basics
+########################################################################
 id: Respondent's name and birthdate
-sets:
-  - "other_parties[0].name.first"
-  - "other_parties[0].name.middle"
-  - "other_parties[0].name.last"
-  - "other_parties[0].name.suffix"
 question: |
-  What is the name of the person
-  % if who_needs_the_order == 'myself':
-  you need
-  % elif who_needs_the_order == 'child':
-  ${ users[0].name.familiar() } needs
-  % elif who_needs_the_order == 'children':
-  ${ comma_and_list([u.name.familiar() for u in users]) } need
-  % elif who_needs_the_order in ('self and child', 'self and children'):
-  you and ${ comma_and_list([u.name.familiar() for u in users[1:]]) } need
+  Who
+  % if petitioner_group == 'you':
+  do you need
+  % elif petitioner_group == 'one person':
+  does ${ users[0].name.familiar() } need
+  % elif petitioner_group == 'children':
+  do ${ comma_and_list([u.name.familiar() for u in users]) } need
+  % elif petitioner_group == 'you and children':
+  do you and ${ comma_and_list([u.name.familiar() for u in users[1:]]) } need
   % endif
   protection from?
 fields:
@@ -465,17 +610,17 @@ fields:
 ---
 id: Do you know respondent's parent or guardian?
 question: |
-  % if respondent_name_known:  
+  % if respondent_name_known:
   Do you know ${ respondent_name }'s parent or guardian?
   % else:
-  Do you know the {respondent}'s parent or guardian?
+  Do you know { the respondent }'s parent or guardian?
   % endif
 subquestion: |
-  Because 
-  % if respondent_name_known:  
+  Because
+  % if respondent_name_known:
   ${ respondent_name }
   % else:
-  the {respondent}
+  { the respondent }
   % endif
   is under 18, the court may need to contact an adult responsible for them.
 fields:
@@ -492,102 +637,74 @@ sets:
 question: |
   Who is responsible for ${ respondent_name }?
 fields:
+  - Do you know ${ respondent_name }'s parent's or guardian's name?: knows_adult_for_respondent
+    datatype: yesnoradio
+    label above field: True
   - code: |
       adult_for_respondent.name_fields(required={'first': False, 'middle': False, 'last': False, 'suffix': False})
 validation code: |
   if knows_adult_for_respondent and not showifdef('adult_for_respondent.name.first') and (not showifdef('adult_for_respondent.name.middle') and not showifdef('adult_for_respondent.name.last')):
-    validation_error(word("You say you know the respondent's parent or guardian's name, please enter at least one name or go back and say you do not know their name."))
+    validation_error(word("You say you know ${ respondent_name }'s parent or guardian's name, please enter at least one name or go back and say you do not know their name."))
 ---
+########################################################################
+# Term (short or long)
+########################################################################
+id: short or long term
+question: |
+  How long do you need the order to last?
+subquestion: |
+  You can ask the court for an order that lasts 20 days, an order that lasts up to a year, or both.
+fields:
+  - I need the order to last: term
+    input type: radio
+    choices:
+      - "20 days": 20 days
+        help: |
+          A **Short-Term Protective Order** (also called an “ex parte” order) gives you immediate protection.  It lasts for 20 days unless the judge extends it. The judge is able to grant or deny the petition based only on what you write in the petition and what you testify about at the hearing, if there is a hearing. The judge can grant this protective order without telling ${ respondent_name } that you filed a petition, and without hearing from ${ respondent_name }. You do not have to tell the ${ respondent_name } that you are asking for a protective order, but if you did, tell the judge how you tried to tell ${ respondent_name } you were asking for the protective order.
+      - "up to one year": 1 year
+        help: |
+          A **Long-Term Order** can last up to one year. A judge can only grant a long-term order after a hearing. ${ respondent_name } must get at least 10 days’ notice of the court hearing and have a chance to speak at the hearing. If ${ respondent_name } had notice, but chose not to come to the hearing, the judge can still grant the order. Police officers or troopers are responsible for notifying ${ respondent_name } about the hearing.
+      - "I need **both** a 20 day order and an order that lasts up to a year": both
+        help: |
+           Both a Short-Term and a Long-Term Order. If you request both orders, and your short-term order is granted, the court will schedule a hearing when the judge will decide on the long-term protective order. ${ respondent_name } has an opportunity to attend the hearing and contest the order. If the short-term order is not granted, the court may or may not schedule a long-term hearing.
+---
+########################################################################
+# Stay away from petitioner's home
+#   1. Ask whether the petitioner wants the court to order a stay away.
+#   2. Only if yes: does the respondent live with the petitioner?
+#   3. Only if no: does the respondent know where the petitioner lives?
+#   respondent_stay_away_from_petitioners_home is the only flag. There is no
+#   stay_away_address_collected variable any more.
+########################################################################
 id: Stay away from petitioner's home
 question: |
-  % if who_needs_the_order == 'myself':
+  % if petitioner_group == 'you':
   The judge can order ${ respondent_name } to stay away from the place you live
-  % elif who_needs_the_order == 'child':
+  % elif petitioner_group == 'one person':
   The judge can order ${ respondent_name } to stay away from the place ${ users[0].familiar() } lives
-  % elif who_needs_the_order == 'self and child':
+  % elif petitioner_group == 'you and children' and users.target_number == 2:
   The judge can order ${ respondent_name } to stay away from the place you and ${ users[1].familiar() } live
-  % elif who_needs_the_order == 'children':
-  The judge can order ${ respondent_name } to stay away from the place your children live
-  % elif who_needs_the_order == 'self and children':
-  The judge can order ${ respondent_name } to stay away from the place you and your children live
+  % elif petitioner_group == 'children':
+  The judge can order ${ respondent_name } to stay away from the place ${ "the" if who_needs_the_order == 'lawyer' else "your" } children live
+  % else:
+  The judge can order ${ respondent_name } to stay away from the place you and ${ "the" if who_needs_the_order == 'lawyer' else "your" } children live
   % endif
 subquestion: |
      If the judge orders ${ respondent_name } to stay away from a place, the address for that place goes into the order.
 
      If ${ respondent_name } does not already know it, ${ respondent_name } will learn the address of the place because the address will be in the order.
 fields:
+  - "Do you need the judge to order ${ respondent_name } to stay away from ${ petitioner_possesive_pronoun } place?": respondent_stay_away_from_petitioners_home
+    datatype: yesnoradio
   - Does ${ respondent_name } live with ${ petitioner_personal_pronoun }?: respondent_live_with_petitioners
     datatype: yesnoradio
-  - Does ${ respondent_name } know where ${ petitioner_personal_pronoun } ${ "lives" if who_needs_the_order == 'child' else "live" }?: respondent_knows_where_petitioners_live
+    js show if: |
+      val("respondent_stay_away_from_petitioners_home") === true
+  - Does ${ respondent_name } know where ${ petitioner_personal_pronoun } ${ "lives" if petitioner_group == 'one person' else "live" }?: respondent_knows_where_petitioners_live
     datatype: yesnomaybe
-    show if:
-      variable: respondent_live_with_petitioners
-      is: False
-  - label: |
-      Do you need the judge to order ${other_parties[0].familiar()} to stay away from ${ petitioner_possesive_pronoun } place? **or** Do you need to keep that address confidential so it does **not** go onto the order where ${ respondent_name } can see it?
-    field: stay_away_home_address_or_keep_confidential
-    datatype: radio
-    choices:
-      code: |
-        stay_away_home_address_or_keep_confidential_choices
     js show if: |
-      val("respondent_live_with_petitioners") === false &&
-      (
-        val("respondent_knows_where_petitioners_live") === false ||
-        val("respondent_knows_where_petitioners_live") === "None"
-      )
-    label above field: True
-
-  - "Do you need the judge to order ${other_parties[0].familiar()} to stay away from ${ petitioner_possesive_pronoun } place?": respondent_stay_away_from_petitioners_home
-    datatype: yesnoradio
-    js show if: |
-      val("respondent_live_with_petitioners") === true ||
-      (
-        val("respondent_live_with_petitioners") === false &&
-        val("respondent_knows_where_petitioners_live") === true
-      )
----
-code: |
-  if who_needs_the_order == 'myself':
-    stay_away_home_address_or_keep_confidential_choices = [
-      {'stay away': f"I want the judge to order { other_parties[0].familiar() } to stay away from the place I live." },
-      {'keep confidential': f"It is more important to me that { other_parties[0].familiar() } does not see the address of the place I live on the order." },
-    ]
-  elif who_needs_the_order == 'child':
-    stay_away_home_address_or_keep_confidential_choices = [
-      { 'stay away': f"I want the judge to order { other_parties[0].familiar() } to stay away from the place { users[0].familiar() } lives." },
-      { 'keep confidential': f" Note - edit 2026-10-14 It is more important to me that { other_parties[0].familiar() } does not see the address of the place { users[0].familiar() } lives on the order." }
-    ]
-  elif who_needs_the_order == 'children':
-    stay_away_home_address_or_keep_confidential_choices = [
-      { 'stay away': f"I want the judge to order { other_parties[0].familiar() } to stay away from the place the children live." },
-      { 'keep confidential': f"It is more important to me that { other_parties[0].familiar() } does not see the address of the place the children live on the order." },
-    ]
-  else:
-    stay_away_home_address_or_keep_confidential_choices = [
-      { 'stay away': f"I want the judge to order { other_parties[0].familiar() } to stay away from the place we live." },
-      { 'keep confidential': f"It is more important to me that { other_parties[0].familiar() } does not see the address of the place we live on the order." }
-    ]
----
-code: |
-  stay_away_address_collected = (
-    (
-      (
-        respondent_live_with_petitioners
-        or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live)
-      )
-      and respondent_stay_away_from_petitioners_home
-    )
-    or (
-      not respondent_live_with_petitioners
-      and respondent_knows_where_petitioners_live is not True
-      and stay_away_home_address_or_keep_confidential == 'stay away'
-    )
-  )
----
-code: |
-    if (respondent_live_with_petitioners or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live)) and respondent_stay_away_from_petitioners_home is False:
-      show_address_to_police == 'fine'
+      val("respondent_stay_away_from_petitioners_home") === true &&
+      val("respondent_live_with_petitioners") === false
 ---
 id: petitioners stay away from home address
 sets:
@@ -601,50 +718,327 @@ question: |
 subquestion: |
   % if respondent_live_with_petitioners is False and not respondent_knows_where_petitioners_live:
   <div class="alert alert-warning" role="alert">
-   <strong>from outline</strong>: You said you wanted your physical address to be confidential.  If you want the judge to order [RFN] to stay away from it, you have to give the address so [RFN] knows where to say away and law enforcement can . . . ]  What is safer – keeping your physical address safer or listing it so you can call law enforcement if [RFN] comes to your residence. 
+   <strong>from outline</strong>: You said you ${ respondent_name } does not know your address or you do not know if ${ respondent_name } knows your address.   If you want the judge to order ${ respondent_name } to stay away from it, you have to give the address so ${ respondent_name } knows where to say away and law enforceement can . . . ] If you want to keep your your physical address confidential. Go back and say you do not want the judge to order ${ respondent_name } to stay away from your address. What is safer - keeping your physical address confidential or putting it on the form so you can call law enforcement if ${ respondent_name } comes to your residence.
   So what do you want to do?
   nlocude [addrerss] as a place to stay away on the order
-  Keep [address] confidential even though the court can’t order [RFN] to stay away. 
+  Keep [address] confidential even though the court cannot order ${ respondent_name } to stay away.
   </div>
   % endif
 fields:
- # - Street address: users[0].address.address
   - code: |
       users[0].stay_away_home_address.address_fields(
         country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": True})
- # - street address: users[0].address.address
- #   address autocomplete:
- #     locationBias:
- #       rectangle:
- #         low:
- #           latitude: 51.3,
- #           longitude: -130
- #         high:
- #           latitude: 71.83,
- #           longitude: 172
- #
- # - Apartment: users[0].address.unit
- #   required: False
- # - City: users[0].address.city
- # - State: users[0].address.state
- # - ZIP code: users[0].address.zip
- #   required: False
   - note: How far away in feet or miles do you need the judge to order ${ respondent_name } to stay away?
   - Distance: stay_away_home_distance
     required: False
 continue button field: get_users_stay_away_home_address
 ---
+########################################################################
+# Petitioner / advocate contact info
+#   Starts from the demo's version (two questions, one per contact person).
+#   - "who is the contact person?" is advocate_is_contact_person (not a list of who_needs_the_order values)
+#   - "does the petitioner want a stay away order?" is respondent_stay_away_from_petitioners_home
+#   - ONE confidential-email variable, court_email_confidential, like the two phone numbers
+########################################################################
+id: petitioner contact info collected
+code: |
+  petitioner_contact_info
+  if respondent_stay_away_from_petitioners_home and stay_away_is_same_as_mailing_address:
+    copy_stay_away_home_address_to_mailing_address
+  # DV-128 prints users_with_aliases. The attachments use `skip undefined: True`, which leaves a field blank
+  # instead of working out an undefined variable, so it has to be computed here, before the documents.
+  # (It does not ask the aliases question: it is just the name unless alias_text_list happens to be set.)
+  users_with_aliases
+  petitioner_contact_info_collected = True
+---
+code: |
+  # Copy attributes. Assigning one ALAddress to the other would make both names
+  # the same object, so a later edit to either address would change both.
+  if advocate_is_contact_person:
+    advocate.address.address = users[0].stay_away_home_address.address
+    advocate.address.unit = users[0].stay_away_home_address.unit if defined('users[0].stay_away_home_address.unit') else ''
+    advocate.address.city = users[0].stay_away_home_address.city
+    advocate.address.state = users[0].stay_away_home_address.state
+    advocate.address.zip = users[0].stay_away_home_address.zip if defined('users[0].stay_away_home_address.zip') else ''
+    if defined('users[0].stay_away_home_address.country'):
+      advocate.address.country = users[0].stay_away_home_address.country
+  else:
+    users[0].mailing_address.address = users[0].stay_away_home_address.address
+    users[0].mailing_address.unit = users[0].stay_away_home_address.unit if defined('users[0].stay_away_home_address.unit') else ''
+    users[0].mailing_address.city = users[0].stay_away_home_address.city
+    users[0].mailing_address.state = users[0].stay_away_home_address.state
+    users[0].mailing_address.zip = users[0].stay_away_home_address.zip if defined('users[0].stay_away_home_address.zip') else ''
+    if defined('users[0].stay_away_home_address.country'):
+      users[0].mailing_address.country = users[0].stay_away_home_address.country
+  petitioners_using_dv128 = False
+  copy_stay_away_home_address_to_mailing_address = True
+---
+if: not advocate_is_contact_person
+id: Petitioner's contact info
+question: |
+  How can the court get in touch with you?
+subquestion: |
+  The court needs your mailing address so they can send court papers and notices about your hearing dates to you.
+
+  If you do not have an address, email, or telephone number that can safely be shown to ${ respondent_name }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ respondent_name }.
+
+  The court needs to be able to reach you.
+
+  You can ask to keep your address, phone, and email confidential, so that only court staff can see this information.
+
+fields:
+  - note: |
+      You are asking the court to order ${ respondent_name } to stay away from <br>
+      ${ users[0].stay_away_home_address.block() }.
+    show if:
+      code: |
+        defined('respondent_stay_away_from_petitioners_home') and respondent_stay_away_from_petitioners_home
+  - "Can the court use that address to contact you?": stay_away_is_same_as_mailing_address
+    datatype: yesnoradio
+    show if:
+      code: |
+        defined('respondent_stay_away_from_petitioners_home') and respondent_stay_away_from_petitioners_home
+    label above field: True
+  - code: |
+      [dict(
+        {'label': "Do you need the court to keep your contact address confidential?",
+         'field': 'petitioners_using_dv128',
+         'datatype': 'yesnoradio'},
+        **({'js show if': 'val("stay_away_is_same_as_mailing_address") === false'} if respondent_stay_away_from_petitioners_home else {}))]
+  - code: |
+      users[0].mailing_address.address_fields(
+        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": True}, show_if={"variable": "petitioners_using_dv128", "is": False})
+  - code: |
+      users[0].confidential_address.address_fields(
+        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": True}, show_if={"variable": "petitioners_using_dv128", "is": True})
+  - note: |
+      ---
+  - note: |
+      The court can only call numbers within the United States. Please make sure you give us at least one US phone number.
+  # Main phone number
+  - "Do you need to keep your main phone number confidential?": court_main_phone_confidential
+    datatype: yesnoradio
+  - code: |
+      [
+        dict(label="Main phone", field="users[0].phone_number", required=False, **{"js show if": 'val("court_main_phone_confidential") === false'}),
+        dict(label="Confidential main phone number", field="users[0].confidential_phone_number", required=False, **{"js show if": 'val("court_main_phone_confidential") === true'}),
+      ]
+  # Other phone number
+  - "Do you need to keep your other phone number confidential?": court_other_phone_confidential
+    datatype: yesnoradio
+    required: False
+  - code: |
+      [
+        dict(label="Other phone", field="users[0].other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === false'}),
+        dict(label="Confidential other phone", field="users[0].confidential_other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === true'}),
+      ]
+  # Email
+  - "Do you need to keep your email confidential?": court_email_confidential
+    datatype: yesnoradio
+    required: False
+  - Email: users[0].email
+    datatype: email
+    js show if: val("court_email_confidential") === false
+    required: False
+  - Confidential email: users[0].confidential_email
+    datatype: email
+    js show if: val("court_email_confidential") === true
+    required: False
+sets:
+  - "users[0].mailing_address.address"
+  - "users[0].mailing_address.city"
+  - "users[0].mailing_address.zip"
+  - "users[0].mailing_address.unit"
+  - "users[0].mailing_address.state"
+  - "users[0].confidential_address.address"
+  - "users[0].confidential_address.unit"
+  - "users[0].confidential_address.city"
+  - "users[0].confidential_address.state"
+  - "users[0].confidential_address.zip"
+validation code: |
+  if defined('stay_away_is_same_as_mailing_address') and stay_away_is_same_as_mailing_address:
+    petitioners_using_dv128 = False
+
+  if (not showifdef('users[0].phone_number') and not showifdef('users[0].other_number')) and (not showifdef('users[0].confidential_phone_number') and not showifdef('users[0].confidential_other_number')):
+    validation_error(word("The court needs at least one phone number to be able to reach you."), field="users[0].other_contact_method")
+  if defined("users[0].phone_number") and len(users[0].phone_number):
+    if not phone_number_is_valid(users[0].phone_number):
+      validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].phone_number")
+    users[0].phone_number = phone_number_formatted(users[0].phone_number)
+  if defined("users[0].confidential_phone_number") and len(users[0].confidential_phone_number):
+    if not phone_number_is_valid(users[0].confidential_phone_number):
+      validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].confidential_phone_number")
+    users[0].confidential_phone_number = phone_number_formatted(users[0].confidential_phone_number)
+  if defined("users[0].other_number") and len(users[0].other_number):
+    if not phone_number_is_valid(users[0].other_number):
+      validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].other_number")
+    users[0].other_number = phone_number_formatted(users[0].other_number)
+  if defined("users[0].confidential_other_number") and len(users[0].confidential_other_number):
+    if not phone_number_is_valid(users[0].confidential_other_number):
+      validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].confidential_other_number")
+    users[0].confidential_other_number = phone_number_formatted(users[0].confidential_other_number)
+continue button field: petitioner_contact_info
+---
+if: advocate_is_contact_person
+id: Petitioner's contact info
+question: |
+  How can the court get in touch with you?
+subquestion: |
+  The court needs your mailing address so they can send court papers and notices about your hearing dates to you.
+
+  If you do not have an address, email, or telephone number that can safely be shown to ${ respondent_name }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ respondent_name }.
+
+  The court needs to be able to reach you.
+
+  You can ask to keep your address, phone, and email confidential, so that only court staff can see this information.
+
+fields:
+  - note: |
+      You are asking the court to order ${ respondent_name } to stay away from <br>
+      ${ users[0].stay_away_home_address.block() }.
+    show if:
+      code: |
+        defined('respondent_stay_away_from_petitioners_home') and respondent_stay_away_from_petitioners_home
+  - "Can the court use that address to contact you?": stay_away_is_same_as_mailing_address
+    datatype: yesnoradio
+    show if:
+      code: |
+        defined('respondent_stay_away_from_petitioners_home') and respondent_stay_away_from_petitioners_home
+    label above field: True
+  - code: |
+      [dict(
+        {'label': "Do you need the court to keep your contact address confidential?",
+         'field': 'petitioners_using_dv128',
+         'datatype': 'yesnoradio'},
+        **({'js show if': 'val("stay_away_is_same_as_mailing_address") === false'} if respondent_stay_away_from_petitioners_home else {}))]
+  - code: |
+      advocate.address_fields(
+        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": True}, show_if={"variable": "petitioners_using_dv128", "is": False})
+  - code: |
+      advocate.confidential_address.address_fields(
+        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": True}, show_if={"variable": "petitioners_using_dv128", "is": True})
+  - note: |
+      ---
+  - note: |
+      The court can only call numbers within the United States. Please make sure you give us at least one US phone number.
+  # Main phone number
+  - "Do you need to keep your main phone number confidential?": court_main_phone_confidential
+    datatype: yesnoradio
+  - code: |
+      [
+        dict(label="Main phone", field="advocate.phone_number", required=False, **{"js show if": 'val("court_main_phone_confidential") === false'}),
+        dict(label="Confidential main phone number", field="advocate.confidential_phone_number", required=False, **{"js show if": 'val("court_main_phone_confidential") === true'}),
+      ]
+  # Other phone number
+  - "Do you need to keep your other phone number confidential?": court_other_phone_confidential
+    datatype: yesnoradio
+    required: False
+  - code: |
+      [
+        dict(label="Other phone", field="advocate.other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === false'}),
+        dict(label="Confidential other phone", field="advocate.confidential_other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === true'}),
+      ]
+  # Email
+  - "Do you need to keep your email confidential?": court_email_confidential
+    datatype: yesnoradio
+    required: False
+  - Email: advocate.email
+    datatype: email
+    js show if: val("court_email_confidential") === false
+    required: False
+  - Confidential email: advocate.confidential_email
+    datatype: email
+    js show if: val("court_email_confidential") === true
+    required: False
+sets:
+  - "advocate.address.address"
+  - "advocate.address.city"
+  - "advocate.address.zip"
+  - "advocate.address.unit"
+  - "advocate.address.state"
+  - "advocate.confidential_address.address"
+  - "advocate.confidential_address.city"
+  - "advocate.confidential_address.zip"
+  - "advocate.confidential_address.unit"
+  - "advocate.confidential_address.state"
+validation code: |
+  if defined('stay_away_is_same_as_mailing_address') and stay_away_is_same_as_mailing_address:
+    petitioners_using_dv128 = False
+
+  if (not showifdef('advocate.phone_number') and not showifdef('advocate.other_number')) and (not showifdef('advocate.confidential_phone_number') and not showifdef('advocate.confidential_other_number')):
+    validation_error(word("The court needs at least one phone number to be able to reach you."), field="advocate.phone_number")
+  if defined("advocate.phone_number") and len(advocate.phone_number):
+    if not phone_number_is_valid(advocate.phone_number):
+      validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="advocate.phone_number")
+    advocate.phone_number = phone_number_formatted(advocate.phone_number)
+  if defined("advocate.confidential_phone_number") and len(advocate.confidential_phone_number):
+    if not phone_number_is_valid(advocate.confidential_phone_number):
+      validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="advocate.confidential_phone_number")
+    advocate.confidential_phone_number = phone_number_formatted(advocate.confidential_phone_number)
+  if defined("advocate.other_number") and len(advocate.other_number):
+    if not phone_number_is_valid(advocate.other_number):
+      validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="advocate.other_number")
+    advocate.other_number = phone_number_formatted(advocate.other_number)
+  if defined("advocate.confidential_other_number") and len(advocate.confidential_other_number):
+    if not phone_number_is_valid(advocate.confidential_other_number):
+      validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="advocate.confidential_other_number")
+    advocate.confidential_other_number = phone_number_formatted(advocate.confidential_other_number)
+continue button field: petitioner_contact_info
+---
+id: efile user email address
 comment: |
-  For data points demo, take out subquestion If the judge agrees to give you a Protective Order, a law enforcment officer must give ${ respondent_name } a copy of the order. 
+  This screen is asked by set_efile_variables (efiling_merged.yml) when users[0].email is empty, and it is the ONLY
+  thing that can fill users[0].email. The old version hid the Email field when court_email_confidential was True,
+  so someone who gave a confidential email on the contact screen could never answer it (it re-asked forever).
+  Now Email is always shown and required, and starts out filled in with the confidential email if there is one.
+question: |
+  What email address should we use to e-file?
+subquestion: |
+  To e-file, the court needs an email address.
 
-  <div class="alert alert-warning">The order <strong>only</strong> goes into effect once ${ respondent_name } gets a copy.</div>
-  % if respondent_live_with_petitioners:
-  You said ${ respondent_name } lives with you.
+  % if showifdef('court_email_confidential', False):
+  You gave a confidential email address. It is filled in below. Change it if you want to e-file with a different address.
   % endif
-  % if not respondent_live_with_petitioners:
+fields:
+  - Email: users[0].email
+    datatype: email
+    default: ${ showifdef('users[0].confidential_email', '') }
+---
+id: efile advocate email address
+comment: |
+  Same fix as "efile user email address": Email is always shown and required, and starts out filled in with the
+  confidential email if there is one.
+question: |
+  What email address should we use to e-file?
+subquestion: |
+  To e-file, the court needs an email address.
 
+  % if showifdef('court_email_confidential', False):
+  You gave a confidential email address. It is filled in below. Change it if you want to e-file with a different address.
   % endif
-  The officer will start at the address you give as ${ respondent_name }'s residence.
+fields:
+  - Email: advocate.email
+    datatype: email
+    default: ${ showifdef('advocate.confidential_email', '') }
+---
+comment: |
+  RESPONDENT CONTACT INFO
+  Built from the demo's "Respondents address" screen (address + phones + email on ONE screen),
+  plus the comprehensive file's "Where does respondent live?" prefill from the stay-away address.
+  The comprehensive file's "Great job" screen used to ask the respondent's phones and email too;
+  those fields now live ONLY on this screen, so the demo and the comprehensive interview ask them once, the same way.
+  respondent_address_unknown now means exactly what its name says: the petitioner does not know the ADDRESS.
+  (In the demo it also switched off the phones and email, so someone with only a phone number could not enter it.)
+---
+id: respondent contact info collected
+code: |
+  respondent_address_unknown
+  if respondent_address_unknown:
+    if other_parties[0].age_in_years() < 18:
+      if knows_adult_for_respondent:
+        adult_for_respondent_address_unknown
+  respondent_contact_info_collected = True
+---
 id: Respondents address
 sets:
   - "other_parties[0].address.has_no_address"
@@ -654,17 +1048,31 @@ sets:
   - "other_parties[0].address.unit"
   - "other_parties[0].address.state"
 question: |
-  How can the court and law enforcement get in touch w ${ respondent_name }?
+  How can the court and law enforcement get in touch with ${ respondent_name }?
 subquestion: |
   If the judge grants your petition it does not take effect until law enforcement serves ${ respondent_name } with the order.
 
   And the court needs to be able to send notices to ${ respondent_name }.
 fields:
-  - I do not have any contact information for ${other_parties[0].familiar()}: respondent_address_unknown
+  - I do not know where ${ other_parties[0].familiar() } lives: respondent_address_unknown
     datatype: yesno
-    disable others: True
   - code: |
-     other_parties[0].address_fields(required={'city': False, 'state': False, 'zip': False, 'address': False},country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
+      # Address fields are hidden when the box above is checked.
+      # If the respondent lives with the petitioner and the petitioner asked for a stay-away order,
+      # the address is filled in from the stay-away home address.
+      [
+        dict(f,
+             **{'js show if': 'val("respondent_address_unknown") === false'},
+             **({'default': getattr(users[0].stay_away_home_address, str(f['field']).split('.')[-1])}
+                if (defined('respondent_stay_away_from_petitioners_home') and respondent_stay_away_from_petitioners_home
+                    and defined('respondent_live_with_petitioners') and respondent_live_with_petitioners
+                    and str(f.get('field', '')).split('.')[-1] in ('address', 'unit', 'city', 'state', 'zip')
+                    and defined('users[0].stay_away_home_address.' + str(f['field']).split('.')[-1]))
+                else {}))
+        for f in other_parties[0].address_fields(
+          required={'city': False, 'state': False, 'zip': False, 'address': False},
+          country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
+      ]
   - note: |
       ---
   - Main phone: other_parties[0].phone_number
@@ -695,14 +1103,14 @@ sets:
 question: |
   How can the court get in touch with ${ adult_for_respondent }?
 fields:
-  - I do not have any contact information for ${other_parties[0].familiar()}'s parent or guardian: adult_for_respondent_address_unknown
+  - I do not have any contact information for ${ other_parties[0].familiar() }'s parent or guardian: adult_for_respondent_address_unknown
     datatype: yesno
     disable others: True
   - code: |
-      adult_for_respondent.address_fields(required={'city': False, 'state': False, 'zip': False, 'address': False},country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
+      adult_for_respondent.address_fields(required={'city': False, 'state': False, 'zip': False, 'address': False}, country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False)
   - note: |
       ---
-  - Primary phone: adult_for_respondent.phone_number
+  - Main phone: adult_for_respondent.phone_number
     required: False
   - Other phone: adult_for_respondent.other_number
     required: False
@@ -718,382 +1126,27 @@ validation code: |
     if not phone_number_is_valid(adult_for_respondent.other_number):
       validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="adult_for_respondent.other_number")
     adult_for_respondent.other_number = phone_number_formatted(adult_for_respondent.other_number)
-  
 ---
-question: |
-  Does ${ other_parties } go by any other names?
-fields:
-  - Do they have any nicknames or aliases?: other_parties_aliases
-    datatype: yesnoradio
-  - What other names do people know them as?: other_parties[0].alias_text_list
-    datatype: area
-    show if: other_parties_aliases
-
----
-code: |
-  # Check if the text field has content and isn't just spaces
-  if defined('other_parties[0].alias_text_list') and other_parties[0].alias_text_list.strip():
-    users_with_aliases = f"{users[0]} (AKA: {users[0].alias_text_list.strip()})"
-  else:
-    users_with_aliases = str(users[0])
----
-code: |
-  dv_128_confidential_contact_information_sheet.enabled = petitioners_using_dv128
----
-id: Petitioner's aliases
-question: |
-  % if who_needs_the_order in ('myself', 'self and child', 'self and children'):
-  Do you
-  % elif who_needs_the_order == "child":
-  Does ${ users[0].familiar() }
-  % else:
-  Do ${ users[0].familiar() }
-  % endif
-  go by any *other* names?
-fields:
-  - "Do ${ 'you' if who_needs_the_order in ('myself', 'self and child', 'self and children') else 'they' } have any nicknames or aliases?": users_aliases
-    datatype: yesnoradio
-  - "What other names do people know ${ 'you' if who_needs_the_order in ('myself', 'self and child', 'self and children') else 'them' } as?": users[0].alias_text_list
-    datatype: area
-    show if: users_aliases
----
-code: |
-  # Check if the text field has content and isn't just spaces
-  if defined('users[0].alias_text_list') and users[0].alias_text_list.strip():
-    users_with_aliases = f"{users[0]} (AKA: {users[0].alias_text_list.strip()})"
-  else:
-    users_with_aliases = str(users[0])
----
-if: who_needs_the_order not in ('child', 'children')
-Comment: |
-  2026-09-29, we ask this question of advocates i.e. parents or guardians of a child or children also, this condition limits - parent/guardians also need to be able to keep their information confidential. So do not want this condition. Id is in quotes because of apostrophe?
-id: Petitioner's contact info
-question: |
-  How can the court get in touch with you?
-subquestion: |
-  The court needs your mailing address so they can send court papers and notices about your hearing dates to you.
-
-  If you do not have an address, email, or telephone number that can safely be shown to ${ respondent_name }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ respondent_name }.
-
-  The court needs to be able to reach you.
-  
-  You can ask to keep your address, phone, and email confidential, so that only court staff can see this information.
-  
-fields:
-  - note: |
-      You are asking the court to order ${ respondent_name } to stay away from <br>
-      ${ users[0].stay_away_home_address.block() }.
-    show if:
-      code: |
-        defined('stay_away_address_collected') and stay_away_address_collected
-  - "Can the court use that address to contact you?": stay_away_is_same_as_mailing_address
-    datatype: yesnoradio
-    show if:
-      code: |
-        defined('stay_away_address_collected') and stay_away_address_collected
-    label above field: True
-  - code: |
-      [dict(
-        {'label': "Do you need the court to keep your contact address confidential?",
-         'field': 'petitioners_using_dv128',
-         'datatype': 'yesnoradio'},
-        **({'js show if': 'val("stay_away_is_same_as_mailing_address") === false'} if stay_away_address_collected else {}))]
-  - code: |
-      users[0].mailing_address.address_fields(
-        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": True}, show_if={"variable": "petitioners_using_dv128", "is": False}) if who_needs_the_order not in ('child', 'children') else []
-  - code: |
-      users[0].confidential_address.address_fields(
-        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": True}, show_if={"variable": "petitioners_using_dv128", "is": True}) if who_needs_the_order not in ('child', 'children') else []
-  - note: |
-      ---
-  - note: |
-      The court can only call numbers within the United States. Please make sure you give us at least one US phone number.
-  # Main phone number
-  - "Do you need to keep your main phone number confidential?": court_main_phone_confidential
-    datatype: yesnoradio
-  - code: |
-      [
-        dict(label="Main phone", field="users[0].phone_number", required=False, **{"js show if": 'val("court_main_phone_confidential") === false'}),
-        dict(label="Confidential main phone number", field="users[0].confidential_phone_number", required=False, **{"js show if": 'val("court_main_phone_confidential") === true'}),
-      ]
-  # Other phone number
-  - "Do you need to keep your other phone number confidential?": court_other_phone_confidential
-    datatype: yesnoradio
-    required: False
-  - code: |
-      [
-        dict(label="Other phone", field="users[0].other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === false'}),
-        dict(label="Confidential other phone", field="users[0].confidential_other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === true'}),
-      ] 
-  - "Do you need to keep your email confidential?": efile_users_email_confidential
-    datatype: yesnoradio
-    required: False
-  - Email: users[0].email
-    datatype: email
-    js show if: val("efile_users_email_confidential") === false
-    required: False
-  - Confidential email: users[0].confidential_email
-    datatype: email
-    js show if: val("efile_users_email_confidential") === true
-    required: False
-sets:
-  - "users[0].mailing_address.address"
-  - "users[0].mailing_address.city"
-  - "users[0].mailing_address.zip"
-  - "users[0].mailing_address.unit"
-  - "users[0].mailing_address.state"
-  - "users[0].confidential_address.address"
-  - "users[0].confidential_address.unit"
-  - "users[0].confidential_address.city"
-  - "users[0].confidential_address.state"
-  - "users[0].confidential_address.zip"
-validation code: |
-  if defined('stay_away_is_same_as_mailing_address') and stay_away_is_same_as_mailing_address:
-    petitioners_using_dv128 = False
-
-  if not who_needs_the_order in ('child', 'children'):
-    if (not showifdef('users[0].phone_number') and not showifdef('users[0].other_number')) and (not showifdef('users[0].confidential_phone_number') and not showifdef('users[0].confidential_other_number')):
-      validation_error(word("The court needs at least one phone number to be able to reach you."), field="users[0].other_contact_method")
-    if defined("users[0].phone_number") and len(users[0].phone_number):
-      if not phone_number_is_valid(users[0].phone_number):
-        validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].phone_number")
-      users[0].phone_number = phone_number_formatted(users[0].phone_number)
-    if defined("users[0].confidential_phone_number") and len(users[0].confidential_phone_number):
-      if not phone_number_is_valid(users[0].confidential_phone_number):
-        validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].confidential_phone_number")
-      users[0].confidential_phone_number = phone_number_formatted(users[0].confidential_phone_number)
-    if defined("users[0].other_number") and len(users[0].other_number):
-      if not phone_number_is_valid(users[0].other_number):
-        validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].other_number")
-      users[0].other_number = phone_number_formatted(users[0].other_number)
-    if defined("users[0].confidential_other_number") and len(users[0].confidential_other_number):
-      if not phone_number_is_valid(users[0].confidential_other_number):
-        validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="users[0].confidential_other_number")
-      users[0].confidential_other_number = phone_number_formatted(users[0].confidential_other_number)
-continue button field: petitioner_contact_info
----
-if: who_needs_the_order in ('child', 'children')
-Comment: |
-  2026-09-29, we ask this question of advocates i.e. parents or guardians of a child or children also, this condition limits - parent/guardians also need to be able to keep their information confidential. So do not want this condition. Id is in quotes because of apostrophe?
-id: Petitioner's contact info
-question: |
-  How can the court get in touch with you?
-subquestion: |
-  The court needs your mailing address so they can send court papers and notices about your hearing dates to you.
-
-  If you do not have an address, email, or telephone number that can safely be shown to ${ respondent_name }, you can put this information on the **Confidential Contact Information Sheet, DV-128**. The court will keep that form confidential (secret) and not reveal it to ${ respondent_name }.
-
-  The court needs to be able to reach you.
-  
-  You can ask to keep your address, phone, and email confidential, so that only court staff can see this information.
-  
-fields:
-  - note: |
-      You are asking the court to order ${ respondent_name } to stay away from <br>
-      ${ users[0].stay_away_home_address.block() }.
-    show if:
-      code: |
-        defined('stay_away_address_collected') and stay_away_address_collected
-  - "Can the court use that address to contact you?": stay_away_is_same_as_mailing_address
-    datatype: yesnoradio
-    show if:
-      code: |
-        defined('stay_away_address_collected') and stay_away_address_collected
-    label above field: True
-  - code: |
-      [dict(
-        {'label': "Do you need the court to keep your contact address confidential?",
-         'field': 'petitioners_using_dv128',
-         'datatype': 'yesnoradio'},
-        **({'js show if': 'val("stay_away_is_same_as_mailing_address") === false'} if stay_away_address_collected else {}))]
-  - code: |
-      advocate.address_fields(
-        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": True}, show_if={"variable": "petitioners_using_dv128", "is": False}) if who_needs_the_order in ('child', 'children') else []
-  - code: |
-      advocate.confidential_address.address_fields(
-        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": True}, show_if={"variable": "petitioners_using_dv128", "is": True}) if who_needs_the_order in ('child', 'children') else []
-  - note: |
-      ---
-  - note: |
-      The court can only call numbers within the United States. Please make sure you give us at least one US phone number.
-  # Main phone number
-  - "Do you need to keep your main phone number confidential?": court_main_phone_confidential
-    datatype: yesnoradio
-  - code: |
-      [
-        dict(label="Main phone", field="advocate.phone_number", required=False, **{"js show if": 'val("court_main_phone_confidential") === false'}),
-        dict(label="Confidential main phone number", field="advocate.confidential_phone_number", required=False, **{"js show if": 'val("court_main_phone_confidential") === true'}),
-      ]
-  # Other phone number
-  - "Do you need to keep your other phone number confidential?": court_other_phone_confidential
-    datatype: yesnoradio
-    required: False
-  - code: |
-      [
-        dict(label="Other phone", field="advocate.other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === false'}),
-        dict(label="Confidential other phone", field="advocate.confidential_other_number", required=False, **{"js show if": 'val("court_other_phone_confidential") === true'}),
-      ]
-  - "Do you need to keep your email confidential?": efile_advocate_email_confidential 
-    datatype: yesnoradio
-    required: False
-  - Email: advocate.email
-    datatype: email
-    js show if: val("efile_advocate_email_confidential") === false
-    required: False
-  - Confidential email: advocate.confidential_email
-    datatype: email
-    js show if: val("efile_advocate_email_confidential") === true
-    required: False
-sets:
-  - "advocate.address.address"
-  - "advocate.address.city"
-  - "advocate.address.zip"
-  - "advocate.address.unit"
-  - "advocate.address.state"
-  - "advocate.confidential_address.address"
-  - "advocate.confidential_address.city"
-  - "advocate.confidential_address.zip"
-  - "advocate.confidential_address.unit"
-  - "advocate.confidential_address.state"
-validation code: |
-  if defined('stay_away_is_same_as_mailing_address') and stay_away_is_same_as_mailing_address:
-    petitioners_using_dv128 = False
-
-  if who_needs_the_order in ('child', 'children'):
-    if (not showifdef('advocate.phone_number') and not showifdef('advocate.other_number')) and (not showifdef('advocate.confidential_phone_number') and not showifdef('advocate.confidential_other_number')):
-      validation_error(word("The court needs at least one phone number to be able to reach you."), field="advocate.phone_number")
-    if defined("advocate.phone_number") and len(advocate.phone_number):
-      if not phone_number_is_valid(advocate.phone_number):
-        validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="advocate.phone_number")
-      advocate.phone_number = phone_number_formatted(advocate.phone_number)
-    if defined("advocate.confidential_phone_number") and len(advocate.confidential_phone_number):
-      if not phone_number_is_valid(advocate.confidential_phone_number):
-        validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="advocate.confidential_phone_number")
-      advocate.confidential_phone_number = phone_number_formatted(advocate.confidential_phone_number)
-    if defined("advocate.other_number") and len(advocate.other_number):
-      if not phone_number_is_valid(advocate.other_number):
-        validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="advocate.other_number")
-      advocate.other_number = phone_number_formatted(advocate.other_number)
-    if defined("advocate.confidential_other_number") and len(advocate.confidential_other_number):
-      if not phone_number_is_valid(advocate.confidential_other_number):
-        validation_error("Please enter a phone number in the format (xxx) xxx-xxxx (US numbers only)", field="advocate.confidential_other_number")
-      advocate.confidential_other_number = phone_number_formatted(advocate.confidential_other_number)
-continue button field: petitioner_contact_info
----
-id: efile user email address
-question: |
-  What is your email address?
-subquestion: |
-  To efile, the court needs your email address.
-fields:
- - "Do you need to keep your email confidential?": efile_users_email_confidential
-   datatype: yesnoradio
- - Email: users[0].email
-   datatype: email
-   js show if: val("efile_users_email_confidential") === false
- - Confidential email: users[0].confidential_email
-   datatype: email
-   js show if: val("efile_users_email_confidential") === true
----
-id: efile advocate email address
-question: |
-  What is your email address?
-subquestion: |
-  To efile, the court needs your email address.
-fields:
-  - "Do you need to keep your email confidential?": efile_advocate_email_confidential
-    datatype: yesnoradio
-  - Email: advocate.email
-    datatype: email
-    js show if: val("efile_advocate_email_confidential") === false
-  - Confidential email: advocate.confidential_email
-    datatype: email
-    js show if: val("efile_advocate_email_confidential") === true
----
-id: address test results
 comment: |
-  TEMPORARY test screen. Delete this block and the address_test_results line in the interview order when testing is done.
-question: |
-  Address test results
-subquestion: |
-  ## Answers on the stay-away screen
-
-  * respondent_live_with_petitioners: **${ showifdef('respondent_live_with_petitioners', 'not asked') }**
-  * respondent_knows_where_petitioners_live: **${ 'not asked' if not defined('respondent_knows_where_petitioners_live') else ("I don't know" if respondent_knows_where_petitioners_live is None else respondent_knows_where_petitioners_live) }**
-  * respondent_stay_away_from_petitioners_home (yes/no): **${ showifdef('respondent_stay_away_from_petitioners_home', 'not asked') }**
-  * stay_away_home_address_or_keep_confidential (choice): **${ showifdef('stay_away_home_address_or_keep_confidential', 'not asked') }**
-  * stay_away_address_collected: **${ stay_away_address_collected }**
-
-  ## Answers on the contact screen
-
-  * stay_away_is_same_as_mailing_address: **${ showifdef('stay_away_is_same_as_mailing_address', 'not asked') }**
-  * petitioners_using_dv128 (confidential): **${ showifdef('petitioners_using_dv128', 'not asked') }**
-
-  ## Stay-away address (users[0].stay_away_home_address)
-
-  % for part in ['address', 'unit', 'city', 'state', 'zip', 'country']:
-  * ${ part }: ${ showifdef('users[0].stay_away_home_address.' + part, 'not collected') }
-  % endfor
-
-  ## Mailing address (users[0].mailing_address)
-
-  % for part in ['address', 'unit', 'city', 'state', 'zip', 'country']:
-  * ${ part }: ${ showifdef('users[0].mailing_address.' + part, 'not collected') }
-  % endfor
-
-  ## Mailing address (advocate.mailing_address)
-
-  % for part in ['address', 'unit', 'city', 'state', 'zip', 'country']:
-  * ${ part }: ${ showifdef('advocate.address.' + part, 'not collected') }
-  % endfor
-  
-  ## Confidential address (users[0].confidential_address or advocate.confidential_address)
-  % if who_needs_the_order in ('child', 'children'):
-  % for part in ['address', 'unit', 'city', 'state', 'zip', 'country']:
-  * ${ part }: ${ showifdef('advocate.confidential_address.' + part, 'not collected') }
-  % endfor
-  % else:
-  % for part in ['address', 'unit', 'city', 'state', 'zip', 'country']:
-  * ${ part }: ${ showifdef('users[0].confidential_address.' + part, 'not collected') }
-  % endfor
-  % endif
-
-
-  ## Confidential phone (users[0].confidential_address or advocate.confidential_address)
-  % if who_needs_the_order in ('child', 'children'):
-  % if court_main_phone_confidential:
-  ${ advocate.confidential_phone_number }
-  % endif
-  % if court_other_phone_confidential:
-  ${ advocate.confidential_other_number }
-  % endif
-  % else:
-  % if court_main_phone_confidential:
-  ${ users[0].confidential_phone_number }
-  % endif
-  % if court_other_phone_confidential:
-  ${ users[0].confidential_other_number }
-  % endif
-  % endif
-
-  ## Check
-
-  % if stay_away_address_collected and showifdef('stay_away_is_same_as_mailing_address'):
-    * Expected: mailing address or advocate address copied from the stay-away address, confidential address not collected
-    * Mailing matches stay-away: **${ 'PASS' if all(showifdef('users[0].mailing_address.' + p, '') == showifdef('users[0].stay_away_home_address.' + p, '') for p in ['address', 'unit', 'city', 'state', 'zip']) or all(showifdef('advocate.address.' + p, '') == showifdef('users[0].stay_away_home_address.' + p, '') for p in ['address', 'unit', 'city', 'state', 'zip']) else 'FAIL' }**
-    * Confidential address not collected: **${ 'PASS' if not defined('users[0].confidential_address.address') and not defined('advocate.confidential_address.address') else 'FAIL' }**
-  % elif showifdef('petitioners_using_dv128'):
-  * Expected: confidential address entered, mailing address not collected
-  * Confidential address entered: 
-  % if defined('users[0].confidential_address.address') or defined('advocate.confidential_address.address'):
-  **PASS**
-  % else:
-  **FAIL**
-  % endif
-  % endif
-continue button field: address_test_results
+  PETITION TYPE, COURT LOCATION
+  The efile steps (set_efile_variables, efile_and_email) are defined in efiling_merged.yml (included above).
+---
+id: only one petitioner
+code: |
+  # The old tests were who_needs_the_order in ('myself', 'child'), i.e. ONE petitioner.
+  # 'child' no longer exists, so count the petitioners instead.
+  only_one_petitioner = users.number() == 1
+---
+id: petition type collected
+code: |
+  if only_one_petitioner:
+    protective_order_petition_type
+  else:
+    protective_order_petition_type = 'DV-100m'
+  petition_type_collected = True
 ---
 id: For demo - which form do you want to complete?
+if: not use_comprehensive_order
 question: |
   Which petition do you want to complete?
 subquestion: |
@@ -1105,37 +1158,6 @@ fields:
       - Petition for Domestic Violence Protective Order: DV-100
       - Petition for Sexual Assault Protective Order: CIV-750
       - Petition for Stalking Protective Order: CIV-752
----
-code: |
-  if who_needs_the_order in ('myself', 'child'):
-    domestic_violence_protective_order_petition.enabled = protective_order_petition_type == 'DV-100'
-    sexual_assault_protective_order_petition.enabled = protective_order_petition_type == 'CIV-750'
-    stalking_protective_order_petition.enabled = protective_order_petition_type == 'CIV-752'
-    domestic_violence_protective_order_petition_multi.enabled = False
-  else:
-    domestic_violence_protective_order_petition_multi.enabled = True
-    domestic_violence_protective_order_petition.enabled = False
-    sexual_assault_protective_order_petition.enabled = False
-    stalking_protective_order_petition.enabled = False
----
-id: short or long term
-question: |
-  How long do you need the order to last?
-subquestion: |
-  You can ask the court for an order that lasts 20 days, an order that lasts up to a year, or both.
-fields:
-  - I need the order to last: term
-    input type: radio
-    choices:
-      - "20 days": 20 days
-        help: |
-          A **Short-Term Protective Order** (also called an “ex parte” order) gives you immediate protection.  It lasts for 20 days unless the judge extends it. The judge is able to grant or deny the petition based only on what you write in the petition and what you testify about at the hearing, if there is a hearing. The judge can grant this protective order without telling ${ respondent_name } that you filed a petition, and without hearing from ${ respondent_name }. You do not have to tell the ${ respondent_name } that you are asking for a protective order, but if you did, tell the judge how you tried to tell ${ respondent_name } you were asking for the protective order.
-      - "up to one year": 1 year
-        help: |
-          A **Long-Term Order** can last up to one year. A judge can only grant a long-term order after a hearing. ${ respondent_name } must get at least 10 days’ notice of the court hearing and have a chance to speak at the hearing. If ${ respondent_name } had notice, but chose not to come to the hearing, the judge can still grant the order. Police officers or troopers are responsible for notifying ${ respondent_name } about the hearing.
-      - "I need **both** a 20 day order and an order that lasts up to a year": both
-        help: |
-           Both a Short-Term and a Long-Term Order. If you request both orders, and your short-term order is granted, the court will schedule a hearing when the judge will decide on the long-term protective order. ${ respondent_name } has an opportunity to attend the hearing and contest the order. If the short-term order is not granted, the court may or may not schedule a long-term hearing.
 ---
 code: |
   if protective_order_petition_type in ('DV-100', 'DV-100m'):
@@ -1160,36 +1182,6 @@ code: |
     elif term == 'both':
       cause_of_action_code = 'CIV750LT'
 ---
-id: users physical address
-sets:
-  - "users[0].address.address"
-  - "users[0].address.unit"
-  - "users[0].address.city"
-  - "users[0].address.state"
-  - "users[0].address.zip"
-question: |
-  What is the address of the place you are living now?
-
-subquestion: |
-  The police want the address of the place you are living now because....
-  They only use this address to ... and it does not go to ${ respondent_name }
-
-fields:
-  - "You have a choice": show_address_to_police
-    datatype: radio
-    choices:
-      - 'I am fine to have the police know my address': fine
-      - 'I am staying with a friend': friend
-      - 'I am staying with family': family
-      - 'I do not feel safe sharing where I am staying with anyone': unsafe to share
-    #show if:
-    #  code: |
-    #     ask_show_address_to_police
-# - code: |
-#     users[0].address_fields(show_if={'variable': 'show_address_to_police', 'is': 'fine'})
-# - code: |
-#     users[0].address_fields(show_if={ 'code': "not ask_show_address_to_police and show_address_to_police == 'fine'" })
----
 id: court location
 question: |
   What court do you want to file in?
@@ -1202,11 +1194,11 @@ subquestion: |
   </div>
   * at ${ respondent_name }'s local court, or
   <div class="alert alert-info" role="alert">
-  Ultimately, we will put in the name and address of ${other_parties[0].familiar()}'s local court here, possibly with a map showing where the court is.
+  Ultimately, we will put in the name and address of ${ respondent_name }'s local court here, possibly with a map showing where the court is.
   </div>
   * the court where the abuse, assault or stalking ocurred.
   <div class="alert alert-info" role="alert">
-   Ultimately, we will put in the name and address of the court local to where the ${ "abuse" if protective_order_petition_type in ('DV-100', 'DV-100m') else "" }${ "assault" if protective_order_petition_type == 'DIV-752' else "" }${ "stalking" if protective_order_petition_type == 'DIV-750' else "" } ocurred, if we have this information, possibly with a map showing where the court is.
+   Ultimately, we will put in the name and address of the court local to where the ${ "abuse" if protective_order_petition_type in ('DV-100', 'DV-100m') else "" }${ "assault" if protective_order_petition_type == 'CIV-750' else "" }${ "stalking" if protective_order_petition_type == 'CIV-752' else "" } ocurred, if we have this information, possibly with a map showing where the court is.
   </div>
 
   Where do you want to file?
@@ -1245,6 +1237,7 @@ dropdown:
   - Seward
   - Sitka
   - Skagway
+  - Saint Marys
   - Saint Paul Island
   - Tok
   - Unalakleet
@@ -1258,204 +1251,154 @@ code: |
   if court_location == 'Angoon':
     court_code = '1AG'
   elif court_location == 'Haines':
-      court_code = '1HA'
+    court_code = '1HA'
   elif court_location == 'Hoonah':
-      court_code = '1HN'
+    court_code = '1HN'
   elif court_location == 'Juneau':
-      court_code = '1JU'
+    court_code = '1JU'
   elif court_location == 'Ketchikan':
-      court_code = '1KE'
+    court_code = '1KE'
   elif court_location == 'Petersburg':
-      court_code = '1PE'
+    court_code = '1PE'
   elif court_location == 'Prince of Wales':
-      court_code = '1PW'
+    court_code = '1PW'
   elif court_location == 'Sitka':
-      court_code = '1SI'
+    court_code = '1SI'
   elif court_location == 'Skagway':
-      court_code = '1SK'
+    court_code = '1SK'
   elif court_location == 'Wrangell':
-      court_code = '1WR'
+    court_code = '1WR'
   elif court_location == 'Yakutat':
-      court_code = '1YA'
+    court_code = '1YA'
   elif court_location == 'Utqiagvik':
-      court_code = '2BA'
+    court_code = '2BA'
   elif court_location == 'Kotzebue':
-      court_code = '2KB'
+    court_code = '2KB'
   elif court_location == 'Nome':
-      court_code = '2NO'
+    court_code = '2NO'
   elif court_location == 'Unalakleet':
-      court_code = '2UT'
+    court_code = '2UT'
   elif court_location == 'Anchorage':
-      court_code = '3AN'
+    court_code = '3AN'
   elif court_location == 'Cordova':
-      court_code = '3CO'
+    court_code = '3CO'
   elif court_location == 'Dillingham':
-      court_code = '3DI'
+    court_code = '3DI'
   elif court_location == 'Glennallen':
-      court_code = '3GL'
+    court_code = '3GL'
   elif court_location == 'Homer':
-      court_code = '3HO'
+    court_code = '3HO'
   elif court_location == 'Kake':
-      court_code = '1PE'
+    court_code = '1PE'
   elif court_location == 'Kenai':
-      court_code = '3KN'
+    court_code = '3KN'
   elif court_location == 'Kodiak':
-      court_code = '3KO'
+    court_code = '3KO'
   elif court_location == 'Naknek':
-      court_code = '3NA'
+    court_code = '3NA'
   elif court_location == 'Palmer':
-      court_code = '3PA'
+    court_code = '3PA'
   elif court_location == 'Sand Point':
-      court_code = '3SP'
+    court_code = '3SP'
   elif court_location == 'Saint Paul Island':
-      court_code = '3ST'
+    court_code = '3ST'
   elif court_location == 'Seward':
-      court_code = '3SW'
+    court_code = '3SW'
   elif court_location == 'Unalaska':
-      court_code = '3UN'
+    court_code = '3UN'
   elif court_location == 'Valdez':
-      court_code = '3VA'
+    court_code = '3VA'
   elif court_location == 'Aniak':
-      court_code = '4AK'
+    court_code = '4AK'
   elif court_location == 'Bethel':
-      court_code = '4BE'
+    court_code = '4BE'
   elif court_location == 'Delta Junction':
-      court_code = '4DJ'
+    court_code = '4DJ'
   elif court_location == 'Emmonak':
-      court_code = '4EM'
+    court_code = '4EM'
   elif court_location == 'Fairbanks':
-      court_code = '4FA'
+    court_code = '4FA'
   elif court_location == 'Fort Yukon':
-      court_code = '4FY'
+    court_code = '4FY'
   elif court_location == 'Galena':
-      court_code = '4GA'
+    court_code = '4GA'
   elif court_location == 'Hooper Bay':
-      court_code = '4HB'
+    court_code = '4HB'
   elif court_location == 'Nenana':
-      court_code = '4NE'
+    court_code = '4NE'
   elif court_location == 'Saint Marys':
-      court_code = '4SM'
+    court_code = '4SM'
   elif court_location == 'Tok':
-      court_code = '4TO'
-
+    court_code = '4TO'
 ---
 comment: |
-  took out:
-    * their birthdate: ${ adult_for_respondent.birthdate }
-    * their relationship to respondent: ${ other_parties[0].relationship_to_person_signing_for_them }
-id: data points screen
-event: penultimate_screen
+  DOCUMENTS (copied from the demo file)
+  Changes made while copying:
+    * who_needs_the_order in ('child', 'children') is now advocate_is_contact_person
+    * users_is_petitioner is now: not advocate_is_contact_person; users_is_other is advocate_is_contact_person
+    * the old stay-away tests (stay_away_home_address_or_keep_confidential etc.) are now just
+      respondent_stay_away_from_petitioners_home
+    * users[0].address (a screen we do not use) is replaced: the stay-away address fields now read
+      users[0].stay_away_home_address, and the mailing address field reads users[0].mailing_address
+    * users[0].stay_away_from_address is now respondent_stay_away_from_petitioners_home
+---
+code: |
+  # Same as the demo's code, except that the old test (who_needs_the_order in ('myself', 'child'))
+  # is now only_one_petitioner.
+  if only_one_petitioner:
+    domestic_violence_protective_order_petition.enabled = protective_order_petition_type == 'DV-100'
+    sexual_assault_protective_order_petition.enabled = protective_order_petition_type == 'CIV-750'
+    stalking_protective_order_petition.enabled = protective_order_petition_type == 'CIV-752'
+    domestic_violence_protective_order_petition_multi.enabled = False
+  else:
+    domestic_violence_protective_order_petition_multi.enabled = True
+    domestic_violence_protective_order_petition.enabled = False
+    sexual_assault_protective_order_petition.enabled = False
+    stalking_protective_order_petition.enabled = False
+---
+code: |
+  # The petition says "Confidential - See form DV-128" for a confidential address, phone number or email.
+  # Each one has its own yes/no: address = petitioners_using_dv128, main phone = court_main_phone_confidential,
+  # other phone = court_other_phone_confidential, email = court_email_confidential.
+  # The sheet has to be on whenever any one of them is confidential.
+  dv_128_confidential_contact_information_sheet.enabled = (
+    petitioners_using_dv128
+    or showifdef('court_main_phone_confidential', False)
+    or showifdef('court_other_phone_confidential', False)
+    or showifdef('court_email_confidential', False)
+  )
+---
+id: Petitioner's aliases
 question: |
-  Final screen
-subquestion: |
-  Stick in a final screen just so we don't get the error message
-
-  Also reckoning variables along the way:
-
-  ## Petitioner
-
-  -  **users_is_petitioner** checkbox =  (who_needs_the_order in ('myself','self and child','self and children')): ${ who_needs_the_order in ('myself','self and child','self and children') }
-
-  - **users_is_respondent** : False
-
-  - **users_is_other** checkbox = (who_needs_the_order in ('child','children')): ${ who_needs_the_order in ('child','children') }
-
-  - **users_other_role** code to give either nothing or users[0].relationship_to_advocate:
-      % if who_needs_the_order in ('child', 'children'):
-      ${ users[0].relationship_to_advocate } of ${ users[0] }
-      % else:
-      ${ "" }
-      % endif
-
-
-
-
-  * Who needs the order: ${ who_needs_the_order }
-  * Petitioner's name: ${ users }
-  * Parent or Guardian or petitioner filling out for themself: ${ al_person_answering }
-  * Number of petitioners: ${ users.target_number }
-  * Who is answering the questions in this interview? ${ al_person_answering }
-  % if who_needs_the_order == 'lawyer':
-  * advocate.bar_number:  ${ advocate.bar_number }
-  % endif
-  % if who_needs_the_order in ('child', 'children'):
-  * Advocate name: ${ advocate.name.full() }
-  * I am
-  % for i in range(users.number()):
-  ${users[i].name.familiar()}'s ${ users[i].relationship_to_advocate }
-  % endfor
-  % endif
-
-   Petitioners mailing address, phone and email:
-  % if petitioners_using_dv128:
-  Confidential - See form DV-128
+  % if petitioner_group in ('you', 'you and children'):
+  Do you
+  % elif petitioner_group == 'one person':
+  Does ${ users[0].familiar() }
   % else:
-  % if who_needs_the_order in ('child', 'children'):
-  ${ advocate.address.on_one_line() }
-  % else:
-  ${ users[0].mailing_address.on_one_line() }
+  Do ${ users[0].familiar() }
   % endif
-  % endif
-
-  phone number(s):
-  % if petitioners_using_dv128:
-  Confidential - See form DV-128
-  % else:
-  % if who_needs_the_order in ('child', 'children'):
-  ${ advocate.phone_numbers() }
-  % else:
-  ${ users[0].phone_numbers() }
-  % endif
-  % endif
-
-  email:
-   % if petitioners_using_dv128:
-  Confidential - See form DV-128
-  % else:
-  % if who_needs_the_order in ('child', 'children'):
-  email: ${ showifdef("advocate.email") }
-
-  confidential email: ${ showifdef("advocate.confidential_email") }
-  % else:
-  email: ${ showifdef("users[0].email") }
-
-  confidential: ${ showifdef("users[0].confidential_email") }
-  % endif
-  % endif
-
-
-  ## Respondent
-  * {Respondent} name: ${ other_parties[0].name }
-  * Respondent's birthdate:
-  % if knows_respondents_birthdate:
-  { other_parties[0].birthdate }
-  % else:
-  ${ other_parties[0].age } years
-  % endif
-  * Is ${ respondent_name } a child? ${ "Yes" if other_parties[0].age_in_years() < 18 else "No" }
-  % if other_parties[0].age_in_years() < 18 and knows_adult_for_respondent:
-  * Respondent's parent or guardian: ${ adult_for_respondent }
-  % endif
-  * Respondent's address:
-  % if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent and not adult_for_respondent_address_unknown:
-      * Adult responsible for ${ respondent_name }'s address:
-  ${ adult_for_respondent.address.block() } (parent or guardian)
-  % else:
-  % if not respondent_address_unknown:
-  ${ other_parties[0].address.block() }
-  % endif
-  % endif
-
-
-  ## Type of Protective Order petition
-
-  The ${"petitioner" if who_needs_the_order in ('myself', 'child') else "petitioners"} should get a **${ protective_order_petition_type }** petition. 
-
-  The Cause of Action Code for this petition is: ${ cause_of_action_code }
-
-  The ${"petitioner plans" if who_needs_the_order in ('myself', 'child') else "petitioners plan"} to file in ${ court_location } whose court code is ${ court_code }. 
-
-continue button field: penultimate_screen
+  go by any *other* names?
+fields:
+  - "Do ${ 'you' if petitioner_group in ('you', 'you and children') else 'they' } have any nicknames or aliases?": users_aliases
+    datatype: yesnoradio
+  - "What other names do people know ${ 'you' if petitioner_group in ('you', 'you and children') else 'them' } as?": users[0].alias_text_list
+    datatype: area
+    show if: users_aliases
+---
+code: |
+  # DV-128 is about the contact person, so when the advocate is the contact person (a guardian, or a parent
+  # filing for children) this has to be the advocate's name, not users[0] (the person who needs the order).
+  # Despite its name this variable now holds the CONTACT PERSON's name (plus aliases, if any were given).
+  if advocate_is_contact_person:
+    contact_person_prefix = 'advocate'
+  else:
+    contact_person_prefix = 'users[0]'
+  contact_person = advocate if advocate_is_contact_person else users[0]
+  # Check if the text field has content and isn't just spaces
+  if defined(contact_person_prefix + '.alias_text_list') and contact_person.alias_text_list.strip():
+    users_with_aliases = f"{contact_person} (AKA: {contact_person.alias_text_list.strip()})"
+  else:
+    users_with_aliases = str(contact_person)
 ---
 comment: |
   Delete until we have review screens set up:
@@ -1463,19 +1406,21 @@ comment: |
 id: download protective_order_petition
 event: protective_order_petition_download
 question: |
-  % if can_check_efile and efile_resp.response_code == 200:
+  % if efile_attempted and efile_resp.response_code == 200:
   All done
-  % else:
+  % elif efile_attempted:
   Something went wrong delivering your form
+  % else:
+  Your form is ready
   % endif
 subquestion: |
-  % if can_check_efile and efile_resp.response_code == 200:
+  % if efile_attempted and efile_resp.response_code == 200:
   Thank you ${users}. Your form has been sent to the court.
 
   Your envelope number is ${ efile_resp.data['envelopeId'] }.
   Write this number down and use it when asking the court about this filing.
   % else:
-  % if can_check_efile and efile_resp.response_code != 200:
+  % if efile_attempted and efile_resp.response_code != 200:
   Something went wrong delivering your form to the court. You will have to send
   them to the court manually.
   % else:
@@ -1606,29 +1551,37 @@ attachment:
   variable name: dv_127_confidential_law_enforcement_information_sheet[i]
   skip undefined: True
   tagged pdf: True
+  # TODO (new DV-127 PDF): when the new DV-127 is added, its phone and email fields (petitioners_mobile_number,
+  # petitioners_other_number, petitioners_email, or whatever the new field names are) must print EVERY phone
+  # number and email the user gave us, confidential or not. Right now they only read the regular fields
+  # (phone_number, other_number, email), so a number or email marked confidential prints blank.
+  # For each one, use the regular value if it is set, otherwise the confidential one, with showifdef, e.g.
+  #   ${ showifdef('users[0].phone_number', showifdef('users[0].confidential_phone_number', '')) }
+  # (and the same for advocate.* when advocate_is_contact_person). Do not mix undefined variables in one field:
+  # with `skip undefined: True` one undefined variable blanks the whole field.
   fields:
       - "petitioners_name": ${ users[0] }
       - "petitioners_birthdate": ${ users[0].birthdate }
       - "petitioners_is_child": ${ users[0].age_in_years() < 18 }
-      - "petitioners_address": ${ users[0].address.on_one_line() }
-      - "petitioners_stay_away_address_yes": ${ users[0].stay_away_from_address }
-      - "petitioners1_stay_away_address_no": ${ not users[0].stay_away_from_address }
+      - "petitioners_address": ${ users[0].stay_away_home_address.on_one_line() if respondent_stay_away_from_petitioners_home else "" }
+      - "petitioners_stay_away_address_yes": ${ respondent_stay_away_from_petitioners_home }
+      - "petitioners1_stay_away_address_no": ${ not respondent_stay_away_from_petitioners_home }
       - "notify_petitioner_when_defendant_is_served_yes": ${ users[0].notify_when_served }
       - "notify_petitioner_when_defendant_is_served_no": ${ not users[0].notify_when_served }
       - "petitioners_mobile_number": |
-          % if who_needs_the_order in ('child', 'children'):
+          % if advocate_is_contact_person:
           ${ advocate.phone_number }
           % else:
           ${ users[0].phone_number }
           % endif
       - "petitioners_other_number": |
-          % if who_needs_the_order in ('child', 'children'):
+          % if advocate_is_contact_person:
           ${ advocate.other_number }
           % else:
           ${ users[0].other_number }
           % endif
       - "petitioners_email": |
-          % if who_needs_the_order in ('child', 'children'):
+          % if advocate_is_contact_person:
           ${ advocate.email }
           % else:
           ${ users[0].email }
@@ -1784,33 +1737,36 @@ attachment:
          % if petitioners_using_dv128:
          Confidential - See form DV-128
          % else:
-         % if who_needs_the_order in ('child', 'children'):
+         % if advocate_is_contact_person:
          ${ advocate.address.on_one_line() }
          % else:
-         ${ users[0].address.on_one_line() }
+         ${ users[0].mailing_address.on_one_line() }
          % endif
          % endif
       - "users_safe_email": |
-          % if petitioners_using_dv128:
+          % if showifdef('court_email_confidential', False):
           Confidential - See form DV-128
           % else:
-          % if who_needs_the_order in ('child', 'children'):
+          % if advocate_is_contact_person:
           ${ advocate.email }
           % else:
           ${ users[0].email }
           % endif
           % endif
       - "users_safe_phone":  |
-          % if petitioners_using_dv128:
+          % if showifdef('court_main_phone_confidential', False):
           Confidential - See form DV-128
+          % elif advocate_is_contact_person:
+          ${ showifdef('advocate.phone_number', '') }
           % else:
-          % if who_needs_the_order in ('child', 'children'):
-          ${ advocate.phone_number }
-          ${ advocate.other_number }
-          % else:
-          ${ users[0].phone_number }
-          ${ users[0].other_number }
+          ${ showifdef('users[0].phone_number', '') }
           % endif
+          % if showifdef('court_other_phone_confidential', False):
+          Confidential - See form DV-128
+          % elif advocate_is_contact_person:
+          ${ showifdef('advocate.other_number', '') }
+          % else:
+          ${ showifdef('users[0].other_number', '') }
           % endif
 ---
 attachment:
@@ -1824,39 +1780,41 @@ attachment:
       - "docket_number": ${ docket_number }
       - "petitioners_name": ${ users[0] }
       - "respondents_name": ${ other_parties[0] }
-      - "users_is_petitioner": ${ who_needs_the_order in ('myself','self and child','self and children') }
+      - "users_is_petitioner": ${ not advocate_is_contact_person }
       - "users_is_respondent": False
-      - "users_is_other": ${ who_needs_the_order in ('child','children') }
+      - "users_is_other": ${ advocate_is_contact_person }
       - "users_other_role": |
-          % if who_needs_the_order in ('child', 'children'):
+          % if advocate_is_contact_person:
           ${ users[0].relationship_to_advocate } of ${ users[0] }
           % else:
           ${ "" }
           % endif
       - "users_name_and_aliases": ${users_with_aliases }
+      # showifdef: a number that was not marked confidential is never set, and with `skip undefined`
+      # ONE undefined variable blanks the whole field (that is why the main phone was missing).
       - "users_phone_numbers": |
-          % if who_needs_the_order in ('child', 'children'):
-          ${ advocate.confidential_phone_number }
-          ${ advocate.confidential_other_number }
+          % if advocate_is_contact_person:
+          ${ showifdef('advocate.confidential_phone_number', '') }
+          ${ showifdef('advocate.confidential_other_number', '') }
           % else:
-          ${ users[0].confidential_phone_number }
-          ${ users[0].confidential_other_number }
+          ${ showifdef('users[0].confidential_phone_number', '') }
+          ${ showifdef('users[0].confidential_other_number', '') }
           % endif
       - "users_email": |
-          % if who_needs_the_order in ('child', 'children'):
+          % if advocate_is_contact_person:
           ${ advocate.confidential_email }
           % else:
           ${ users[0].confidential_email }
           % endif
       - "users_address_block": |
-          % if who_needs_the_order in ('child', 'children'):
+          % if advocate_is_contact_person:
           ${ advocate.confidential_address.on_one_line() }
           % else:
           ${ users[0].confidential_address.on_one_line() }
           % endif
       - "users_signature_date": ${ today() }
       - "users_name": |
-          % if who_needs_the_order in ('child', 'children'):
+          % if advocate_is_contact_person:
           ${ advocate.name }
           % else:
           ${ users[0] }
@@ -1910,12 +1868,8 @@ attachment:
       - "petitioners5_advocate_relationship": ${ users[4].relationship_to_advocate }
       - "order_no_abuse_yes": Yes
       - "petitioners_address1_on_one_line": |
-          % if (respondent_live_with_petitioners or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live) and respondent_stay_away_from_petitioners_home) or (not respondent_live_with_petitioners and respondent_knows_where_petitioners_live is not True and stay_away_home_address_or_keep_confidential == 'stay away'):
-          % if who_needs_the_order in ('child', 'children'):
-          ${ advocate.address.on_one_line() }
-          % else:
-          ${ users[0].address.on_one_line() }
-          % endif
+          % if respondent_stay_away_from_petitioners_home:
+          ${ users[0].stay_away_home_address.on_one_line() }
           % endif
       - "respondents_name": ${ other_parties[0] }
       - "respondents_birthdate": |
@@ -1962,37 +1916,37 @@ attachment:
           % if petitioners_using_dv128:
           Confidential - See form DV-128
           % else:
-          % if who_needs_the_order in ('child', 'children'):
+          % if advocate_is_contact_person:
           ${ advocate.address.on_one_line() }
           % else:
           ${ users[0].mailing_address.on_one_line() }
           % endif
           % endif
       - "petitioners_cell_phone_number": |
-          % if petitioners_using_dv128:
+          % if showifdef('court_main_phone_confidential', False):
           Confidential - See form DV-128
           % else:
-          % if who_needs_the_order in ('child', 'children'):
+          % if advocate_is_contact_person:
           ${ advocate.phone_number }
           % else:
           ${ users[0].phone_number }
           % endif
           % endif
       - "petitioners_other_phone": |
-          % if petitioners_using_dv128:
+          % if showifdef('court_other_phone_confidential', False):
           Confidential - See form DV-128
           % else:
-          % if who_needs_the_order in ('child', 'children'):
+          % if advocate_is_contact_person:
           ${ advocate.other_number }
           % else:
           ${ users[0].other_number }
           % endif
           % endif
       - "petitioners_email": |
-          % if petitioners_using_dv128:
+          % if showifdef('court_email_confidential', False):
           Confidential - See form DV-128
           % else:
-          % if who_needs_the_order in ('child', 'children'):
+          % if advocate_is_contact_person:
           ${ advocate.email }
           % else:
           ${ users[0].email }
@@ -2029,7 +1983,7 @@ attachment:
       - "respondents_parent_or_guardian_name__2": ${ adult_for_respondent }
       - "short_term_yes": ${ term in  ('20 days', 'both') }
       - "long_term_yes": ${ term in  ( '1 year', 'both') }
-      - "petitioners_address1_on_one_line": ${ users[0].address.on_one_line()}
+      - "petitioners_address1_on_one_line": ${ users[0].stay_away_home_address.on_one_line() if respondent_stay_away_from_petitioners_home else "" }
       - "respondents_name_and_aliases": ${ other_parties[0] }
       - "respondents_address_block": |
           % if other_parties[0].age_in_years() < 18 and respondent_address_unknown and knows_adult_for_respondent and not adult_for_respondent_address_unknown:
@@ -2062,37 +2016,37 @@ attachment:
           % if petitioners_using_dv128:
           Confidential - See form DV-128
           % else:
-          % if who_needs_the_order in ('child', 'children'):
+          % if advocate_is_contact_person:
           ${ advocate.address.on_one_line() }
           % else:
           ${ users[0].mailing_address.on_one_line() }
           % endif
           % endif
       - "petitioners_cell_phone_number": |
-          % if petitioners_using_dv128:
+          % if showifdef('court_main_phone_confidential', False):
           Confidential - See form DV-128
           % else:
-          % if who_needs_the_order in ('child', 'children'):
+          % if advocate_is_contact_person:
           ${ advocate.phone_number }
           % else:
           ${ users[0].phone_number }
           % endif
           % endif
       - "petitioners_other_phone": |
-          % if petitioners_using_dv128:
+          % if showifdef('court_other_phone_confidential', False):
           Confidential - See form DV-128
           % else:
-          % if who_needs_the_order in ('child', 'children'):
+          % if advocate_is_contact_person:
           ${ advocate.other_number }
           % else:
           ${ users[0].other_number }
           % endif
           % endif
       - "petitioners_email": |
-          % if petitioners_using_dv128:
+          % if showifdef('court_email_confidential', False):
           Confidential - See form DV-128
           % else:
-          % if who_needs_the_order in ('child', 'children'):
+          % if advocate_is_contact_person:
           ${ advocate.email }
           % else:
           ${ users[0].email }
@@ -2236,37 +2190,37 @@ attachment:
         % if petitioners_using_dv128:
         Confidential - See form DV-128
         % else:
-        % if who_needs_the_order in ('child', 'children'):
+        % if advocate_is_contact_person:
         ${ advocate.address.on_one_line() }
         % else:
         ${ users[0].mailing_address.on_one_line() }
         % endif
         % endif
     - "petitioners_email": |
-        % if petitioners_using_dv128:
+        % if showifdef('court_email_confidential', False):
         Confidential - See form DV-128
         % else:
-        % if who_needs_the_order in ('child', 'children'):
+        % if advocate_is_contact_person:
         ${ advocate.email }
         % else:
         ${ users[0].email }
         % endif
         % endif
     - "petitioners_cell_phone_number": |
-        % if petitioners_using_dv128:
+        % if showifdef('court_main_phone_confidential', False):
         Confidential - See form DV-128
         % else:
-        % if who_needs_the_order in ('child', 'children'):
+        % if advocate_is_contact_person:
         ${ advocate.phone_number }
         % else:
         ${ users[0].phone_number }
         % endif
         % endif
     - "petitioners_other_phone": |
-        % if petitioners_using_dv128:
+        % if showifdef('court_other_phone_confidential', False):
         Confidential - See form DV-128
         % else:
-        % if who_needs_the_order in ('child', 'children'):
+        % if advocate_is_contact_person:
         ${ advocate.other_number }
         % else:
         ${ users[0].other_number }
@@ -2414,37 +2368,37 @@ attachment:
         % if petitioners_using_dv128:
         Confidential - See form DV-128
         % else:
-        % if who_needs_the_order in ('child', 'children'):
+        % if advocate_is_contact_person:
         ${ advocate.address.on_one_line() }
         % else:
         ${ users[0].mailing_address.on_one_line() }
         % endif
         % endif
     - "petitioners_email": |
-        % if petitioners_using_dv128:
+        % if showifdef('court_email_confidential', False):
         Confidential - See form DV-128
         % else:
-        % if who_needs_the_order in ('child', 'children'):
+        % if advocate_is_contact_person:
         ${ advocate.email }
         % else:
         ${ users[0].email }
         % endif
         % endif
     - "petitioners_cell_phone_number": |
-        % if petitioners_using_dv128:
+        % if showifdef('court_main_phone_confidential', False):
         Confidential - See form DV-128
         % else:
-        % if who_needs_the_order in ('child', 'children'):
+        % if advocate_is_contact_person:
         ${ advocate.phone_number }
         % else:
         ${ users[0].phone_number }
         % endif
         % endif
     - "petitioners_other_phone": |
-        % if petitioners_using_dv128:
+        % if showifdef('court_other_phone_confidential', False):
         Confidential - See form DV-128
         % else:
-        % if who_needs_the_order in ('child', 'children'):
+        % if advocate_is_contact_person:
         ${ advocate.other_number }
         % else:
         ${ users[0].other_number }
