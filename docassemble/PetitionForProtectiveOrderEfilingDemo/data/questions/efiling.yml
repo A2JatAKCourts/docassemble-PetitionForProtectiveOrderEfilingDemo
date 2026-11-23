@@ -2,7 +2,9 @@
 comment: |
   COPY of ymls/efiling.yml for protective_order_petition_merged.yml (the original is untouched).
   Changed: the two tests on who_needs_the_order in ('child', 'children') now use advocate_is_contact_person
-  (advocate.is_form_filler, and the advocate part of set_efile_variables). Everything else is as in the original.
+  (advocate.is_form_filler, and the advocate part of set_efile_variables).
+  Also changed: efile_and_email puts "See case notes" in the mailing address when it is confidential
+  (petitioners_using_dv128), after the user has chosen to e-file. Everything else is as in the original.
 ---
 include:
   - docassemble.EFSPIntegration:efiling_integration.yml
@@ -168,6 +170,17 @@ code: |
   set_efile_variables = True
 ---
 code: |
+  # Added in this copy: when the petitioner (or the advocate, when they are the contact person) wants their
+  # mailing address kept confidential, the filing needs something in the mailing address field. We put
+  # "See case notes" there, only now, after the user has said they want to e-file, so it is not in the
+  # interview answers while the PDFs are built (every PDF already prints "Confidential - See form DV-128"
+  # when petitioners_using_dv128 is True, so the placeholder never prints on a form).
+  # Only the address line is set. The unit, city, state and zip stay unset.
+  if user_wants_efile and showifdef('petitioners_using_dv128', False):
+    if advocate_is_contact_person:
+      advocate.address.address = 'See case notes'
+    else:
+      users[0].mailing_address.address = 'See case notes'
   efile
   efile_and_email = True
 ---

@@ -1008,6 +1008,19 @@ fields:
   - Email: users[0].email
     datatype: email
     default: ${ showifdef('users[0].confidential_email', '') }
+  # Only asked when they did not give an email on the contact screen, did not already say their email is
+  # confidential, and want their mailing address or a phone number kept confidential.
+  - "Do you want to keep this email address confidential?": efile_user_email_is_confidential
+    datatype: yesnoradio
+    show if:
+      code: |
+        not showifdef('court_email_confidential', False) and not showifdef('users[0].confidential_email', '') and (showifdef('petitioners_using_dv128', False) or showifdef('court_main_phone_confidential', False) or showifdef('court_other_phone_confidential', False))
+validation code: |
+  # If the email is confidential, record it the same way the contact screen does, so the petition prints
+  # "Confidential - See form DV-128" and DV-128 shows it. users[0].email stays filled in for e-filing.
+  if showifdef('efile_user_email_is_confidential', False) or (showifdef('court_email_confidential', False) and not showifdef('users[0].confidential_email', '')):
+    court_email_confidential = True
+    users[0].confidential_email = users[0].email
 ---
 id: efile advocate email address
 comment: |
@@ -1027,6 +1040,19 @@ fields:
   - Email: advocate.email
     datatype: email
     default: ${ showifdef('advocate.confidential_email', '') }
+  # Only asked when they did not give an email on the contact screen, did not already say their email is
+  # confidential, and want their mailing address or a phone number kept confidential.
+  - "Do you want to keep this email address confidential?": efile_advocate_email_is_confidential
+    datatype: yesnoradio
+    show if:
+      code: |
+        not showifdef('court_email_confidential', False) and not showifdef('advocate.confidential_email', '') and (showifdef('petitioners_using_dv128', False) or showifdef('court_main_phone_confidential', False) or showifdef('court_other_phone_confidential', False))
+validation code: |
+  # If the email is confidential, record it the same way the contact screen does, so the petition prints
+  # "Confidential - See form DV-128" and DV-128 shows it. advocate.email stays filled in for e-filing.
+  if showifdef('efile_advocate_email_is_confidential', False) or (showifdef('court_email_confidential', False) and not showifdef('advocate.confidential_email', '')):
+    court_email_confidential = True
+    advocate.confidential_email = advocate.email
 ---
 comment: |
   RESPONDENT CONTACT INFO
