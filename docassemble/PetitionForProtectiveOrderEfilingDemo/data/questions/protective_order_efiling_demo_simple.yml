@@ -1001,7 +1001,11 @@ comment: |
 question: |
   What email address should we use to e-file?
 subquestion: |
-  To e-file, the court needs an email address. Please check that this is the email address you want the court to use.
+  To e-file, the court needs an email address.
+
+  % if showifdef('users[0].email', '') or showifdef('users[0].confidential_email', ''):
+  Please check that this is the email address you want the court to use.
+  % endif
 
   % if showifdef('court_email_confidential', False) and showifdef('users[0].confidential_email', ''):
   You gave a confidential email address. It is filled in below. Change it if you want to e-file with a different address. The court will keep your email confidential.
@@ -1033,7 +1037,11 @@ comment: |
 question: |
   What email address should we use to e-file?
 subquestion: |
-  To e-file, the court needs an email address. Please check that this is the email address you want the court to use.
+  To e-file, the court needs an email address.
+
+  % if showifdef('advocate.email', '') or showifdef('advocate.confidential_email', ''):
+  Please check that this is the email address you want the court to use.
+  % endif
 
   % if showifdef('court_email_confidential', False) and showifdef('advocate.confidential_email', ''):
   You gave a confidential email address. It is filled in below. Change it if you want to e-file with a different address. The court will keep your email confidential.
