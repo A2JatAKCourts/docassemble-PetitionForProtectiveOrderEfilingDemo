@@ -990,69 +990,72 @@ continue button field: petitioner_contact_info
 ---
 id: efile user email address
 comment: |
-  This screen is asked by set_efile_variables (efiling_merged.yml) when users[0].email is empty, and it is the ONLY
-  thing that can fill users[0].email. The old version hid the Email field when court_email_confidential was True,
-  so someone who gave a confidential email on the contact screen could never answer it (it re-asked forever).
-  Now Email is always shown and required, and starts out filled in with the confidential email if there is one.
+  The last screen before e-filing: everyone who e-files confirms the email address the court will use
+  (asked by set_efile_variables in efiling_merged.yml). It is pre-filled with the email they gave on the
+  contact screen, or with their confidential email if they gave one of those.
+  The answer is saved in users[0].email, which is the email the filing uses. It does NOT change the
+  confidential email they gave on the contact screen (DV-128 keeps showing that one).
+  If the email is confidential and there was no confidential email yet (they left it blank, or they answered
+  Yes to the question below), the answer is also saved as users[0].confidential_email, so the petition prints
+  "Confidential - See form DV-128" and DV-128 shows it.
 question: |
   What email address should we use to e-file?
 subquestion: |
-  To e-file, the court needs an email address.
+  To e-file, the court needs an email address. Please check that this is the email address you want the court to use.
 
   % if showifdef('court_email_confidential', False) and showifdef('users[0].confidential_email', ''):
-  You gave a confidential email address. It is filled in below. Change it if you want to e-file with a different address.
+  You gave a confidential email address. It is filled in below. Change it if you want to e-file with a different address. The court will keep your email confidential.
   % elif showifdef('court_email_confidential', False):
   You said you want to keep your email address confidential, but you did not enter an email. Enter the email address you want to use to e-file below. The court will keep your email confidential.
   % endif
 fields:
-  - Email: users[0].email
+  - Email: efile_user_email
     datatype: email
-    default: ${ showifdef('users[0].confidential_email', '') }
-  # Only asked when they did not give an email on the contact screen, did not already say their email is
+    default: ${ showifdef('users[0].email', '') or showifdef('users[0].confidential_email', '') }
+  # Only asked when they did not give any email on the contact screen, did not already say their email is
   # confidential, and want their mailing address or a phone number kept confidential.
   - "Do you want to keep this email address confidential?": efile_user_email_is_confidential
     datatype: yesnoradio
     show if:
       code: |
-        not showifdef('court_email_confidential', False) and not showifdef('users[0].confidential_email', '') and (showifdef('petitioners_using_dv128', False) or showifdef('court_main_phone_confidential', False) or showifdef('court_other_phone_confidential', False))
+        not showifdef('court_email_confidential', False) and not showifdef('users[0].email', '') and not showifdef('users[0].confidential_email', '') and (showifdef('petitioners_using_dv128', False) or showifdef('court_main_phone_confidential', False) or showifdef('court_other_phone_confidential', False))
 validation code: |
-  # If the email is confidential, record it the same way the contact screen does, so the petition prints
-  # "Confidential - See form DV-128" and DV-128 shows it. users[0].email stays filled in for e-filing.
   if showifdef('efile_user_email_is_confidential', False) or (showifdef('court_email_confidential', False) and not showifdef('users[0].confidential_email', '')):
     court_email_confidential = True
-    users[0].confidential_email = users[0].email
+    users[0].confidential_email = efile_user_email
+  users[0].email = efile_user_email
 ---
 id: efile advocate email address
 comment: |
-  Same fix as "efile user email address": Email is always shown and required, and starts out filled in with the
-  confidential email if there is one.
+  Same as "efile user email address", for the advocate: the last screen before e-filing, where everyone who
+  e-files confirms the email address the court will use. The answer is saved in advocate.email and does not
+  change the confidential email they gave on the contact screen.
 question: |
   What email address should we use to e-file?
 subquestion: |
-  To e-file, the court needs an email address.
+  To e-file, the court needs an email address. Please check that this is the email address you want the court to use.
 
   % if showifdef('court_email_confidential', False) and showifdef('advocate.confidential_email', ''):
-  You gave a confidential email address. It is filled in below. Change it if you want to e-file with a different address.
+  You gave a confidential email address. It is filled in below. Change it if you want to e-file with a different address. The court will keep your email confidential.
   % elif showifdef('court_email_confidential', False):
-  You said you want to keep your email address confidential, but you did not give us one. Enter the email address you want to use to e-file below.
+  You said you want to keep your email address confidential, but you did not enter an email. Enter the email address you want to use to e-file below. The court will keep your email confidential.
   % endif
 fields:
-  - Email: advocate.email
+  - Email: efile_advocate_email
     datatype: email
-    default: ${ showifdef('advocate.confidential_email', '') }
-  # Only asked when they did not give an email on the contact screen, did not already say their email is
+    default: ${ showifdef('advocate.email', '') or showifdef('advocate.confidential_email', '') }
+  # Only asked when they did not give any email on the contact screen, did not already say their email is
   # confidential, and want their mailing address or a phone number kept confidential.
   - "Do you want to keep this email address confidential?": efile_advocate_email_is_confidential
     datatype: yesnoradio
     show if:
       code: |
-        not showifdef('court_email_confidential', False) and not showifdef('advocate.confidential_email', '') and (showifdef('petitioners_using_dv128', False) or showifdef('court_main_phone_confidential', False) or showifdef('court_other_phone_confidential', False))
+        not showifdef('court_email_confidential', False) and not showifdef('advocate.email', '') and not showifdef('advocate.confidential_email', '') and (showifdef('petitioners_using_dv128', False) or showifdef('court_main_phone_confidential', False) or showifdef('court_other_phone_confidential', False))
 validation code: |
-  # If the email is confidential, record it the same way the contact screen does, so the petition prints
-  # "Confidential - See form DV-128" and DV-128 shows it. advocate.email stays filled in for e-filing.
   if showifdef('efile_advocate_email_is_confidential', False) or (showifdef('court_email_confidential', False) and not showifdef('advocate.confidential_email', '')):
     court_email_confidential = True
-    advocate.confidential_email = advocate.email
+    advocate.confidential_email = efile_advocate_email
+  advocate.email = efile_advocate_email
 ---
 comment: |
   RESPONDENT CONTACT INFO
@@ -1476,7 +1479,7 @@ template: email_confirmation
 subject: |
   The Alaska Court has received your submission
 content: |
-  Hello ${ users[0].name },
+  Hello ${ advocate.name if advocate_is_contact_person else users[0].name },
 
   The Alaska Court has received your submission. Your forms were given an Envelope Number, {{ envelope_id }}. The court might ask
   for this number if you ask them about it.
@@ -1485,7 +1488,7 @@ template: acceptance_email
 subject: |
   The Alaska Court has accepted your submission
 content: |
-  Hello ${ users[0].name },
+  Hello ${ advocate.name if advocate_is_contact_person else users[0].name },
 
   The Alaska Court accepted your filing in {{ case_title }}, envelope {{ envelope_id }}.
 
@@ -1499,7 +1502,7 @@ template: rejection_email
 subject: |
   The Alaska Court has rejected your submission
 content: |
-  Hello ${ users[0].name },
+  Hello ${ advocate.name if advocate_is_contact_person else users[0].name },
 
   The Alaska Court has rejected your filing in {{ case_title }}, envelope {{ envelope_id }}.
 
@@ -1513,7 +1516,7 @@ template: neutral_email
 subject: |
   The Alaska Court has received your submission
 content: |
-  Hello ${ users[0].name },
+  Hello ${ advocate.name if advocate_is_contact_person else users[0].name },
 
   The Alaska Court has sent a response to your filing in {{ case_title }}, envelope {{ envelope_id }}.
 

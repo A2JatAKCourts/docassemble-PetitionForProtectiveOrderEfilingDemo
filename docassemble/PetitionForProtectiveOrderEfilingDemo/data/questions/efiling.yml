@@ -1,10 +1,12 @@
 ---
 comment: |
   COPY of ymls/efiling.yml for protective_order_petition_merged.yml (the original is untouched).
-  Changed: the two tests on who_needs_the_order in ('child', 'children') now use advocate_is_contact_person
-  (advocate.is_form_filler, and the advocate part of set_efile_variables).
-  Also changed: efile_and_email puts "See case notes" in the mailing address when it is confidential
-  (petitioners_using_dv128), after the user has chosen to e-file. Everything else is as in the original.
+  Changed: the tests on who_needs_the_order in ('child', 'children') now use advocate_is_contact_person
+  (advocate.is_form_filler, advocate.party_type, and the advocate parts of set_efile_variables and efile_and_email).
+  Changed: email confidentiality is ONE variable, court_email_confidential (was efile_users_email_confidential /
+  efile_advocate_email_confidential). A confidential email becomes the email the filing uses (users[0].email /
+  advocate.email), and is copied there just before e-filing.
+  Everything else is as in ymls/efiling.yml.
 ---
 include:
   - docassemble.EFSPIntegration:efiling_integration.yml
@@ -150,14 +152,14 @@ code: |
   if tf_835_self_certification_no_notary_available.enabled:
     tf_835_self_certification_no_notary_available.completed
 
-  # Slight hack: email is required if efiling, but we ask for it before we know if the users is efiling
-  if users[0].is_form_filler and (not defined("users[0].email") or users[0].email is None or len(users[0].email) == 0):
-    undefine("users[0].email")
-    users[0].email
-  if defined("advocate.is_form_filler") and advocate.is_form_filler and (not defined("advocate.email") or advocate.email is None or len(advocate.email) == 0):
-    undefine("advocate.email")
-    advocate.email
-
+  # Everyone who e-files confirms the email address the court will use. This is the last screen before e-filing
+  # ("efile user email address" / "efile advocate email address" in protective_order_petition_merged.yml). It is
+  # pre-filled with the email they gave (or their confidential email), and the answer is saved in users[0].email
+  # / advocate.email, which is the email the filing uses.
+  if users[0].is_form_filler:
+    efile_user_email
+  if defined("advocate.is_form_filler") and advocate.is_form_filler:
+    efile_advocate_email
   # Don't need to show fees, it will always be $0.
   tyler_payment_id = None
   review_fees = True 
@@ -165,22 +167,37 @@ code: |
   # Don't show redundant screen confirming things
   efile_user_reviewed = True
 
+  email_confirmation_subject = email_confirmation.subject
+  email_confirmation_contents = email_confirmation.content
+  acceptance_subject = acceptance_email.subject
+  acceptance_contents = acceptance_email.content
+  rejected_subject = rejection_email.subject
+  rejected_contents = rejection_email.content
+  neutral_subject = neutral_email.subject
+  neutral_contents = neutral_email.content
   all_required_screens_shown
-
   set_efile_variables = True
 ---
 code: |
-  # Added in this copy: when the petitioner (or the advocate, when they are the contact person) wants their
-  # mailing address kept confidential, the filing needs something in the mailing address field. We put
-  # "See case notes" there, only now, after the user has said they want to e-file, so it is not in the
-  # interview answers while the PDFs are built (every PDF already prints "Confidential - See form DV-128"
-  # when petitioners_using_dv128 is True, so the placeholder never prints on a form).
-  # Only the address line is set. The unit, city, state and zip stay unset.
-  if user_wants_efile and showifdef('petitioners_using_dv128', False):
-    if advocate_is_contact_person:
-      advocate.address.address = 'See case notes'
-    else:
-      users[0].mailing_address.address = 'See case notes'
+  # Sent just before e-filing, only if the user chose to e-file, so the user never sees these values.
+  # Every PDF prints "Confidential - See form DV-128" for anything confidential, so none of this prints on a form.
+  if user_wants_efile:
+    if users[0].is_form_filler:
+      if defined("petitioners_using_dv128") and petitioners_using_dv128:
+        users[0].address.address = "See Case Notes"
+        users[0].address.unit = ""
+        users[0].address.zip = ""
+        users[0].address.city = ""
+
+    if defined("advocate.is_form_filler") and advocate.is_form_filler:
+      if defined("petitioners_using_dv128") and petitioners_using_dv128:
+        advocate.address.address = "See Case Notes"
+        advocate.address.unit = ""
+        advocate.address.zip = ""
+        advocate.address.city = ""
+
+  # Putting all info in the final screen, not the intermediate screen
+  show_efile_resp = True
   efile
   efile_and_email = True
 ---
@@ -195,6 +212,7 @@ subquestion: |
 fields:
   - Do you want to e-file?: user_wants_efile
     datatype: yesnoradio
+continue button label: Submit document to court
 ---
 id: you-will-not-be-able-to-efile
 question: |
@@ -205,7 +223,35 @@ subquestion: |
   However, you can still continue and download a completed form at the end.
 continue button field: show_no_efile
 ---
+id: submitted form, filing accepted
+comment: |
+  Same screen as "submitted form" below, shown only when the filing went through (response code 200).
+  prevent going back: the user can go on to the download screen but cannot go back through the interview
+  and submit the forms again. If the filing did NOT go through, the "submitted form" screen below is used
+  and the user can still go back.
+if: efile_resp.response_code == 200
+prevent going back: True
+question: |
+  Your forms were submitted
+subquestion: |
+  Your envelope number is ${ efile_resp.data['envelopeId'] }.
+  Write this number down and use it when asking the court about this
+  filing.
+
+  We recommend you continue down below to download the form for your own records.
+  Click **Back to download screen** to get a copy of your forms and instructions.
+
+  Here are your forms.
+
+  ${ al_court_bundle.as_pdf() }
+
+  ${ collapse_template(debug_details) }
+
+continue button field: show_efile_resp
+continue button label: Back to download screen
+---
 id: submitted form
+if: efile_resp.response_code != 200
 question: |
   % if efile_resp.response_code == 200:
   Your forms were submitted
