@@ -190,7 +190,7 @@ code: |
 code: |
   # TESTING SWITCH. True = run the interview only: no e-filing screens (no "Do you want to e-file?", no efile
   # email screen) and nothing is sent to the court. Change to False to test e-filing.
-  test_without_efiling = True
+  test_without_efiling = False
 ---
 code: |
   # Use this instead of can_check_efile everywhere in this interview.
