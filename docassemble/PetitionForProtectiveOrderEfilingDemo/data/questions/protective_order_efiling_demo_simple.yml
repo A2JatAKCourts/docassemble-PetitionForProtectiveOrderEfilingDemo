@@ -999,8 +999,10 @@ question: |
 subquestion: |
   To e-file, the court needs an email address.
 
-  % if showifdef('court_email_confidential', False):
+  % if showifdef('court_email_confidential', False) and showifdef('users[0].confidential_email', ''):
   You gave a confidential email address. It is filled in below. Change it if you want to e-file with a different address.
+  % elif showifdef('court_email_confidential', False):
+  You said you want to keep your email address confidential, but you did not enter an email. Enter the email address you want to use to e-file below. The court will keep your email confidential.
   % endif
 fields:
   - Email: users[0].email
@@ -1016,8 +1018,10 @@ question: |
 subquestion: |
   To e-file, the court needs an email address.
 
-  % if showifdef('court_email_confidential', False):
+  % if showifdef('court_email_confidential', False) and showifdef('advocate.confidential_email', ''):
   You gave a confidential email address. It is filled in below. Change it if you want to e-file with a different address.
+  % elif showifdef('court_email_confidential', False):
+  You said you want to keep your email address confidential, but you did not give us one. Enter the email address you want to use to e-file below.
   % endif
 fields:
   - Email: advocate.email
