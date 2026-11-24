@@ -1447,11 +1447,40 @@ code: |
   else:
     users_with_aliases = str(contact_person)
 ---
+id: submitted_form
+comment: |
+  The download screen after a successful e-filing (the court answered with response code 200).
+  prevent going back: there is no Back link, so the user cannot return to the email confirmation screen
+  and submit the forms again. Everyone else (they chose not to e-file, or the filing failed) gets the
+  next block, which keeps the Back link.
+event: protective_order_petition_download
+if: efile_attempted and defined('efile_resp') and efile_resp.response_code == 200
+prevent going back: True
+question: |
+  All done
+subquestion: |
+  Thank you ${users}. Your form has been sent to the court.
+
+  Your envelope number is ${ efile_resp.data['envelopeId'] }.
+  Write this number down and use it when asking the court about this filing.
+
+  Use the options on this page to view, download and send your form.
+
+
+  ${ al_user_bundle.download_list_html() }
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+
+progress: 100
+buttons:
+  - Start over: restart
+---
 comment: |
   Delete until we have review screens set up:
     ${ action_button_html(url_action('review_protective_order_petition'), label=word('Edit answers'), color='info') }
 id: download protective_order_petition
 event: protective_order_petition_download
+if: not (efile_attempted and defined('efile_resp') and efile_resp.response_code == 200)
 question: |
   % if efile_attempted and efile_resp.response_code == 200:
   All done
