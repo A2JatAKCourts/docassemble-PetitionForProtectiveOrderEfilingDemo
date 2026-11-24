@@ -240,12 +240,15 @@ code: |
   court_location
 
   # TODO (left out for now): address_test_results (TEMPORARY), penultimate_screen
-  # The court case management system needs the cause of action code, but we do not show it to the user
-  # (the demo's penultimate_screen used to display it, which is what made it get computed).
-  cause_of_action_code
   if efiling_this_run:
-    set_efile_variables
-    efile_and_email
+    # Ask "Do you want to e-file?" first. Only people who say Yes get the email confirmation screen
+    # (asked inside set_efile_variables) and the filing. People who say No go straight to the download screen.
+    if user_wants_efile:
+      # The court case management system needs the cause of action code, but we do not show it to the user.
+      # It is only needed (and only computed) when the user e-files.
+      cause_of_action_code
+      set_efile_variables
+      efile_and_email
   demo_interview_order = True
 ---
 ########################################################################

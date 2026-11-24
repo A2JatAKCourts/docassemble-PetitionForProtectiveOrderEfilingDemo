@@ -212,7 +212,6 @@ subquestion: |
 fields:
   - Do you want to e-file?: user_wants_efile
     datatype: yesnoradio
-continue button label: Submit document to court
 ---
 id: you-will-not-be-able-to-efile
 question: |
