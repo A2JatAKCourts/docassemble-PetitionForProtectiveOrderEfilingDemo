@@ -1,0 +1,193 @@
+# When this moves into protective_order_petition_merged.yml, add this to that file's objects block
+# (the one with users[i].confidential_address: ALAddress):
+objects:
+  - court_petitioner_contact_address: ALAddress
+---
+comment: |
+  from Final Language 11.24.26 JS edits 3 petitions.docx (all track changes accepted)
+if: not advocate_is_contact_person
+id: Petitioner's contact info
+# Create users[0].confidential_address BEFORE the screen is shown. Validation code cannot create an object
+# from the objects block (it only says "name ... is not defined"), but `need:` can.
+# (users[0].mailing_address is already part of ALIndividual, so it does not need this.)
+need:
+  - users[0].confidential_address
+question: |
+  We need a few more details about you to finish everything.
+subquestion: |
+  The court needs some contact information from you.   If it is not be safe for the respondent to see your contact information, it can be left off your public court documents.
+
+  The Court needs:
+fields:
+  # FIELD 1: main phone. court_main_phone is only a placeholder; the validation code at the bottom
+  # copies it into users[0].phone_number or users[0].confidential_phone_number.
+  - note: |
+      A phone number to call you.  The court may call if they have questions or if there is a telephonic court hearing.
+  - Main phone number: court_main_phone
+  - "Do you need to keep your main phone number confidential from ${ respondent_name }?": court_main_phone_confidential
+    datatype: yesnoradio
+    label above field: True
+  # FIELD 2: other phone (optional). The yes/no is always visible so the user knows right away
+  # that the number can be kept confidential. It is only required once a number is typed
+  # (checked in the validation code at the bottom), which copies the number into
+  # users[0].other_number or users[0].confidential_other_number.
+  - Other phone number: court_other_phone
+    required: False
+  - "Do you need to keep your other phone number confidential from ${ respondent_name }?": court_other_phone_confidential
+    datatype: yesnoradio
+    label above field: True
+    required: False
+  # FIELD 3: email. Three pieces, in this order:
+  #   a) "Use the email you gave earlier?" (only if resume_email_address exists; it is a variable from
+  #      an earlier screen, not a field on this one, so it needs a Python `show if: code:`)
+  #   b) the email box court_email (placeholder). If resume_email_address exists it only shows after
+  #      they answer No to (a), labelled "My email address is". If there is no earlier email it
+  #      always shows, labelled "An email address to send you court documents".
+  #   c) court_email_confidential, always visible.
+  # The email is optional here. It only becomes required later in the interview if they e-file.
+  # The validation code at the bottom copies the email that is used into users[0].email or
+  # users[0].confidential_email.
+  - "You told us your email address is ${ showifdef('resume_email_address', '') }.  Is this where you want the court to send your court documents?": send_email_to_resume_email_address
+    datatype: yesnoradio
+    label above field: True
+    show if:
+      code: |
+        bool(showifdef('resume_email_address', ''))
+  - code: |
+      [dict(
+        label=("My email address is" if showifdef('resume_email_address', '') else "An email address to send you court documents"),
+        field='court_email',
+        datatype='email',
+        required=False,
+        **({'js show if': 'val("send_email_to_resume_email_address") === false'} if showifdef('resume_email_address', '') else {}))]
+  - "Do you need to keep your email address confidential from ${ respondent_name }?": court_email_confidential
+    datatype: yesnoradio
+    label above field: True
+    required: False
+  # FIELD 4: mailing address. Order: (stay-away note and "is this also your mailing address?" if they
+  # gave a stay-away address), a heading, the address, then the confidential yes/no.
+  # court_petitioner_contact_address is only a placeholder. The validation code at the bottom copies it
+  # into users[0].mailing_address or users[0].confidential_address.
+  - note: |
+      You told us ${ petitioner_possesive_pronoun } physical address is <br>
+      ${ users[0].stay_away_home_address.block() }.
+    show if:
+      code: |
+        defined('respondent_stay_away_from_petitioners_home') and respondent_stay_away_from_petitioners_home
+  - Is this also your mailing address for your court contact information?: stay_away_is_same_as_mailing_address
+    datatype: yesnoradio
+    show if:
+      code: |
+        defined('respondent_stay_away_from_petitioners_home') and respondent_stay_away_from_petitioners_home
+    label above field: True
+  # If they said the stay-away address is also their mailing address, show this note. It is built
+  # in Python (not Mako), so respondent_name is added with + str(...).
+  - code: |
+      [dict(
+        note="This address will not be confidential from " + str(respondent_name) + " because you asked the judge to order " + str(respondent_name) + " to stay away from this address.  If you have changed your mind, you can edit on the review screen at the end of the questions.",
+        **{'js show if': 'val("stay_away_is_same_as_mailing_address") === true'})] if showifdef('respondent_stay_away_from_petitioners_home', False) else []
+  # Heading above the address. With a stay-away address it only shows after they answer No to
+  # "is this also your mailing address?", and reads "My mailing address is".
+  - code: |
+      [dict(
+        note=("**My mailing address is**" if showifdef('respondent_stay_away_from_petitioners_home', False) else "**A mailing address for your court contact information**"),
+        **({'js show if': 'val("stay_away_is_same_as_mailing_address") === false'} if showifdef('respondent_stay_away_from_petitioners_home', False) else {}))]
+  # ONE set of address fields (the placeholder). Hidden when the stay-away address is used.
+  - code: |
+      court_petitioner_contact_address.address_fields(
+        country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=False, required={"zip": True},
+        **({"show_if": {"variable": "stay_away_is_same_as_mailing_address", "is": False}} if showifdef('respondent_stay_away_from_petitioners_home', False) else {}))
+  # The confidential yes/no comes AFTER the address. petitioners_using_dv128 is still the one switch.
+  - code: |
+      [dict(
+        label="Do you need to keep confidential from " + str(respondent_name) + "?",
+        field='petitioners_using_dv128',
+        datatype='yesnoradio',
+        **({'js show if': 'val("stay_away_is_same_as_mailing_address") === false'} if showifdef('respondent_stay_away_from_petitioners_home', False) else {}))] 
+sets:
+  - "users[0].phone_number"
+  - "users[0].confidential_phone_number"
+  - "users[0].other_number"
+  - "users[0].confidential_other_number"
+  - "users[0].email"
+  - "users[0].confidential_email"
+  - "court_petitioner_contact_address.address"
+  - "court_petitioner_contact_address.unit"
+  - "court_petitioner_contact_address.city"
+  - "court_petitioner_contact_address.state"
+  - "court_petitioner_contact_address.zip"
+  - "users[0].mailing_address.address"
+  - "users[0].mailing_address.unit"
+  - "users[0].mailing_address.city"
+  - "users[0].mailing_address.state"
+  - "users[0].mailing_address.zip"
+  - "users[0].confidential_address.address"
+  - "users[0].confidential_address.unit"
+  - "users[0].confidential_address.city"
+  - "users[0].confidential_address.state"
+  - "users[0].confidential_address.zip"
+validation code: |
+  # FIELD 1: main phone. Set both variables every time so going Back and changing the
+  # yes/no answer clears the old value instead of leaving it in the wrong place.
+  if court_main_phone_confidential:
+    users[0].confidential_phone_number = court_main_phone
+    users[0].phone_number = ''
+  else:
+    users[0].phone_number = court_main_phone
+    users[0].confidential_phone_number = ''
+  # FIELD 2: other phone. The yes/no is always visible but not required, so check it here.
+  other_phone_given = bool(showifdef('court_other_phone', ''))
+  if other_phone_given and showifdef('court_other_phone_confidential', None) is None:
+    validation_error(word("Please tell us if you need to keep this phone number confidential."), field="court_other_phone_confidential")
+  # The yes/no answer is kept as entered, even with no number. Anything that reads
+  # court_other_phone_confidential (the DV-128 and petition pages) must ignore it when there is no
+  # other phone number, e.g. showifdef('court_other_phone_confidential', False) and showifdef('court_other_phone', '')
+  if other_phone_given and court_other_phone_confidential:
+    users[0].confidential_other_number = court_other_phone
+    users[0].other_number = ''
+  else:
+    users[0].other_number = showifdef('court_other_phone', '')
+    users[0].confidential_other_number = ''
+  # FIELD 3: email. Work out which email is being used. A hidden box may keep an old value, so do not
+  # trust court_email when they said Yes to the earlier email.
+  if showifdef('resume_email_address', '') and showifdef('send_email_to_resume_email_address', False):
+    court_email_to_use = resume_email_address
+  else:
+    court_email_to_use = showifdef('court_email', '')
+  # The yes/no is always visible but not required, so check it here (same as the other phone).
+  if court_email_to_use and showifdef('court_email_confidential', None) is None:
+    validation_error(word("Please tell us if you need to keep this email address confidential."), field="court_email_confidential")
+  # The yes/no answer is kept as entered, even with no email. The e-file screens in
+  # protective_order_petition_merged.yml rely on that (they ask for the email later if they e-file).
+  if court_email_to_use and court_email_confidential:
+    users[0].confidential_email = court_email_to_use
+    users[0].email = ''
+  else:
+    users[0].email = court_email_to_use
+    users[0].confidential_email = ''
+  # FIELD 4: mailing address.
+  # (users[0].confidential_address already exists here: see `need:` at the top.)
+  if showifdef('respondent_stay_away_from_petitioners_home', False) and showifdef('stay_away_is_same_as_mailing_address', False):
+    # The stay-away address is also the mailing address, so it is not confidential. The screen hides the
+    # address and the yes/no. users[0].mailing_address is filled in right after this screen by
+    # copy_stay_away_home_address_to_mailing_address (it copies the stay-away address). Here we only
+    # make sure nothing is left in the confidential address from an earlier answer.
+    petitioners_using_dv128 = False
+    for part in ['address', 'unit', 'city', 'state', 'zip']:
+      setattr(users[0].confidential_address, part, '')
+  else:
+    # Copy attributes one by one. Assigning one ALAddress to another would make both names the same
+    # object, so a later edit to either would change both. The one not used is emptied.
+    if petitioners_using_dv128:
+      address_to_fill = users[0].confidential_address
+      address_to_empty = users[0].mailing_address
+    else:
+      address_to_fill = users[0].mailing_address
+      address_to_empty = users[0].confidential_address
+    for part in ['address', 'unit', 'city', 'state', 'zip']:
+      setattr(address_to_fill, part, showifdef('court_petitioner_contact_address.' + part, ''))
+      setattr(address_to_empty, part, '')
+    address_to_fill.country = showifdef('court_petitioner_contact_address.country', AL_DEFAULT_COUNTRY)
+continue button field: petitioner_contact_info
+---
+
